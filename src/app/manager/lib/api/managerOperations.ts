@@ -29,32 +29,23 @@ export const managerOperationsApi = {
     db.update<any>(STORAGE_KEYS.VISITORS, id, data);
   },
 
-  // Attendance (Staff)
-  listStaff: (propertyId: string) => {
+  // Attendance (Students)
+  listStudents: (propertyId: string) => {
     if (!propertyId) return [];
-    
-    // Auto-seed staff
-    const existing = db.getAll<any>(STORAGE_KEYS.STAFF).filter(s => s.propertyId === propertyId);
-    if (existing.length === 0) {
-      db.insert<any>(STORAGE_KEYS.STAFF, { id: createId(), propertyId, name: 'Raju (Cook)', role: 'cook', phone: '9988776611', isDeleted: false });
-      db.insert<any>(STORAGE_KEYS.STAFF, { id: createId(), propertyId, name: 'Bahadur (Guard)', role: 'guard', phone: '9988776622', isDeleted: false });
-      db.insert<any>(STORAGE_KEYS.STAFF, { id: createId(), propertyId, name: 'Sunita (Cleaner)', role: 'cleaner', phone: '9988776633', isDeleted: false });
-    }
-
-    return db.getAll<any>(STORAGE_KEYS.STAFF).filter(s => s.propertyId === propertyId && !s.isDeleted);
+    return db.getAll<any>(STORAGE_KEYS.STUDENTS).filter(s => s.propertyId === propertyId && s.status === 'active' && !s.isDeleted);
   },
-  listAttendanceToday: (propertyId: string) => {
+  listStudentAttendanceToday: (propertyId: string) => {
     const today = new Date().toISOString().split('T')[0];
-    return db.getAll<any>(STORAGE_KEYS.ATTENDANCE).filter(a => a.propertyId === propertyId && a.date === today && !a.isDeleted);
+    return db.getAll<any>('spg_student_attendance').filter(a => a.propertyId === propertyId && a.date === today && !a.isDeleted);
   },
-  markAttendance: (staffId: string, propertyId: string, status: 'Present' | 'Absent', managerId: string) => {
+  markStudentAttendance: (studentId: string, propertyId: string, status: 'Present' | 'Absent' | 'On Leave', managerId: string) => {
     const today = new Date().toISOString().split('T')[0];
-    const existing = db.getAll<any>(STORAGE_KEYS.ATTENDANCE).find(a => a.staffId === staffId && a.date === today && !a.isDeleted);
+    const existing = db.getAll<any>('spg_student_attendance').find(a => a.studentId === studentId && a.date === today && !a.isDeleted);
     if (existing) {
-      db.update<any>(STORAGE_KEYS.ATTENDANCE, existing.id, { status, updatedBy: managerId, updatedAt: new Date().toISOString() });
+      db.update<any>('spg_student_attendance', existing.id, { status, updatedBy: managerId, updatedAt: new Date().toISOString() });
     } else {
-      db.insert(STORAGE_KEYS.ATTENDANCE, {
-        id: createId('att'), staffId, propertyId, date: today, status,
+      db.insert('spg_student_attendance', {
+        id: createId('att'), studentId, propertyId, date: today, status,
         createdAt: new Date().toISOString(), updatedAt: new Date().toISOString(), createdBy: managerId, updatedBy: managerId, isDeleted: false
       });
     }
