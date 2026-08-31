@@ -7,7 +7,7 @@ export function runSeed() {
   if (typeof window === 'undefined') return;
   
   const isSeeded = localStorage.getItem(STORAGE_KEYS.IS_SEEDED);
-  if (isSeeded === 'v3') {
+  if (isSeeded === 'v4') {
     return;
   }
 
@@ -102,7 +102,8 @@ export function runSeed() {
   // Added mock Students so manager dashboards aren't empty
   db.replaceAll(STORAGE_KEYS.STUDENTS, [
     { 
-      id: studentId, 
+      id: createId('tnt'), 
+      userId: studentId,
       ...base(), 
       propertyId: 'prop_patna', 
       ownerId: ownerUserId,
@@ -144,6 +145,6 @@ export function runSeed() {
     { id: createId('log'), ...base(), actorId: superadminId, actorRole: 'superadmin', action: 'OWNER_CREATED', entity: 'owner', entityId: ownerProfileId, details: 'Created owner Owner 3' }
   ] as any);
 
-  localStorage.setItem(STORAGE_KEYS.IS_SEEDED, 'v3');
+  localStorage.setItem(STORAGE_KEYS.IS_SEEDED, 'v4');
   console.log('✅ LocalStorage Seeded with Demo Accounts');
 }
