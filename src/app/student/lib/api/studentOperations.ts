@@ -66,8 +66,17 @@ export const studentOperationsApi = {
 
   // Mess
   getTodayMenu: (propertyId: string) => {
-    const menus = db.getAll<any>('spg_menus').filter(m => m.propertyId === propertyId && !m.isDeleted);
-    return menus.length > 0 ? menus[0] : null;
+    const menus = db.getAll<any>(STORAGE_KEYS.FOOD_MENUS || 'spg_food_menus').filter(m => m.propertyId === propertyId && !m.isDeleted);
+    if (menus.length === 0) return null;
+    const menu = menus[0];
+    const days = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
+    const today = days[new Date().getDay()];
+    const rawValue = menu[today] || '';
+    try {
+      const parsed = JSON.parse(rawValue);
+      if (parsed.breakfast !== undefined) return parsed;
+    } catch (e) {}
+    return { breakfast: '', lunch: '', dinner: rawValue };
   },
   orderMeal: (studentId: string, propertyId: string, mealType: 'breakfast'|'lunch'|'dinner', cost: number, userId: string) => {
     const bal = studentOperationsApi.getWalletBalance(studentId);

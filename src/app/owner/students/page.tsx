@@ -20,6 +20,9 @@ export default function OwnerStudentsPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState<'all' | 'active' | 'on_notice' | 'checked_out'>('all');
   const [duesFilter, setDuesFilter] = useState<'all' | 'has_dues'>('all');
+  const [propertyFilter, setPropertyFilter] = useState('all');
+
+  const [showFilters, setShowFilters] = useState(false);
 
   useEffect(() => {
     if (!user) return;
@@ -33,8 +36,11 @@ export default function OwnerStudentsPage() {
   }, [user?.id]);
 
   const filteredStudents = students.filter(t => {
-    // Property match
+    // Global Property context match
     if (selectedPropertyId !== 'all' && t.profile.propertyId !== selectedPropertyId) return false;
+    
+    // Local property match
+    if (propertyFilter !== 'all' && t.profile.propertyId !== propertyFilter) return false;
     
     // Status match
     if (statusFilter !== 'all' && t.profile.status !== statusFilter) return false;
@@ -71,37 +77,78 @@ export default function OwnerStudentsPage() {
         </div>
       </div>
 
-      <div className="flex flex-col lg:flex-row gap-4 bg-[var(--bg-card)] p-4 border border-[var(--border)] rounded-[var(--radius-md,8px)]">
-        <div className="flex-1 relative">
-          <Search className="w-4 h-4 text-[var(--text-secondary)] absolute left-3 top-1/2 -translate-y-1/2" />
-          <input 
-            type="text" 
-            placeholder="Search by name or phone..." 
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-9 pr-4 py-2 bg-[var(--bg-input)] border border-[var(--border)] rounded-[var(--radius-md,8px)] text-sm focus:outline-none focus:border-[var(--primary)] text-[var(--text-primary)] transition-colors"
-          />
+      <div className="bg-[var(--bg-card)] p-4 border border-[var(--border)] rounded-[var(--radius-md,8px)] relative">
+        <div className="flex gap-4">
+          <div className="flex-1 relative">
+            <Search className="w-4 h-4 text-[var(--text-secondary)] absolute left-3 top-1/2 -translate-y-1/2" />
+            <input 
+              type="text" 
+              placeholder="Search by name or phone..." 
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full pl-9 pr-4 py-2 bg-[var(--bg-input)] border border-[var(--border)] rounded-[var(--radius-md,8px)] text-sm focus:outline-none focus:border-[var(--primary)] text-[var(--text-primary)] transition-colors"
+            />
+          </div>
+          
+          <button 
+            onClick={() => setShowFilters(!showFilters)}
+            className={`flex items-center gap-2 px-4 py-2 border rounded-[var(--radius-md,8px)] text-sm font-medium transition-colors ${showFilters ? 'bg-[var(--primary-subtle)] border-[var(--primary)] text-[var(--primary)]' : 'bg-[var(--bg-input)] border-[var(--border)] text-[var(--text-primary)] hover:border-[var(--primary)]'}`}
+          >
+            <Filter className="w-4 h-4" />
+            <span className="hidden sm:inline">Filters</span>
+          </button>
         </div>
-        
-        <select 
-          value={statusFilter}
-          onChange={(e) => setStatusFilter(e.target.value as any)}
-          className="bg-[var(--bg-input)] border border-[var(--border)] rounded-[var(--radius-md,8px)] px-3 py-2 text-sm text-[var(--text-primary)] focus:outline-none focus:border-[var(--primary)]"
-        >
-          <option value="all">All Statuses</option>
-          <option value="active">Active Students</option>
-          <option value="on_notice">On Notice</option>
-          <option value="checked_out">Checked Out</option>
-        </select>
 
-        <select 
-          value={duesFilter}
-          onChange={(e) => setDuesFilter(e.target.value as any)}
-          className="bg-[var(--bg-input)] border border-[var(--border)] rounded-[var(--radius-md,8px)] px-3 py-2 text-sm text-[var(--text-primary)] focus:outline-none focus:border-[var(--primary)]"
-        >
-          <option value="all">All Balances</option>
-          <option value="has_dues">Pending Dues Only</option>
-        </select>
+        {showFilters && (
+          <div className="mt-4 pt-4 border-t border-[var(--border)] grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 animate-in fade-in slide-in-from-top-2 duration-200">
+            {/* The Property Filter is now handled globally via OwnerPropertyContext, but if they want it specifically here, we can override or just point out the global one. Since the user asked for 3 dropdowns including PG, we'll add it here to filter locally too, but it will be constrained by the global context if set. */}
+            <select 
+              value={selectedPropertyId} 
+              disabled // Keep it disabled as it's controlled globally, or use a local one. Wait, let me add a local one instead.
+              className="hidden" 
+            />
+            
+            <div className="space-y-1.5">
+              <label className="text-xs font-bold text-[var(--text-secondary)] uppercase">Property</label>
+              <select 
+                value={propertyFilter}
+                onChange={(e) => setPropertyFilter(e.target.value)}
+                className="w-full bg-[var(--bg-input)] border border-[var(--border)] rounded-[var(--radius-md,8px)] px-3 py-2 text-sm text-[var(--text-primary)] focus:outline-none focus:border-[var(--primary)]"
+              >
+                <option value="all">All Properties</option>
+                {properties.map(p => (
+                  <option key={p.id} value={p.id}>{p.name}</option>
+                ))}
+              </select>
+            </div>
+
+            <div className="space-y-1.5">
+              <label className="text-xs font-bold text-[var(--text-secondary)] uppercase">Status</label>
+              <select 
+                value={statusFilter}
+                onChange={(e) => setStatusFilter(e.target.value as any)}
+                className="w-full bg-[var(--bg-input)] border border-[var(--border)] rounded-[var(--radius-md,8px)] px-3 py-2 text-sm text-[var(--text-primary)] focus:outline-none focus:border-[var(--primary)]"
+              >
+                <option value="all">All Statuses</option>
+                <option value="active">Active Students</option>
+                <option value="on_notice">On Notice</option>
+                <option value="checked_out">Checked Out</option>
+              </select>
+            </div>
+
+            <div className="space-y-1.5">
+              <label className="text-xs font-bold text-[var(--text-secondary)] uppercase">Dues</label>
+              <select 
+                value={duesFilter}
+                onChange={(e) => setDuesFilter(e.target.value as any)}
+                className="w-full bg-[var(--bg-input)] border border-[var(--border)] rounded-[var(--radius-md,8px)] px-3 py-2 text-sm text-[var(--text-primary)] focus:outline-none focus:border-[var(--primary)]"
+              >
+                <option value="all">All Balances</option>
+                <option value="has_dues">Pending Dues Only</option>
+              </select>
+            </div>
+          </div>
+        )}
       </div>
 
       {loading ? (

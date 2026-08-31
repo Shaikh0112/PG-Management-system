@@ -8,6 +8,7 @@ import { CheckCircle, Utensils, ShoppingCart, Truck, Archive, AlertTriangle } fr
 import { api } from '@/lib/api';
 import { mealsApi, MealType, MealStatusType } from '@/lib/api/meals';
 import { stockRequestsApi } from '@/app/staff/lib/api/stockRequests';
+import { attendanceApi } from '@/lib/api/attendance';
 
 export default function StaffCookPage() {
   const { propertyId } = useStaffContext();
@@ -20,6 +21,7 @@ export default function StaffCookPage() {
     Breakfast: 'pending', Lunch: 'pending', Dinner: 'pending'
   });
   const [todayMenu, setTodayMenu] = useState<any>(null);
+  const [isPresent, setIsPresent] = useState(false);
   
   const [activeTab, setActiveTab] = useState<'orders' | 'request' | 'incoming' | 'stock'>('orders');
   
@@ -33,12 +35,19 @@ export default function StaffCookPage() {
       setLiveStock(api.stock.getByProperty(propertyId).filter(s => s.category?.toLowerCase() === 'groceries'));
       setMealStatuses(mealsApi.getTodayMealStatus(propertyId));
       setTodayMenu(staffOperationsApi.getTodayMenu(propertyId));
+      if (session) setIsPresent(attendanceApi.getTodayStatus(propertyId, session.id));
     }
   };
 
   useEffect(() => {
     loadData();
   }, [propertyId]);
+
+  const handleMarkPresent = () => {
+    if (!session || !propertyId) return;
+    attendanceApi.markPresent(propertyId, session.id);
+    loadData();
+  };
 
   const handleMarkMealReady = (mealType: MealType) => {
     if (!session || !propertyId) return;
@@ -85,12 +94,37 @@ export default function StaffCookPage() {
 
   return (
     <div className="space-y-6 pb-20">
-      <div>
-        <h1 className="text-[24px] font-bold text-[var(--text-primary)]">Kitchen Operations</h1>
-        <p className="text-sm text-[var(--text-secondary)]">Manage meals and kitchen supply chain.</p>
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
+        <div>
+          <h1 className="text-[22px] font-bold text-[var(--text-primary)]">Cook Dashboard</h1>
+          <p className="text-sm text-[var(--text-secondary)]">Manage meals, orders, and kitchen stock</p>
+        </div>
+        
+        <div className="flex items-center gap-3 bg-[var(--bg-card)] border border-[var(--border)] rounded-[var(--radius-md,8px)] p-2 pr-4 shadow-sm">
+          {isPresent ? (
+            <>
+              <div className="w-10 h-10 rounded bg-[var(--success-bg)] text-[var(--success)] flex items-center justify-center">
+                <CheckCircle className="w-5 h-5" />
+              </div>
+              <div>
+                <p className="text-xs font-bold text-[var(--text-secondary)] uppercase">Attendance</p>
+                <p className="text-sm font-bold text-[var(--success)]">Marked Present ✅</p>
+              </div>
+            </>
+          ) : (
+            <>
+              <button 
+                onClick={handleMarkPresent}
+                className="bg-[var(--primary)] text-white hover:bg-[var(--primary-hover)] px-6 py-2.5 rounded-[var(--radius-md,8px)] font-bold text-sm transition-colors shadow-sm"
+              >
+                Mark Attendance for Today
+              </button>
+            </>
+          )}
+        </div>
       </div>
 
-      <div className="flex border-b border-[var(--border)] overflow-x-auto">
+      <div className="flex gap-2 p-1 bg-[var(--bg-input)] rounded-lg w-full overflow-x-auto hide-scrollbar border border-[var(--border)]">
         <button onClick={() => setActiveTab('orders')} className={`flex items-center gap-2 px-5 py-3 font-semibold text-sm border-b-2 transition-colors whitespace-nowrap ${activeTab === 'orders' ? 'border-[var(--primary)] text-[var(--primary)]' : 'border-transparent text-[var(--text-secondary)] hover:text-[var(--text-primary)]'}`}>
           <Utensils className="w-4 h-4" /> Live Meals
         </button>
@@ -114,8 +148,21 @@ export default function StaffCookPage() {
             </h2>
             {todayMenu ? (
               <div className="mb-6 p-4 bg-[var(--primary-bg)] border border-[var(--primary)] border-opacity-20 rounded-xl">
-                <h3 className="font-bold text-[var(--primary)] mb-2">Today's Items</h3>
-                <p className="text-sm text-[var(--text-primary)] font-medium">{todayMenu.items}</p>
+                <h3 className="font-bold text-[var(--primary)] mb-2">Today's Menu</h3>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
+                  <div className="bg-[var(--bg-card)] p-2 rounded border border-[var(--primary)] border-opacity-20 text-center">
+                    <span className="block text-[10px] uppercase font-bold text-[var(--primary)]">Breakfast</span>
+                    <span className="text-sm text-[var(--text-primary)] font-medium">{todayMenu.breakfast || 'TBD'}</span>
+                  </div>
+                  <div className="bg-[var(--bg-card)] p-2 rounded border border-[var(--primary)] border-opacity-20 text-center">
+                    <span className="block text-[10px] uppercase font-bold text-[var(--primary)]">Lunch</span>
+                    <span className="text-sm text-[var(--text-primary)] font-medium">{todayMenu.lunch || 'TBD'}</span>
+                  </div>
+                  <div className="bg-[var(--bg-card)] p-2 rounded border border-[var(--primary)] border-opacity-20 text-center">
+                    <span className="block text-[10px] uppercase font-bold text-[var(--primary)]">Dinner</span>
+                    <span className="text-sm text-[var(--text-primary)] font-medium">{todayMenu.dinner || 'TBD'}</span>
+                  </div>
+                </div>
               </div>
             ) : (
               <div className="mb-6 p-4 bg-[var(--bg-input)] rounded-xl border border-[var(--border)] text-sm text-[var(--text-secondary)] italic">

@@ -6,7 +6,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import { 
   LayoutDashboard, Building2, Bed, Users, UserSquare2, 
   Wallet, UtensilsCrossed, FileBarChart, Settings, CreditCard,
-  LogOut, Bell, Building, Menu, X, ShieldAlert, Banknote, Wrench
+  LogOut, Bell, Building, Menu, X, ShieldAlert, Banknote, Wrench, CalendarCheck
 } from 'lucide-react';
 import { getSession, clearSession } from '@/lib/auth/session';
 import { useOwnerPropertyContext } from './OwnerPropertyContext';
@@ -19,6 +19,7 @@ const NAV_ITEMS = [
   { key: 'properties', href: '/owner/properties', icon: Building2 },
   { key: 'rooms', href: '/owner/rooms', icon: Bed },
   { key: 'team', href: '/owner/team', icon: Users },
+  { key: 'attendance', href: '/owner/attendance', icon: CalendarCheck, label: 'Staff Attendance' },
   { key: 'payroll', href: '/owner/payroll', icon: Banknote },
   { key: 'students', href: '/owner/students', icon: UserSquare2 },
   { key: 'finance', href: '/owner/finance', icon: Wallet },

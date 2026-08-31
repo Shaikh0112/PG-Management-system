@@ -5,9 +5,17 @@ import { createId } from '@/lib/utils/id';
 export const staffOperationsApi = {
   // Cook
   getTodayMenu: (propertyId: string) => {
-    // In a real DB, filter by date. For demo, we just get the latest menu for property.
-    const menus = db.getAll<any>(STORAGE_KEYS.MENUS || 'spg_menus').filter(m => m.propertyId === propertyId && !m.isDeleted);
-    return menus.length > 0 ? menus[0] : null;
+    const menus = db.getAll<any>(STORAGE_KEYS.FOOD_MENUS || 'spg_food_menus').filter(m => m.propertyId === propertyId && !m.isDeleted);
+    if (menus.length === 0) return null;
+    const menu = menus[0];
+    const days = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
+    const today = days[new Date().getDay()];
+    const rawValue = menu[today] || '';
+    try {
+      const parsed = JSON.parse(rawValue);
+      if (parsed.breakfast !== undefined) return parsed;
+    } catch (e) {}
+    return { breakfast: '', lunch: '', dinner: rawValue };
   },
   saveMenu: (propertyId: string, data: any, staffId: string) => {
     const existing = staffOperationsApi.getTodayMenu(propertyId);

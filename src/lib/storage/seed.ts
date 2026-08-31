@@ -7,7 +7,7 @@ export function runSeed() {
   if (typeof window === 'undefined') return;
   
   const isSeeded = localStorage.getItem(STORAGE_KEYS.IS_SEEDED);
-  if (isSeeded === 'v5') {
+  if (isSeeded === 'v7') {
     return;
   }
 
@@ -82,8 +82,15 @@ export function runSeed() {
     { id: createId('cmp'), ...base(), propertyId: 'prop_patna', studentId: studentId, studentName: 'Student 3', roomId: rooms[2].id, roomNumber: '303', category: 'cleaning', title: 'Room cleaning missed', description: 'No one came to clean the room today.', status: 'Resolved', priority: 'Medium' }
   ] as any);
 
-  db.replaceAll(STORAGE_KEYS.MENUS, [
-    { id: createId('mnu'), ...base(), propertyId: 'prop_patna', date: new Date().toISOString().split('T')[0], items: 'Dal, Roti, Rice, Paneer Masala' }
+  const foodMenu = JSON.stringify({ breakfast: 'Poha & Jalebi', lunch: 'Dal, Roti, Rice, Paneer Masala', dinner: 'Jeera Rice, Chole, Salad' });
+  db.replaceAll(STORAGE_KEYS.FOOD_MENUS || 'spg_food_menus', [
+    { 
+      id: createId('food'), 
+      propertyId: 'prop_patna', 
+      monday: foodMenu, tuesday: foodMenu, wednesday: foodMenu, thursday: foodMenu, friday: foodMenu, saturday: foodMenu, sunday: foodMenu,
+      monthEndSpecial: 'Paneer Tikka, Naan, Gulab Jamun',
+      updatedAt: new Date().toISOString()
+    }
   ] as any);
 
   db.replaceAll(STORAGE_KEYS.MEAL_STATUS, [
@@ -151,6 +158,6 @@ export function runSeed() {
     { id: createId('log'), ...base(), actorId: superadminId, actorRole: 'superadmin', action: 'OWNER_CREATED', entity: 'owner', entityId: ownerProfileId, details: 'Created owner Owner 3' }
   ] as any);
 
-  localStorage.setItem(STORAGE_KEYS.IS_SEEDED, 'v5');
+  localStorage.setItem(STORAGE_KEYS.IS_SEEDED, 'v7');
   console.log('✅ LocalStorage Seeded with Demo Accounts');
 }
