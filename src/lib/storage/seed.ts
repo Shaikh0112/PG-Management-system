@@ -7,7 +7,7 @@ export function runSeed() {
   if (typeof window === 'undefined') return;
   
   const isSeeded = localStorage.getItem(STORAGE_KEYS.IS_SEEDED);
-  if (isSeeded === 'v2') {
+  if (isSeeded === 'v3') {
     return;
   }
 
@@ -33,11 +33,11 @@ export function runSeed() {
   const users = [
     { id: superadminId, ...base(), role: 'superadmin', name: 'Super Admin', email: 'superadmin@gmail.com', password: 'Super@123', status: 'Active', mustChangePassword: false },
     { id: ownerUserId, ...base(), role: 'owner', ownerId: ownerProfileId, name: 'Owner 3', email: 'owner@gmail.com', password: 'Owner3@123', status: 'Active', mustChangePassword: false },
-    { id: managerId, ...base(), role: 'manager', ownerId: ownerProfileId, name: 'Manager 3', email: 'manager3@gmail.com', password: 'Manager@123', status: 'Active', mustChangePassword: false, assignedPropertyIds: ['prop_patna'] },
-    { id: cookId, ...base(), role: 'staff', ownerId: ownerProfileId, name: 'Cook 3', email: 'cook3@gmail.com', password: 'Cook@123', status: 'Active', mustChangePassword: false, assignedPropertyIds: ['prop_patna'] },
-    { id: guardId, ...base(), role: 'staff', ownerId: ownerProfileId, name: 'Ramu Guard', email: 'ramu@example.net', password: 'Staff@123', status: 'Active', mustChangePassword: false, assignedPropertyIds: ['prop_patna'] },
-    { id: studentId, ...base(), role: 'student', ownerId: ownerProfileId, name: 'Student 3', email: 'student3@gmail.com', password: 'Student@123', status: 'Active', mustChangePassword: false, propertyId: 'prop_patna' },
-    { id: parentId, ...base(), role: 'parent', ownerId: ownerProfileId, name: 'Parent 3', email: 'peter.m@example.com', password: 'Parent@123', status: 'Active', mustChangePassword: false, linkedStudentId: studentId }
+    { id: managerId, ...base(), role: 'manager', ownerId: ownerUserId, name: 'Manager 3', email: 'manager3@gmail.com', password: 'Manager@123', status: 'Active', mustChangePassword: false, assignedPropertyIds: ['prop_patna'] },
+    { id: cookId, ...base(), role: 'staff', ownerId: ownerUserId, name: 'Cook 3', email: 'cook3@gmail.com', password: 'Cook@123', status: 'Active', mustChangePassword: false, assignedPropertyIds: ['prop_patna'] },
+    { id: guardId, ...base(), role: 'staff', ownerId: ownerUserId, name: 'Ramu Guard', email: 'ramu@example.net', password: 'Staff@123', status: 'Active', mustChangePassword: false, assignedPropertyIds: ['prop_patna'] },
+    { id: studentId, ...base(), role: 'student', ownerId: ownerUserId, name: 'Student 3', email: 'student3@gmail.com', password: 'Student@123', status: 'Active', mustChangePassword: false, propertyId: 'prop_patna' },
+    { id: parentId, ...base(), role: 'parent', ownerId: ownerUserId, name: 'Parent 3', email: 'peter.m@example.com', password: 'Parent@123', status: 'Active', mustChangePassword: false, linkedStudentId: studentId }
   ];
 
   db.replaceAll(STORAGE_KEYS.USERS, users as any);
@@ -57,11 +57,11 @@ export function runSeed() {
   const ownerProfile = { id: ownerProfileId, ...base(), userId: ownerUserId, name: 'Owner 3', businessName: 'Owner3 Stays', email: 'owner@gmail.com', phone: '8888888888' };
   db.replaceAll(STORAGE_KEYS.OWNERS, [ownerProfile] as any);
 
-  const subs = [{ id: createId('sub'), ...base(), ownerId: ownerProfile.id, planId: 'plan_gold', status: 'Active' }];
+  const subs = [{ id: createId('sub'), ...base(), ownerId: ownerUserId, planId: 'plan_gold', status: 'Active' }];
   db.replaceAll(STORAGE_KEYS.SUBSCRIPTIONS, subs as any);
 
-  const propPatna = { id: 'prop_patna', ...base(), ownerId: ownerProfile.id, name: 'Owner3 PG Patna', city: 'Patna', bedsPlanned: 75 };
-  const propDelhi = { id: 'prop_delhi', ...base(), ownerId: ownerProfile.id, name: 'Owner3 PG Delhi', city: 'Delhi', bedsPlanned: 40 };
+  const propPatna = { id: 'prop_patna', ...base(), ownerId: ownerUserId, name: 'Owner3 PG Patna', city: 'Patna', bedsPlanned: 75 };
+  const propDelhi = { id: 'prop_delhi', ...base(), ownerId: ownerUserId, name: 'Owner3 PG Delhi', city: 'Delhi', bedsPlanned: 40 };
   db.replaceAll(STORAGE_KEYS.PROPERTIES, [propPatna, propDelhi] as any);
 
   const rooms = Array.from({length: 8}).map((_, i) => ({
@@ -105,6 +105,7 @@ export function runSeed() {
       id: studentId, 
       ...base(), 
       propertyId: 'prop_patna', 
+      ownerId: ownerUserId,
       roomId: rooms[2].id, 
       bedId: 'bed_303B',
       name: 'Student 3', 
@@ -121,9 +122,9 @@ export function runSeed() {
 
   // Added mock Staff
   db.replaceAll(STORAGE_KEYS.STAFF, [
-    { id: cookId, ...base(), propertyId: 'prop_patna', name: 'Cook 3', role: 'cook', phone: '9988776611', salary: 15000 },
-    { id: guardId, ...base(), propertyId: 'prop_patna', name: 'Ramu Guard', role: 'guard', phone: '9988776622', salary: 12000 },
-    { id: managerId, ...base(), propertyId: 'prop_patna', name: 'Manager 3', role: 'manager', phone: '9988776633', salary: 25000 }
+    { id: createId('stf'), ...base(), userId: cookId, ownerId: ownerUserId, staffType: 'cook', salary: 15000, shift: 'Morning', joinDate: now, permissions: {} },
+    { id: createId('stf'), ...base(), userId: guardId, ownerId: ownerUserId, staffType: 'guard', salary: 12000, shift: 'Night', joinDate: now, permissions: {} },
+    { id: createId('stf'), ...base(), userId: managerId, ownerId: ownerUserId, staffType: 'manager', salary: 25000, shift: 'Flexible', joinDate: now, permissions: { canOnboardStudent: true, canCollectCash: true, canAddExpense: true } }
   ] as any);
 
   // Added mock Visitors
@@ -143,6 +144,6 @@ export function runSeed() {
     { id: createId('log'), ...base(), actorId: superadminId, actorRole: 'superadmin', action: 'OWNER_CREATED', entity: 'owner', entityId: ownerProfileId, details: 'Created owner Owner 3' }
   ] as any);
 
-  localStorage.setItem(STORAGE_KEYS.IS_SEEDED, 'v2');
+  localStorage.setItem(STORAGE_KEYS.IS_SEEDED, 'v3');
   console.log('✅ LocalStorage Seeded with Demo Accounts');
 }
