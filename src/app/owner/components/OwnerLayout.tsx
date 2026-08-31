@@ -52,15 +52,22 @@ export function OwnerLayout({ children }: { children: React.ReactNode }) {
       />
       
       {/* Mobile Header */}
-      <div className="md:hidden flex items-center justify-between bg-[var(--bg-header)] p-4 border-b border-[var(--border)] shrink-0">
-        <div className="flex items-center gap-2 font-bold text-[var(--text-primary)]">
-          <Building className="text-[var(--primary)] w-6 h-6" />
-          <span>SmartPG Owner</span>
+      <div className="md:hidden flex items-center justify-between bg-[var(--bg-header)] p-3 border-b border-[var(--border)] shrink-0">
+        <div className="flex items-center gap-2">
+          <button onClick={() => setIsMobileMenuOpen(true)} className="text-[var(--text-primary)] p-1">
+            <Menu className="w-6 h-6" />
+          </button>
+          <div className="flex items-center gap-1 font-bold text-[var(--text-primary)]">
+            <Building className="text-[var(--primary)] w-5 h-5 hidden sm:block" />
+            <span className="hidden sm:block">SmartPG Owner</span>
+          </div>
         </div>
         <div className="flex items-center gap-2">
-          <ThemeToggle />
-          <button onClick={() => setIsMobileMenuOpen(true)} className="text-[var(--text-primary)] ml-2">
-            <Menu />
+          <div className="text-xs font-medium text-[var(--text-secondary)] max-w-[80px] truncate">
+            {user?.name || 'Owner'}
+          </div>
+          <button onClick={handleLogout} className="text-xs bg-[var(--danger-bg)] text-[var(--danger)] px-2 py-1.5 rounded-md font-bold flex items-center gap-1">
+            <LogOut className="w-3.5 h-3.5" />
           </button>
         </div>
       </div>

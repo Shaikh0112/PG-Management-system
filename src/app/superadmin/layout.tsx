@@ -51,7 +51,7 @@ function SuperAdminLayoutInner({ children, adminName, isMobileMenuOpen, setIsMob
           )}
 
 
-          <div className="hidden md:block text-sm text-[var(--text-secondary)]">
+          <div className="text-sm text-[var(--text-secondary)] max-w-[80px] truncate">
             Admin: <strong className="text-[var(--text-primary)]">{adminName}</strong>
           </div>
           
