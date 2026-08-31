@@ -73,20 +73,21 @@ export function runSeed() {
   db.replaceAll(STORAGE_KEYS.BEDS, beds as any);
 
   db.replaceAll(STORAGE_KEYS.INVOICES, [
-    { id: createId('inv'), ...base(), amount: 5000, status: 'Paid', studentId },
-    { id: createId('inv'), ...base(), amount: 5000, status: 'Pending', studentId }
+    { id: createId('inv'), ...base(), propertyId: 'prop_patna', amount: 5000, status: 'Paid', studentId, title: 'Rent - July 2026', dueDate: now },
+    { id: createId('inv'), ...base(), propertyId: 'prop_patna', amount: 5000, status: 'Pending', studentId, title: 'Rent - August 2026', dueDate: now }
   ] as any);
 
   db.replaceAll(STORAGE_KEYS.COMPLAINTS, [
-    { id: createId('cmp'), ...base(), propertyId: 'prop_patna', title: 'AC not working', status: 'Open' }
+    { id: createId('cmp'), ...base(), propertyId: 'prop_patna', studentId: studentId, studentName: 'James Rahul Singh', roomId: rooms[2].id, roomNumber: '303', category: 'maintenance', title: 'AC not working in Room 303', description: 'The AC is blowing hot air since yesterday.', status: 'Open', priority: 'High' },
+    { id: createId('cmp'), ...base(), propertyId: 'prop_patna', studentId: studentId, studentName: 'James Rahul Singh', roomId: rooms[2].id, roomNumber: '303', category: 'cleaning', title: 'Room cleaning missed', description: 'No one came to clean the room today.', status: 'Resolved', priority: 'Medium' }
   ] as any);
 
   db.replaceAll(STORAGE_KEYS.MENUS, [
-    { id: createId('mnu'), ...base(), propertyId: 'prop_patna', date: new Date().toISOString().split('T')[0], items: 'Dal, Roti, Rice' }
+    { id: createId('mnu'), ...base(), propertyId: 'prop_patna', date: new Date().toISOString().split('T')[0], items: 'Dal, Roti, Rice, Paneer Masala' }
   ] as any);
 
   db.replaceAll(STORAGE_KEYS.WALLETS, [
-    { id: createId('wal'), ...base(), studentId, balance: 1000 }
+    { id: createId('wal'), ...base(), studentId, balance: 1000, propertyId: 'prop_patna' }
   ] as any);
 
   db.replaceAll(STORAGE_KEYS.GATE_LOGS, [
@@ -95,7 +96,7 @@ export function runSeed() {
   ] as any);
 
   db.replaceAll(STORAGE_KEYS.ENQUIRIES, [
-    { id: createId('enq'), ...base(), propertyId: 'prop_patna', name: 'New Student', status: 'New' }
+    { id: createId('enq'), ...base(), propertyId: 'prop_patna', name: 'New Student', status: 'New', phone: '9876543211', email: 'new@example.com' }
   ] as any);
 
   // Added mock Students so manager dashboards aren't empty
@@ -110,17 +111,19 @@ export function runSeed() {
       phone: '9876543210', 
       email: 'james.b@example.com', 
       status: 'active', 
-      duesAmount: 1500, 
-      rentAmount: 8000, 
+      duesAmount: 5000, 
+      rentAmount: 5000, 
       securityDeposit: 8000,
-      checkInDate: now
+      checkInDate: now,
+      hasMessFacility: true
     }
   ] as any);
 
   // Added mock Staff
   db.replaceAll(STORAGE_KEYS.STAFF, [
-    { id: cookId, ...base(), propertyId: 'prop_patna', name: 'Ivan Cook', role: 'cook', phone: '9988776611' },
-    { id: guardId, ...base(), propertyId: 'prop_patna', name: 'Ramu Guard', role: 'guard', phone: '9988776622' }
+    { id: cookId, ...base(), propertyId: 'prop_patna', name: 'Ivan Cook', role: 'cook', phone: '9988776611', salary: 15000 },
+    { id: guardId, ...base(), propertyId: 'prop_patna', name: 'Ramu Guard', role: 'guard', phone: '9988776622', salary: 12000 },
+    { id: managerId, ...base(), propertyId: 'prop_patna', name: 'Ramesh Manager', role: 'manager', phone: '9988776633', salary: 25000 }
   ] as any);
 
   // Added mock Visitors
@@ -131,12 +134,13 @@ export function runSeed() {
 
   // Added mock Attendance
   db.replaceAll(STORAGE_KEYS.ATTENDANCE, [
-    { id: createId('att'), ...base(), propertyId: 'prop_patna', staffId: cookId, date: now.split('T')[0], status: 'Present' }
+    { id: createId('att'), ...base(), propertyId: 'prop_patna', staffId: cookId, staffName: 'Ivan Cook', role: 'cook', date: now.split('T')[0], status: 'Present' },
+    { id: createId('att'), ...base(), propertyId: 'prop_patna', staffId: managerId, staffName: 'Ramesh Manager', role: 'manager', date: now.split('T')[0], status: 'Present' }
   ] as any);
 
   db.replaceAll(STORAGE_KEYS.AUDIT_LOGS, [
-    { id: createId('log'), ...base(), actorId: superadminId, actorRole: 'superadmin', action: 'SYSTEM_SEEDED', entity: 'system', entityId: 'sys' },
-    { id: createId('log'), ...base(), actorId: superadminId, actorRole: 'superadmin', action: 'OWNER_CREATED', entity: 'owner', entityId: ownerProfileId }
+    { id: createId('log'), ...base(), actorId: superadminId, actorRole: 'superadmin', action: 'SYSTEM_SEEDED', entity: 'system', entityId: 'sys', details: 'System seeded with demo accounts' },
+    { id: createId('log'), ...base(), actorId: superadminId, actorRole: 'superadmin', action: 'OWNER_CREATED', entity: 'owner', entityId: ownerProfileId, details: 'Created owner Rajesh Sharma' }
   ] as any);
 
   localStorage.setItem(STORAGE_KEYS.IS_SEEDED, 'true');
