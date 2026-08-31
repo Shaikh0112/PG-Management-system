@@ -24,7 +24,7 @@ export default function LandingPage() {
             <Link href="/owner-request" className="w-full sm:w-auto bg-[var(--primary)] text-white px-8 py-4 rounded-xl font-bold hover:bg-indigo-700 transition-all shadow-lg hover:shadow-indigo-500/25 hover:-translate-y-1">
               Start as PG Owner
             </Link>
-            <Link href="/vacant/sharma-pg-patna" className="w-full sm:w-auto bg-[var(--bg-card)] text-[var(--text-primary)] border border-[var(--border)] px-8 py-4 rounded-xl font-bold hover:bg-[var(--bg-page)] transition-all shadow-sm">
+            <Link href="/pg/sharma-pg-patna" className="w-full sm:w-auto bg-[var(--bg-card)] text-[var(--text-primary)] border border-[var(--border)] px-8 py-4 rounded-xl font-bold hover:bg-[var(--bg-page)] transition-all shadow-sm">
               View Vacant Beds
             </Link>
           </div>
