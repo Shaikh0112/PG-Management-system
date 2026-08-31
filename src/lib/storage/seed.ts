@@ -136,7 +136,7 @@ export function runSeed() {
 
   db.replaceAll(STORAGE_KEYS.AUDIT_LOGS, [
     { id: createId('log'), ...base(), actorId: superadminId, actorRole: 'superadmin', action: 'SYSTEM_SEEDED', entity: 'system', entityId: 'sys' },
-    { id: createId('log'), ...base(), actorId: superadminId, actorRole: 'superadmin', action: 'OWNER_CREATED', entity: 'owner', entityId: ownerId }
+    { id: createId('log'), ...base(), actorId: superadminId, actorRole: 'superadmin', action: 'OWNER_CREATED', entity: 'owner', entityId: ownerProfileId }
   ] as any);
 
   localStorage.setItem(STORAGE_KEYS.IS_SEEDED, 'true');
