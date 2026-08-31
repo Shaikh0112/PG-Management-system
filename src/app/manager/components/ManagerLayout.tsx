@@ -61,7 +61,7 @@ export function ManagerLayout({ children }: { children: React.ReactNode }) {
         onSuccess={() => setForcePasswordChange(false)} 
       />
       {/* Mobile Header */}
-      <div className="md:hidden flex items-center justify-between bg-[var(--bg-header)] p-3 border-b border-[var(--border)] shrink-0">
+      <div className="md:hidden flex items-center justify-between bg-[var(--bg-header)]/90 backdrop-blur-md p-3 border-b border-[var(--border)] shrink-0 sticky top-0 z-50">
         <div className="flex items-center gap-2">
           <button onClick={() => setIsMobileMenuOpen(true)} className="text-[var(--text-primary)] p-1">
             <Menu className="w-6 h-6" />
