@@ -8,11 +8,11 @@ import Link from 'next/link';
 import { ThemeToggle } from '@/components/public/ThemeToggle';
 
 const DEMO_ACCOUNTS = [
-  { id: 'superadmin', label: 'SuperAdmin', email: 'leo.a@example.org', password: 'Super@123', icon: Shield },
-  { id: 'owner', label: 'Owner', email: 'peter.m@example.com', password: 'Owner@123', icon: Briefcase },
-  { id: 'manager', label: 'Manager', email: 'tom.h@example.org', password: 'Manager@123', icon: Users },
-  { id: 'cook', label: 'Cook', email: 'ivan.p@example.net', password: 'Staff@123', icon: Utensils },
-  { id: 'student', label: 'Student', email: 'james.b@example.com', password: 'Student@123', icon: UserCheck }
+  { id: 'superadmin', label: 'SuperAdmin', email: 'superadmin@gmail.com', password: 'Super@123', icon: Shield },
+  { id: 'owner', label: 'Owner', email: 'owner@gmail.com', password: 'Owner3@123', icon: Briefcase },
+  { id: 'manager', label: 'Manager', email: 'manager3@gmail.com', password: 'Manager@123', icon: Users },
+  { id: 'cook', label: 'Cook', email: 'cook3@gmail.com', password: 'Cook@123', icon: Utensils },
+  { id: 'student', label: 'Student', email: 'student3@gmail.com', password: 'Student@123', icon: UserCheck }
 ];
 
 export default function UnifiedLogin() {

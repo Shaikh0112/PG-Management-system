@@ -31,13 +31,13 @@ export function runSeed() {
   const parentId = createId('usr');
 
   const users = [
-    { id: superadminId, ...base(), role: 'superadmin', name: 'Leo Admin', email: 'leo.a@example.org', password: 'Super@123', status: 'Active', mustChangePassword: false },
-    { id: ownerUserId, ...base(), role: 'owner', ownerId: ownerProfileId, name: 'Rajesh Sharma', email: 'peter.m@example.com', password: 'Owner@123', status: 'Active', mustChangePassword: false },
-    { id: managerId, ...base(), role: 'manager', ownerId: ownerProfileId, name: 'Ramesh Manager', email: 'tom.h@example.org', password: 'Manager@123', status: 'Active', mustChangePassword: false, assignedPropertyIds: ['prop_patna'] },
-    { id: cookId, ...base(), role: 'staff', ownerId: ownerProfileId, name: 'Ivan Cook', email: 'ivan.p@example.net', password: 'Staff@123', status: 'Active', mustChangePassword: false, assignedPropertyIds: ['prop_patna'] },
+    { id: superadminId, ...base(), role: 'superadmin', name: 'Super Admin', email: 'superadmin@gmail.com', password: 'Super@123', status: 'Active', mustChangePassword: false },
+    { id: ownerUserId, ...base(), role: 'owner', ownerId: ownerProfileId, name: 'Owner 3', email: 'owner@gmail.com', password: 'Owner3@123', status: 'Active', mustChangePassword: false },
+    { id: managerId, ...base(), role: 'manager', ownerId: ownerProfileId, name: 'Manager 3', email: 'manager3@gmail.com', password: 'Manager@123', status: 'Active', mustChangePassword: false, assignedPropertyIds: ['prop_patna'] },
+    { id: cookId, ...base(), role: 'staff', ownerId: ownerProfileId, name: 'Cook 3', email: 'cook3@gmail.com', password: 'Cook@123', status: 'Active', mustChangePassword: false, assignedPropertyIds: ['prop_patna'] },
     { id: guardId, ...base(), role: 'staff', ownerId: ownerProfileId, name: 'Ramu Guard', email: 'ramu@example.net', password: 'Staff@123', status: 'Active', mustChangePassword: false, assignedPropertyIds: ['prop_patna'] },
-    { id: studentId, ...base(), role: 'student', ownerId: ownerProfileId, name: 'James Rahul Singh', email: 'james.b@example.com', password: 'Student@123', status: 'Active', mustChangePassword: false, propertyId: 'prop_patna' },
-    { id: parentId, ...base(), role: 'parent', ownerId: ownerProfileId, name: 'Peter Parent', email: 'peter.m@example.com', password: 'Parent@123', status: 'Active', mustChangePassword: false, linkedStudentId: studentId }
+    { id: studentId, ...base(), role: 'student', ownerId: ownerProfileId, name: 'Student 3', email: 'student3@gmail.com', password: 'Student@123', status: 'Active', mustChangePassword: false, propertyId: 'prop_patna' },
+    { id: parentId, ...base(), role: 'parent', ownerId: ownerProfileId, name: 'Parent 3', email: 'peter.m@example.com', password: 'Parent@123', status: 'Active', mustChangePassword: false, linkedStudentId: studentId }
   ];
 
   db.replaceAll(STORAGE_KEYS.USERS, users as any);
@@ -54,14 +54,14 @@ export function runSeed() {
   ];
   db.replaceAll(STORAGE_KEYS.OWNER_REQUESTS, requests as any);
 
-  const ownerProfile = { id: ownerProfileId, ...base(), userId: ownerUserId, name: 'Rajesh Sharma', businessName: 'Sharma Stays', email: 'peter.m@example.com', phone: '8888888888' };
+  const ownerProfile = { id: ownerProfileId, ...base(), userId: ownerUserId, name: 'Owner 3', businessName: 'Owner3 Stays', email: 'owner@gmail.com', phone: '8888888888' };
   db.replaceAll(STORAGE_KEYS.OWNERS, [ownerProfile] as any);
 
   const subs = [{ id: createId('sub'), ...base(), ownerId: ownerProfile.id, planId: 'plan_gold', status: 'Active' }];
   db.replaceAll(STORAGE_KEYS.SUBSCRIPTIONS, subs as any);
 
-  const propPatna = { id: 'prop_patna', ...base(), ownerId: ownerProfile.id, name: 'Sharma PG Patna', city: 'Patna', bedsPlanned: 75 };
-  const propDelhi = { id: 'prop_delhi', ...base(), ownerId: ownerProfile.id, name: 'Sharma PG Delhi', city: 'Delhi', bedsPlanned: 40 };
+  const propPatna = { id: 'prop_patna', ...base(), ownerId: ownerProfile.id, name: 'Owner3 PG Patna', city: 'Patna', bedsPlanned: 75 };
+  const propDelhi = { id: 'prop_delhi', ...base(), ownerId: ownerProfile.id, name: 'Owner3 PG Delhi', city: 'Delhi', bedsPlanned: 40 };
   db.replaceAll(STORAGE_KEYS.PROPERTIES, [propPatna, propDelhi] as any);
 
   const rooms = Array.from({length: 8}).map((_, i) => ({
@@ -78,8 +78,8 @@ export function runSeed() {
   ] as any);
 
   db.replaceAll(STORAGE_KEYS.COMPLAINTS, [
-    { id: createId('cmp'), ...base(), propertyId: 'prop_patna', studentId: studentId, studentName: 'James Rahul Singh', roomId: rooms[2].id, roomNumber: '303', category: 'maintenance', title: 'AC not working in Room 303', description: 'The AC is blowing hot air since yesterday.', status: 'Open', priority: 'High' },
-    { id: createId('cmp'), ...base(), propertyId: 'prop_patna', studentId: studentId, studentName: 'James Rahul Singh', roomId: rooms[2].id, roomNumber: '303', category: 'cleaning', title: 'Room cleaning missed', description: 'No one came to clean the room today.', status: 'Resolved', priority: 'Medium' }
+    { id: createId('cmp'), ...base(), propertyId: 'prop_patna', studentId: studentId, studentName: 'Student 3', roomId: rooms[2].id, roomNumber: '303', category: 'maintenance', title: 'AC not working in Room 303', description: 'The AC is blowing hot air since yesterday.', status: 'Open', priority: 'High' },
+    { id: createId('cmp'), ...base(), propertyId: 'prop_patna', studentId: studentId, studentName: 'Student 3', roomId: rooms[2].id, roomNumber: '303', category: 'cleaning', title: 'Room cleaning missed', description: 'No one came to clean the room today.', status: 'Resolved', priority: 'Medium' }
   ] as any);
 
   db.replaceAll(STORAGE_KEYS.MENUS, [
@@ -107,9 +107,9 @@ export function runSeed() {
       propertyId: 'prop_patna', 
       roomId: rooms[2].id, 
       bedId: 'bed_303B',
-      name: 'James Rahul Singh', 
+      name: 'Student 3', 
       phone: '9876543210', 
-      email: 'james.b@example.com', 
+      email: 'student3@gmail.com', 
       status: 'active', 
       duesAmount: 5000, 
       rentAmount: 5000, 
@@ -121,26 +121,26 @@ export function runSeed() {
 
   // Added mock Staff
   db.replaceAll(STORAGE_KEYS.STAFF, [
-    { id: cookId, ...base(), propertyId: 'prop_patna', name: 'Ivan Cook', role: 'cook', phone: '9988776611', salary: 15000 },
+    { id: cookId, ...base(), propertyId: 'prop_patna', name: 'Cook 3', role: 'cook', phone: '9988776611', salary: 15000 },
     { id: guardId, ...base(), propertyId: 'prop_patna', name: 'Ramu Guard', role: 'guard', phone: '9988776622', salary: 12000 },
-    { id: managerId, ...base(), propertyId: 'prop_patna', name: 'Ramesh Manager', role: 'manager', phone: '9988776633', salary: 25000 }
+    { id: managerId, ...base(), propertyId: 'prop_patna', name: 'Manager 3', role: 'manager', phone: '9988776633', salary: 25000 }
   ] as any);
 
   // Added mock Visitors
   db.replaceAll('spg_visitors', [
-    { id: createId('vis'), ...base(), propertyId: 'prop_patna', studentId, studentName: 'James Rahul Singh', name: 'Suresh', phone: '9988776655', relation: 'Father', status: 'pending' },
-    { id: createId('vis'), ...base(), propertyId: 'prop_patna', studentId, studentName: 'James Rahul Singh', name: 'Amazon', phone: '9123456789', relation: 'Delivery', status: 'checked_in' }
+    { id: createId('vis'), ...base(), propertyId: 'prop_patna', studentId, studentName: 'Student 3', name: 'Suresh', phone: '9988776655', relation: 'Father', status: 'pending' },
+    { id: createId('vis'), ...base(), propertyId: 'prop_patna', studentId, studentName: 'Student 3', name: 'Amazon', phone: '9123456789', relation: 'Delivery', status: 'checked_in' }
   ] as any);
 
   // Added mock Attendance
   db.replaceAll(STORAGE_KEYS.ATTENDANCE, [
-    { id: createId('att'), ...base(), propertyId: 'prop_patna', staffId: cookId, staffName: 'Ivan Cook', role: 'cook', date: now.split('T')[0], status: 'Present' },
-    { id: createId('att'), ...base(), propertyId: 'prop_patna', staffId: managerId, staffName: 'Ramesh Manager', role: 'manager', date: now.split('T')[0], status: 'Present' }
+    { id: createId('att'), ...base(), propertyId: 'prop_patna', staffId: cookId, staffName: 'Cook 3', role: 'cook', date: now.split('T')[0], status: 'Present' },
+    { id: createId('att'), ...base(), propertyId: 'prop_patna', staffId: managerId, staffName: 'Manager 3', role: 'manager', date: now.split('T')[0], status: 'Present' }
   ] as any);
 
   db.replaceAll(STORAGE_KEYS.AUDIT_LOGS, [
     { id: createId('log'), ...base(), actorId: superadminId, actorRole: 'superadmin', action: 'SYSTEM_SEEDED', entity: 'system', entityId: 'sys', details: 'System seeded with demo accounts' },
-    { id: createId('log'), ...base(), actorId: superadminId, actorRole: 'superadmin', action: 'OWNER_CREATED', entity: 'owner', entityId: ownerProfileId, details: 'Created owner Rajesh Sharma' }
+    { id: createId('log'), ...base(), actorId: superadminId, actorRole: 'superadmin', action: 'OWNER_CREATED', entity: 'owner', entityId: ownerProfileId, details: 'Created owner Owner 3' }
   ] as any);
 
   localStorage.setItem(STORAGE_KEYS.IS_SEEDED, 'true');
