@@ -4,7 +4,7 @@ import { createId } from '@/lib/utils/id';
 import { BaseEntity, Role } from '../types';
 import { User } from '@/lib/types/models';
 
-export type StaffRoleType = 'manager' | 'cook';
+export type StaffRoleType = 'manager' | 'cook' | 'guard' | 'cleaner';
 
 export interface StaffPermissions {
   canEditRent: boolean;

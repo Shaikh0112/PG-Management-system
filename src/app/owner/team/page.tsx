@@ -10,12 +10,16 @@ import { TeamMember, StaffRoleType } from '@/app/owner/lib/api/team';
 
 const ROLE_ICONS: Record<StaffRoleType, any> = {
   manager: ShieldCheck,
-  cook: Utensils
+  cook: Utensils,
+  guard: Shield,
+  cleaner: Sparkles
 };
 
 const ROLE_COLORS: Record<StaffRoleType, string> = {
   manager: 'text-[var(--primary)] bg-[var(--primary-subtle)] border-[var(--primary)]',
-  cook: 'text-orange-500 bg-orange-500/10 border-orange-500/20'
+  cook: 'text-orange-500 bg-orange-500/10 border-orange-500/20',
+  guard: 'text-blue-500 bg-blue-500/10 border-blue-500/20',
+  cleaner: 'text-teal-500 bg-teal-500/10 border-teal-500/20'
 };
 
 export default function OwnerTeamPage() {
@@ -97,6 +101,8 @@ export default function OwnerTeamPage() {
             <option value="all">All Roles</option>
             <option value="manager">Managers</option>
             <option value="cook">Cooks</option>
+            <option value="guard">Guards</option>
+            <option value="cleaner">Cleaners</option>
           </select>
         </div>
       </div>
