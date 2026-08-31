@@ -1,7 +1,7 @@
 import { db } from '@/lib/storage/db';
 import { STORAGE_KEYS } from '@/lib/storage/keys';
 import { createId } from '@/lib/utils/id';
-import { BaseEntity } from '../types';
+import { BaseEntity } from '@/lib/types';
 
 export type EnquiryStatus = 'new' | 'contacted' | 'visited' | 'interested' | 'booked' | 'lost' | 'converted';
 
@@ -26,17 +26,17 @@ export const managerEnquiriesApi = {
     // Auto-seed to ensure page isn't empty for demo
     const existing = db.getAll<Enquiry>(STORAGE_KEYS.ENQUIRIES).filter(e => e.propertyId === propertyId);
     if (existing.length === 0) {
-      db.create(STORAGE_KEYS.ENQUIRIES, {
+      db.insert(STORAGE_KEYS.ENQUIRIES, {
         id: createId(), propertyId, name: 'Vikram Singh', phone: '9988776655', email: 'vikram@example.com',
-        status: 'new', expectedMoveIn: new Date().toISOString(), budget: 9000, notes: 'Looking for a single room.', isDeleted: false, createdAt: new Date().toISOString()
+        status: 'new', expectedMoveIn: new Date().toISOString(), budget: 9000, notes: 'Looking for a single room.', isDeleted: false, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString(), createdBy: 'system', updatedBy: 'system'
       });
-      db.create(STORAGE_KEYS.ENQUIRIES, {
+      db.insert(STORAGE_KEYS.ENQUIRIES, {
         id: createId(), propertyId, name: 'Priya Verma', phone: '9123456789',
-        status: 'contacted', budget: 7000, isDeleted: false, createdAt: new Date(Date.now() - 86400000).toISOString()
+        status: 'contacted', budget: 7000, isDeleted: false, createdAt: new Date(Date.now() - 86400000).toISOString(), updatedAt: new Date().toISOString(), createdBy: 'system', updatedBy: 'system'
       });
-      db.create(STORAGE_KEYS.ENQUIRIES, {
+      db.insert(STORAGE_KEYS.ENQUIRIES, {
         id: createId(), propertyId, name: 'Rohan Gupta', phone: '9876543210',
-        status: 'visited', isDeleted: false, createdAt: new Date(Date.now() - 172800000).toISOString()
+        status: 'visited', isDeleted: false, createdAt: new Date(Date.now() - 172800000).toISOString(), updatedAt: new Date().toISOString(), createdBy: 'system', updatedBy: 'system'
       });
     }
 

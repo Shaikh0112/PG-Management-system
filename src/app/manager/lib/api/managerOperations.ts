@@ -32,7 +32,20 @@ export const managerOperationsApi = {
   // Attendance (Students)
   listStudents: (propertyId: string) => {
     if (!propertyId) return [];
-    return db.getAll<any>(STORAGE_KEYS.STUDENTS).filter(s => s.propertyId === propertyId && s.status === 'active' && !s.isDeleted);
+    const profiles = db.getAll<any>(STORAGE_KEYS.STUDENTS).filter(s => s.propertyId === propertyId && s.status === 'active' && !s.isDeleted);
+    const users = db.getAll<any>(STORAGE_KEYS.USERS);
+    const rooms = db.getAll<any>(STORAGE_KEYS.ROOMS);
+    
+    return profiles.map(p => {
+      const user = users.find(u => u.id === p.userId);
+      const room = rooms.find(r => r.id === p.roomId);
+      return {
+        ...p,
+        name: user?.name || 'Unknown',
+        phone: user?.phone || '',
+        roomNumber: room?.number || room?.roomNumber || ''
+      };
+    });
   },
   listStudentAttendanceToday: (propertyId: string) => {
     const today = new Date().toISOString().split('T')[0];

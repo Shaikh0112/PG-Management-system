@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { api } from '@/lib/api';
 import { useOwnerPropertyContext } from '@/app/owner/components/OwnerPropertyContext';
 import { IndianRupee } from 'lucide-react';
+import { Pagination } from '@/components/shared/Pagination';
 
 export default function OwnerMaintenancePage() {
   const { properties } = useOwnerPropertyContext();
@@ -28,6 +29,17 @@ export default function OwnerMaintenancePage() {
     const resolved = allComplaints.filter(c => c.status === 'Resolved').sort((a, b) => new Date(b.resolvedAt || b.updatedAt).getTime() - new Date(a.resolvedAt || a.updatedAt).getTime());
     setResolvedComplaints(resolved);
   }, [filterPropertyId, properties]);
+
+  // Pagination
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [filterPropertyId]);
+
+  const totalPages = Math.ceil(resolvedComplaints.length / itemsPerPage);
+  const paginatedData = resolvedComplaints.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
   return (
     <div className="space-y-6 pb-20">
@@ -60,7 +72,7 @@ export default function OwnerMaintenancePage() {
             <div className="col-span-3">Resolved Date</div>
           </div>
           
-          {resolvedComplaints.map(c => (
+          {paginatedData.map(c => (
             <div key={c.id} className="grid grid-cols-1 md:grid-cols-12 gap-2 md:gap-4 items-center p-4 rounded-xl border border-[var(--border)] hover:bg-[var(--bg-input)] transition-colors">
               <div className="md:col-span-2 flex justify-between md:block">
                 <span className="md:hidden text-xs font-bold text-[var(--text-secondary)] uppercase">PG & Room</span>
@@ -87,6 +99,10 @@ export default function OwnerMaintenancePage() {
               </div>
             </div>
           ))}
+
+          {totalPages > 1 && (
+            <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={setCurrentPage} />
+          )}
 
           {resolvedComplaints.length === 0 && (
             <div className="text-center p-12 text-[var(--text-secondary)]">

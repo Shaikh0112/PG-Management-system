@@ -26,7 +26,7 @@ export default function StaffDashboard() {
     if (staffRole === 'cook' && propertyId) {
       setMenu(api.food.getByProperty(propertyId));
       setStockItems(api.stock.getByProperty(propertyId));
-      setRequests(api.stockRequests.getByProperty(propertyId).filter(r => r.status !== 'resolved'));
+      setRequests(api.stockRequests.getByProperty(propertyId).filter(r => r.status !== 'verified'));
     }
   };
 
@@ -34,15 +34,15 @@ export default function StaffDashboard() {
     loadData();
   }, [staffRole, propertyId]);
 
-  const handleNotifyManager = (item: StockItem, requestType: 'low_stock' | 'expiry' = 'low_stock') => {
+  const handleNotifyManager = (item: StockItem) => {
     const user = getSession();
     if (!user) return;
     
     api.stockRequests.create({
       propertyId: propertyId!,
-      stockItemId: item.id,
       itemName: item.name,
-      requestType,
+      quantityRequested: item.lowStockThreshold && item.lowStockThreshold > 0 ? item.lowStockThreshold * 2 : 10, // reasonable default request
+      unit: item.unit,
       requestedBy: user.id
     });
     loadData();
@@ -50,7 +50,9 @@ export default function StaffDashboard() {
 
   const handleResolveRequest = (req: StockRequest) => {
     // Usually they should update the stock amount first, but let's navigate to stock page or just resolve it
-    api.stockRequests.resolve(req.id);
+    if (req.status === 'purchased') {
+      api.stockRequests.verifyReceipt(req.id);
+    }
     router.push('/staff/stock');
   };
 
@@ -129,7 +131,7 @@ export default function StaffDashboard() {
             <h3 className="font-bold text-[var(--danger)]">Expiry Alert!</h3>
             <div className="flex flex-col gap-2">
               {expiryAlerts.map(i => {
-                const activeReq = requests.find(r => r.stockItemId === i.id && r.requestType === 'expiry');
+                const activeReq = requests.find(r => r.itemName === i.name);
                 const diffDays = Math.ceil((new Date(i.expiryDate!).getTime() - new Date().setHours(0,0,0,0)) / (1000 * 60 * 60 * 24));
                 const statusText = diffDays < 0 ? 'is EXPIRED!' : `expires in ${diffDays} days!`;
                 
@@ -139,12 +141,12 @@ export default function StaffDashboard() {
                       <strong>{i.name}</strong> {statusText}
                     </div>
                     {!activeReq ? (
-                      <button onClick={() => handleNotifyManager(i, 'expiry')} className="bg-[var(--danger)] text-white px-3 py-1.5 rounded text-xs font-bold hover:bg-[var(--danger-hover)]">
+                      <button onClick={() => handleNotifyManager(i)} className="bg-[var(--danger)] text-white px-3 py-1.5 rounded text-xs font-bold hover:bg-[var(--danger-hover)]">
                         Request Fresh Stock
                       </button>
                     ) : (
                       <span className="text-xs font-bold px-2 py-1 rounded bg-[rgba(239,68,68,0.1)] uppercase">
-                        {activeReq.status.replace('_', ' ')}
+                        {activeReq.status}
                       </span>
                     )}
                   </div>
@@ -163,19 +165,19 @@ export default function StaffDashboard() {
             <h3 className="font-bold text-[var(--danger)]">Low Stock Alert!</h3>
             <div className="flex flex-col gap-2">
               {lowStockAlerts.map(i => {
-                const activeReq = requests.find(r => r.stockItemId === i.id && (r.requestType === 'low_stock' || !r.requestType));
+                const activeReq = requests.find(r => r.itemName === i.name);
                 return (
                   <div key={i.id} className="bg-white dark:bg-black/20 border border-[rgba(239,68,68,0.2)] text-[var(--danger)] text-sm rounded-lg p-3 flex items-center justify-between">
                     <div>
                       <strong>{i.name}</strong> is low ({i.quantity} {i.unit} left).
                     </div>
                     {!activeReq ? (
-                      <button onClick={() => handleNotifyManager(i, 'low_stock')} className="bg-[var(--danger)] text-white px-3 py-1.5 rounded text-xs font-bold hover:bg-[var(--danger-hover)]">
+                      <button onClick={() => handleNotifyManager(i)} className="bg-[var(--danger)] text-white px-3 py-1.5 rounded text-xs font-bold hover:bg-[var(--danger-hover)]">
                         Notify Manager
                       </button>
                     ) : (
                       <span className="text-xs font-bold px-2 py-1 rounded bg-[rgba(239,68,68,0.1)] uppercase">
-                        {activeReq.status.replace('_', ' ')}
+                        {activeReq.status}
                       </span>
                     )}
                   </div>
@@ -199,12 +201,12 @@ export default function StaffDashboard() {
                   <div className="flex items-center gap-2 mb-1">
                     <p className="font-bold text-[var(--text-primary)] text-sm">{req.itemName}</p>
                     <span className="text-[10px] bg-[rgba(99,102,241,0.1)] text-[var(--primary)] px-2 py-0.5 rounded-full font-bold uppercase">
-                      {req.requestType === 'expiry' ? 'Replacement' : 'Refill'}
+                      Stock Request
                     </span>
                   </div>
-                  <p className="text-xs text-[var(--text-secondary)]">Status: <span className="uppercase font-bold">{req.status.replace('_', ' ')}</span></p>
+                  <p className="text-xs text-[var(--text-secondary)]">Status: <span className="uppercase font-bold">{req.status}</span></p>
                 </div>
-                {req.status === 'refilled' && (
+                {req.status === 'purchased' && (
                   <button onClick={() => handleResolveRequest(req)} className="bg-[var(--success)] text-white px-4 py-2 rounded text-xs font-bold hover:bg-[var(--success-hover)]">
                     Update Stock
                   </button>

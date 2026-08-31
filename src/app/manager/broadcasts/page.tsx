@@ -5,6 +5,7 @@ import { api } from '@/lib/api';
 import { useManagerPropertyContext } from '@/app/manager/components/ManagerPropertyContext';
 import { Radio, Users, Building, AlertTriangle } from 'lucide-react';
 import { getSession } from '@/lib/auth/session';
+import { Pagination } from '@/components/shared/Pagination';
 
 export default function ManagerBroadcastsPage() {
   const { selectedPropertyId, loading: ctxLoading } = useManagerPropertyContext();
@@ -22,6 +23,17 @@ export default function ManagerBroadcastsPage() {
   useEffect(() => {
     loadData();
   }, [selectedPropertyId, ctxLoading]);
+
+  // Pagination
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [selectedPropertyId]);
+
+  const totalPages = Math.ceil(broadcasts.length / itemsPerPage);
+  const paginatedData = broadcasts.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
   const handleSend = (e: React.FormEvent) => {
     e.preventDefault();
@@ -85,7 +97,7 @@ export default function ManagerBroadcastsPage() {
         </div>
 
         <div className="space-y-4">
-          {broadcasts.map(b => (
+          {paginatedData.map(b => (
             <div key={b.id} className="bg-[var(--bg-card)] border border-[var(--border)] p-5 rounded-[var(--radius-lg,12px)]">
               <div className="flex justify-between items-start mb-2">
                 <h3 className="font-bold text-[var(--text-primary)]">{b.title}</h3>
@@ -103,6 +115,11 @@ export default function ManagerBroadcastsPage() {
           {broadcasts.length === 0 && (
             <div className="text-center p-8 text-[var(--text-secondary)] bg-[var(--bg-card)] rounded-[var(--radius-lg,12px)] border border-[var(--border)]">
               No previous broadcasts.
+            </div>
+          )}
+          {totalPages > 1 && (
+            <div className="mt-4">
+              <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={setCurrentPage} />
             </div>
           )}
         </div>

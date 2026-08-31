@@ -2,7 +2,7 @@
 import { db } from '@/lib/storage/db';
 import { STORAGE_KEYS } from '@/lib/storage/keys';
 import { createId } from '@/lib/utils/id';
-import { BaseEntity, User } from '../types';
+import { BaseEntity, User } from '@/lib/types';
 
 export interface StudentProfile extends BaseEntity {
   userId: string;
@@ -24,6 +24,7 @@ export interface StudentProfile extends BaseEntity {
   pendingReferralRewards?: number;
   aadharNumber?: string;
   panNumber?: string;
+  discountApplied?: boolean;
 }
 
 export interface StudentMember {

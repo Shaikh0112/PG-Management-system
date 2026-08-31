@@ -1,7 +1,7 @@
 import { db } from '@/lib/storage/db';
 import { STORAGE_KEYS } from '@/lib/storage/keys';
 import { createId } from '@/lib/utils/id';
-import { BaseEntity } from '../types';
+import { BaseEntity } from '@/lib/types';
 import { plansApi } from '@/app/superadmin/lib/api/plans';
 
 export interface Property extends BaseEntity {

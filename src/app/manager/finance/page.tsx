@@ -6,6 +6,7 @@ import { useManagerPropertyContext } from '@/app/manager/components/ManagerPrope
 import { IndianRupee, CheckCircle, Receipt, Bell, User as UserIcon, Calendar, PieChart } from 'lucide-react';
 import { getSession } from '@/lib/auth/session';
 import { Invoice } from '@/app/owner/lib/api/finance';
+import { Pagination } from '@/components/shared/Pagination';
 
 export default function ManagerFinancePage() {
   const { selectedPropertyId, loading: ctxLoading } = useManagerPropertyContext();
@@ -68,6 +69,17 @@ export default function ManagerFinancePage() {
     return inv.status.toLowerCase() !== 'paid'; // pending or overdue
   });
 
+  // Pagination
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [filter, selectedPropertyId]);
+
+  const totalPages = Math.ceil(filteredInvoices.length / itemsPerPage);
+  const paginatedData = filteredInvoices.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+
   return (
     <div className="space-y-6 pb-20 max-w-6xl mx-auto">
       <div>
@@ -122,18 +134,18 @@ export default function ManagerFinancePage() {
 
         <div className="overflow-x-auto">
           <table className="w-full text-left text-sm whitespace-nowrap">
-            <thead className="bg-[rgba(99,102,241,0.02)] border-b border-[var(--border)] text-[var(--text-secondary)]">
+            <thead className="bg-[var(--bg-card)] border-b border-[var(--border)] text-[var(--text-secondary)] sticky top-0 z-10 shadow-sm shadow-black/5">
               <tr>
-                <th className="p-4 font-bold tracking-wide">Student</th>
-                <th className="p-4 font-bold tracking-wide">Month</th>
-                <th className="p-4 font-bold tracking-wide">Due Date</th>
-                <th className="p-4 font-bold tracking-wide">Amount</th>
-                <th className="p-4 font-bold tracking-wide">Status</th>
-                <th className="p-4 font-bold tracking-wide text-right">Action</th>
+                <th className="p-4 font-semibold uppercase tracking-wider text-[11px]">Student</th>
+                <th className="p-4 font-semibold uppercase tracking-wider text-[11px]">Month</th>
+                <th className="p-4 font-semibold uppercase tracking-wider text-[11px]">Due Date</th>
+                <th className="p-4 font-semibold uppercase tracking-wider text-[11px]">Amount</th>
+                <th className="p-4 font-semibold uppercase tracking-wider text-[11px]">Status</th>
+                <th className="p-4 font-semibold uppercase tracking-wider text-[11px] text-right">Action</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-[var(--border)]">
-              {filteredInvoices.map(inv => (
+              {paginatedData.map(inv => (
                 <tr key={inv.id} className="hover:bg-[var(--bg-page)] transition-colors">
                   <td className="p-4">
                     <div className="flex items-center gap-2">
@@ -192,7 +204,7 @@ export default function ManagerFinancePage() {
                   </td>
                 </tr>
               ))}
-              {filteredInvoices.length === 0 && (
+              {paginatedData.length === 0 && (
                 <tr>
                   <td colSpan={6} className="p-10 text-center">
                     <Receipt className="w-10 h-10 text-[var(--text-secondary)] opacity-30 mx-auto mb-3" />
@@ -205,6 +217,9 @@ export default function ManagerFinancePage() {
           </table>
         </div>
       </div>
+      {totalPages > 1 && (
+        <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={setCurrentPage} />
+      )}
     </div>
   );
 }

@@ -9,7 +9,7 @@ import { ThemeToggle } from '@/components/public/ThemeToggle';
 
 const DEMO_ACCOUNTS = [
   { id: 'superadmin', label: 'SuperAdmin', email: 'superadmin@gmail.com', password: 'Super@123', icon: Shield },
-  { id: 'owner', label: 'Owner', email: 'owner@gmail.com', password: 'Owner3@123', icon: Briefcase },
+  { id: 'owner', label: 'Owner (Seed Data)', email: 'owner@gmail.com', password: 'Owner3@123', icon: Briefcase },
   { id: 'manager', label: 'Manager', email: 'manager3@gmail.com', password: 'Manager@123', icon: Users },
   { id: 'cook', label: 'Cook', email: 'cook3@gmail.com', password: 'Cook@123', icon: Utensils },
   { id: 'student', label: 'Student', email: 'student3@gmail.com', password: 'Student@123', icon: UserCheck }

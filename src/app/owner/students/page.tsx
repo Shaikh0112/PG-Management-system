@@ -10,6 +10,7 @@ import { StudentMember } from '@/app/student/lib/api/students';
 import { formatINR } from '@/lib/utils/formatters';
 import { db } from '@/lib/storage/db';
 import { STORAGE_KEYS } from '@/lib/storage/keys';
+import { Pagination } from '@/components/shared/Pagination';
 
 export default function OwnerStudentsPage() {
   const user = typeof window !== 'undefined' ? getSession() : null;
@@ -57,11 +58,22 @@ export default function OwnerStudentsPage() {
     return true;
   });
 
+  // Pagination
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 9;
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchQuery, statusFilter, duesFilter, propertyFilter, selectedPropertyId]);
+
+  const totalPages = Math.ceil(filteredStudents.length / itemsPerPage);
+  const paginatedData = filteredStudents.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+
   const handleGrantDiscount = (studentProfileId: string) => {
     if (confirm('Grant 5% special discount to this student for next month due to high PG Score?')) {
       const profile = students.find(t => t.profile.id === studentProfileId)?.profile;
       if(profile) {
-        db.update(STORAGE_KEYS.STUDENT_PROFILES as any, profile.id, { discountApplied: true });
+        db.update<StudentProfile>(STORAGE_KEYS.STUDENTS, profile.id, { discountApplied: true });
         // update local state
         setStudents(students.map(t => t.profile.id === studentProfileId ? { ...t, profile: { ...t.profile, discountApplied: true } } : t));
       }
@@ -164,8 +176,9 @@ export default function OwnerStudentsPage() {
           </p>
         </div>
       ) : (
+        <>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredStudents.map(t => {
+          {paginatedData.map(t => {
             const property = properties.find(p => p.id === t.profile.propertyId);
             const propName = property?.name || 'Unknown Property';
 
@@ -241,6 +254,12 @@ export default function OwnerStudentsPage() {
             );
           })}
         </div>
+        {totalPages > 1 && (
+          <div className="mt-4">
+            <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={setCurrentPage} />
+          </div>
+        )}
+        </>
       )}
     </div>
   );

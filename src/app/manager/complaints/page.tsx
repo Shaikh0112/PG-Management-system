@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { api } from '@/lib/api';
 import { useManagerPropertyContext } from '@/app/manager/components/ManagerPropertyContext';
 import { AlertCircle, Clock, CheckCircle, IndianRupee, X } from 'lucide-react';
+import { Pagination } from '@/components/shared/Pagination';
 
 export default function ManagerComplaintsPage() {
   const { selectedPropertyId, loading: ctxLoading } = useManagerPropertyContext();
@@ -40,6 +41,18 @@ export default function ManagerComplaintsPage() {
   const activeComplaints = complaints.filter(c => c.status !== 'Resolved');
   const resolvedComplaints = complaints.filter(c => c.status === 'Resolved').sort((a,b) => new Date(b.resolvedAt || b.updatedAt).getTime() - new Date(a.resolvedAt || a.updatedAt).getTime());
 
+  // Pagination
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [activeTab, selectedPropertyId]);
+
+  const currentList = activeTab === 'active' ? activeComplaints : resolvedComplaints;
+  const totalPages = Math.ceil(currentList.length / itemsPerPage);
+  const paginatedData = currentList.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+
   return (
     <div className="space-y-6 pb-20">
       <div>
@@ -64,7 +77,7 @@ export default function ManagerComplaintsPage() {
 
       {activeTab === 'active' && (
         <div className="space-y-4">
-          {activeComplaints.map(c => (
+          {paginatedData.map(c => (
             <div key={c.id} className="bg-[var(--bg-card)] border border-[var(--border)] p-5 rounded-2xl flex flex-col md:flex-row justify-between items-start gap-4 shadow-sm hover:shadow-md transition-shadow">
               <div className="flex-1">
                 <div className="flex items-center gap-3 mb-1">
@@ -115,13 +128,13 @@ export default function ManagerComplaintsPage() {
 
       {activeTab === 'log' && (
         <div className="space-y-4">
-          <div className="grid grid-cols-12 gap-4 px-4 py-2 text-xs font-bold text-[var(--text-secondary)] uppercase tracking-wider">
+          <div className="grid grid-cols-12 gap-4 px-4 py-2 text-xs font-bold text-[var(--text-secondary)] uppercase tracking-wider bg-[var(--bg-card)] sticky top-0 z-10">
             <div className="col-span-2">Room</div>
             <div className="col-span-4">Issue</div>
             <div className="col-span-3">Cost</div>
             <div className="col-span-3">Resolved Date</div>
           </div>
-          {resolvedComplaints.map(c => (
+          {paginatedData.map(c => (
             <div key={c.id} className="grid grid-cols-12 gap-4 items-center bg-[var(--bg-card)] border border-[var(--border)] p-4 rounded-xl shadow-sm hover:bg-[var(--bg-input)] transition-colors">
               <div className="col-span-2 font-bold text-[var(--text-primary)]">
                 {c.roomNumber || '-'}
@@ -144,6 +157,10 @@ export default function ManagerComplaintsPage() {
             </div>
           )}
         </div>
+      )}
+
+      {totalPages > 1 && (
+        <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={setCurrentPage} />
       )}
 
       {resolvingComplaint && (

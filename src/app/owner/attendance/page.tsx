@@ -5,30 +5,31 @@ import { api } from '@/lib/api';
 import { getSession } from '@/lib/auth/session';
 import { useOwnerPropertyContext } from '@/app/owner/components/OwnerPropertyContext';
 import { Users, CheckCircle2, XCircle, Search, Building } from 'lucide-react';
-import { attendanceApi, StaffAttendance } from '@/lib/api/attendance';
-import { db } from '@/lib/storage/db';
-import { STORAGE_KEYS } from '@/lib/storage/keys';
+import { attendanceApi, StaffAttendance } from '@/app/owner/lib/api/attendance';
+import { TeamMember } from '@/app/owner/lib/api/team';
 import { format } from 'date-fns';
+import { Pagination } from '@/components/shared/Pagination';
 
 export default function OwnerAttendancePage() {
   const user = typeof window !== 'undefined' ? getSession() : null;
   const { properties, selectedPropertyId } = useOwnerPropertyContext();
 
-  const [staff, setStaff] = useState<any[]>([]);
+  const [staff, setStaff] = useState<TeamMember[]>([]);
   const [attendance, setAttendance] = useState<StaffAttendance[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [dateStr, setDateStr] = useState(format(new Date(), 'yyyy-MM-dd'));
 
+  // Pagination
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
+
   useEffect(() => {
     if (!user) return;
     setLoading(true);
     
-    // Get all staff for this owner
-    const allStaff = db.getAll<any>(STORAGE_KEYS.STAFF).filter(s => {
-      const prop = properties.find(p => p.id === s.propertyId);
-      return prop && !s.isDeleted;
-    });
+    // Get all staff members for this owner
+    const allStaff = api.team.listByOwner(user.id);
     setStaff(allStaff);
 
     // Get attendance for the selected date
@@ -38,14 +39,19 @@ export default function OwnerAttendancePage() {
     setLoading(false);
   }, [user?.id, properties, dateStr]);
 
+  // Reset page when search or property changes
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchQuery, selectedPropertyId]);
+
   const filteredStaff = staff.filter(s => {
-    // Property filter
-    if (selectedPropertyId !== 'all' && s.propertyId !== selectedPropertyId) return false;
+    // Property filter (check if assignedPropertyIds includes selectedPropertyId)
+    if (selectedPropertyId !== 'all' && !s.user.assignedPropertyIds?.includes(selectedPropertyId)) return false;
     
     // Search
     if (searchQuery) {
       const sq = searchQuery.toLowerCase();
-      return s.name?.toLowerCase().includes(sq) || s.role?.toLowerCase().includes(sq);
+      return s.user.name?.toLowerCase().includes(sq) || s.profile.staffType?.toLowerCase().includes(sq);
     }
     
     return true;
@@ -55,6 +61,9 @@ export default function OwnerAttendancePage() {
     const record = attendance.find(a => a.staffUserId === staffUserId);
     return record ? record.markedAt : null;
   };
+
+  const totalPages = Math.ceil(filteredStaff.length / itemsPerPage);
+  const paginatedData = filteredStaff.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
   return (
     <div className="space-y-6 pb-20">
@@ -102,34 +111,36 @@ export default function OwnerAttendancePage() {
         <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded-[var(--radius-lg,12px)] overflow-hidden shadow-sm">
           <div className="overflow-x-auto">
             <table className="w-full text-left text-sm whitespace-nowrap">
-              <thead className="bg-[rgba(99,102,241,0.03)] border-b border-[var(--border)] text-[var(--text-secondary)]">
+              <thead className="bg-[var(--bg-card)] border-b border-[var(--border)] text-[var(--text-secondary)] sticky top-0 z-10 shadow-sm shadow-black/5">
                 <tr>
                   <th className="px-6 py-4 font-semibold">Staff Member</th>
                   <th className="px-6 py-4 font-semibold">Role</th>
-                  <th className="px-6 py-4 font-semibold">Property</th>
+                  <th className="px-6 py-4 font-semibold">Properties</th>
                   <th className="px-6 py-4 font-semibold">Status ({new Date(dateStr).toLocaleDateString()})</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-[var(--border)]">
-                {filteredStaff.map((s) => {
-                  const markedAt = getAttendanceStatus(s.userId);
-                  const property = properties.find(p => p.id === s.propertyId);
+                {paginatedData.map((s) => {
+                  const markedAt = getAttendanceStatus(s.user.id);
+                  const assignedProps = s.user.assignedPropertyIds?.map(pid => properties.find(p => p.id === pid)?.name).filter(Boolean) || [];
                   
                   return (
-                    <tr key={s.id} className="hover:bg-[rgba(99,102,241,0.01)] transition-colors">
+                    <tr key={s.user.id} className="hover:bg-[rgba(99,102,241,0.01)] transition-colors">
                       <td className="px-6 py-4">
-                        <div className="font-bold text-[var(--text-primary)]">{s.name}</div>
-                        <div className="text-xs text-[var(--text-secondary)]">{s.phone}</div>
+                        <div className="font-bold text-[var(--text-primary)]">{s.user.name}</div>
+                        <div className="text-xs text-[var(--text-secondary)]">{s.user.phone}</div>
                       </td>
                       <td className="px-6 py-4">
                         <span className="px-2 py-1 bg-[var(--bg-input)] rounded text-xs font-bold capitalize text-[var(--text-primary)]">
-                          {s.role}
+                          {s.profile.staffType}
                         </span>
                       </td>
                       <td className="px-6 py-4">
-                        <div className="flex items-center gap-2 text-[var(--text-secondary)]">
+                        <div className="flex items-center gap-2 text-[var(--text-secondary)] text-xs">
                           <Building className="w-4 h-4" />
-                          <span>{property?.name || 'Unknown'}</span>
+                          <span className="truncate max-w-[200px]" title={assignedProps.join(', ')}>
+                            {assignedProps.length > 0 ? assignedProps.join(', ') : 'None'}
+                          </span>
                         </div>
                       </td>
                       <td className="px-6 py-4">
@@ -154,6 +165,13 @@ export default function OwnerAttendancePage() {
               </tbody>
             </table>
           </div>
+          {totalPages > 1 && (
+            <Pagination 
+              currentPage={currentPage} 
+              totalPages={totalPages} 
+              onPageChange={setCurrentPage} 
+            />
+          )}
         </div>
       )}
     </div>

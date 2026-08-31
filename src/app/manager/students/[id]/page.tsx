@@ -117,9 +117,10 @@ export default function ManagerStudentDetail() {
               <div className="flex gap-4 text-sm text-[var(--text-secondary)] mb-6 bg-[var(--bg-input)] p-4 rounded-lg">
                 <div><strong>Start Date:</strong> {new Date(student.profile.stayStartDate).toLocaleDateString()}</div>
                 <div><strong>End Date:</strong> {new Date(student.profile.stayEndDate).toLocaleDateString()}</div>
+                <div><strong>Duration:</strong> {Math.round((new Date(student.profile.stayEndDate).getTime() - new Date(student.profile.stayStartDate).getTime()) / (1000 * 3600 * 24 * 30))} Months</div>
               </div>
               <div className="relative border-l-2 border-[var(--border)] ml-3 space-y-6">
-                {invoices.filter(i => i.type === 'Rent').sort((a,b) => new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime()).map((invoice: any, idx: number) => {
+                {invoices.filter(i => i.type === 'Rent' || !i.type).sort((a,b) => new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime()).map((invoice: any, idx: number) => {
                   const dueTime = new Date(invoice.dueDate).getTime();
                   const nowTime = new Date().getTime();
                   const diffDays = (dueTime - nowTime) / (1000 * 3600 * 24);
@@ -133,7 +134,7 @@ export default function ManagerStudentDetail() {
                     <div className={`bg-[var(--bg-input)] p-4 rounded-lg border ${showAsDue ? 'border-[var(--danger)]/50 shadow-sm' : 'border-[var(--border)]'}`}>
                       <div className="flex justify-between items-start mb-2">
                         <div>
-                          <h4 className={`font-bold ${showAsDue ? 'text-[var(--danger)]' : 'text-[var(--text-primary)]'}`}>{invoice.description}</h4>
+                          <h4 className={`font-bold ${showAsDue ? 'text-[var(--danger)]' : 'text-[var(--text-primary)]'}`}>{invoice.title || invoice.description || 'Monthly Rent'}</h4>
                           <p className={`text-xs ${showAsDue ? 'text-[var(--danger)] font-medium' : 'text-[var(--text-secondary)]'}`}>Due: {new Date(invoice.dueDate).toLocaleDateString()}</p>
                         </div>
                         <div className={`text-xs font-bold px-2 py-1 rounded ${invoice.status === 'Paid' ? 'bg-[var(--success-bg)] text-[var(--success)]' : (showAsDue ? 'bg-[var(--danger-bg)] text-[var(--danger)]' : 'bg-[var(--warning-bg)] text-[var(--warning)]')}`}>

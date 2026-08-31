@@ -39,7 +39,7 @@ export const mealsApi = {
       
     if (existing) {
       if (existing.status !== 'announced') {
-        db.update(STORAGE_KEYS.MEAL_STATUS, existing.id, {
+        db.update<MealStatus>(STORAGE_KEYS.MEAL_STATUS, existing.id, {
           status: 'ready',
           updatedAt: new Date().toISOString(),
           updatedBy: actorId
@@ -68,7 +68,7 @@ export const mealsApi = {
       .find(m => m.propertyId === propertyId && m.date === today && m.mealType === mealType && !m.isDeleted);
       
     if (existing) {
-      db.update(STORAGE_KEYS.MEAL_STATUS, existing.id, {
+      db.update<MealStatus>(STORAGE_KEYS.MEAL_STATUS, existing.id, {
         status: 'announced',
         updatedAt: new Date().toISOString(),
         updatedBy: actorId

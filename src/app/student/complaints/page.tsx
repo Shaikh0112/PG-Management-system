@@ -5,10 +5,13 @@ import { studentOperationsApi } from '@/app/student/lib/api/studentOperations';
 import { useStudentContext } from '@/app/student/components/StudentContext';
 import { MessageSquareWarning, Plus } from 'lucide-react';
 import Link from 'next/link';
+import { Pagination } from '@/components/shared/Pagination';
 
 export default function StudentComplaintsPage() {
   const { profile } = useStudentContext();
   const [complaints, setComplaints] = useState<any[]>([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 6;
 
   useEffect(() => {
     if (profile) {
@@ -17,6 +20,8 @@ export default function StudentComplaintsPage() {
   }, [profile]);
 
   if (!profile) return <div className="p-4">Loading...</div>;
+  
+  const paginatedComplaints = complaints.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
   return (
     <div className="space-y-6">
@@ -31,7 +36,7 @@ export default function StudentComplaintsPage() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {complaints.map(c => (
+        {paginatedComplaints.map(c => (
           <div key={c.id} className="bg-[var(--bg-card)] border border-[var(--border)] rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow relative overflow-hidden group">
             <div className={`absolute top-0 right-0 w-24 h-24 rounded-bl-full opacity-10 transition-transform group-hover:scale-110 ${
               c.status === 'Resolved' ? 'bg-[var(--success)]' :
@@ -60,13 +65,21 @@ export default function StudentComplaintsPage() {
           </div>
         ))}
         {complaints.length === 0 && (
-          <div className="text-center p-8 bg-[var(--bg-card)] border border-[var(--border)] rounded-[var(--radius-lg,12px)]">
+          <div className="text-center p-8 bg-[var(--bg-card)] border border-[var(--border)] rounded-[var(--radius-lg,12px)] col-span-full">
             <MessageSquareWarning className="w-12 h-12 text-[var(--text-secondary)] mx-auto mb-3 opacity-20" />
             <div className="text-[var(--text-primary)] font-bold">No complaints raised</div>
             <div className="text-sm text-[var(--text-secondary)] mt-1">Everything seems fine!</div>
           </div>
         )}
       </div>
+
+      {complaints.length > 0 && (
+        <Pagination
+          currentPage={currentPage}
+          totalPages={Math.ceil(complaints.length / itemsPerPage)}
+          onPageChange={setCurrentPage}
+        />
+      )}
     </div>
   );
 }

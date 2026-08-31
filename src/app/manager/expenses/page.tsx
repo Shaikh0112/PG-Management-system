@@ -7,6 +7,7 @@ import { useManagerPropertyContext } from '@/app/manager/components/ManagerPrope
 import { IndianRupee, Plus, Receipt, AlertCircle, Loader2 } from 'lucide-react';
 import { formatINR, formatDateOnly } from '@/lib/utils/formatters';
 import { useToast } from '@/lib/ui/ToastContext';
+import { Pagination } from '@/components/shared/Pagination';
 
 export default function ManagerExpensesPage() {
   const user = typeof window !== 'undefined' ? getSession() : null;
@@ -40,6 +41,18 @@ export default function ManagerExpensesPage() {
       loadExpenses();
     }
   }, [propsLoading, selectedPropertyId, user?.id]);
+
+  // Pagination
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [selectedPropertyId]);
+
+  const sortedExpenses = [...expenses].sort((a,b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+  const totalPages = Math.ceil(sortedExpenses.length / itemsPerPage);
+  const paginatedData = sortedExpenses.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -130,17 +143,17 @@ export default function ManagerExpensesPage() {
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-left text-sm">
-              <thead className="bg-[var(--bg-input)]/50 text-[var(--text-secondary)]">
+              <thead className="bg-[var(--bg-card)] border-b border-[var(--border)] text-[var(--text-secondary)] sticky top-0 z-10 shadow-sm shadow-black/5">
                 <tr>
-                  <th className="p-4 font-medium">Date</th>
-                  <th className="p-4 font-medium">Description</th>
-                  <th className="p-4 font-medium">Category</th>
-                  <th className="p-4 font-medium text-right">Amount</th>
+                  <th className="p-4 font-semibold uppercase tracking-wider text-[11px]">Date</th>
+                  <th className="p-4 font-semibold uppercase tracking-wider text-[11px]">Description</th>
+                  <th className="p-4 font-semibold uppercase tracking-wider text-[11px]">Category</th>
+                  <th className="p-4 font-semibold uppercase tracking-wider text-[11px] text-right">Amount</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-[var(--border)]">
-                {expenses.sort((a,b) => new Date(b.date).getTime() - new Date(a.date).getTime()).map(exp => (
-                  <tr key={exp.id} className="hover:bg-[var(--bg-input)] transition-colors">
+                {paginatedData.map(exp => (
+                  <tr key={exp.id} className="hover:bg-[var(--bg-page)] transition-colors">
                     <td className="p-4 whitespace-nowrap text-[var(--text-secondary)]">
                       {formatDateOnly(exp.date)}
                     </td>
@@ -164,6 +177,9 @@ export default function ManagerExpensesPage() {
           </div>
         )}
       </div>
+      {totalPages > 1 && (
+        <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={setCurrentPage} />
+      )}
 
       {/* Log Expense Modal */}
       {isModalOpen && (

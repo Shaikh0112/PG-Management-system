@@ -5,6 +5,7 @@ import { api } from '@/lib/api';
 import { useManagerPropertyContext } from '@/app/manager/components/ManagerPropertyContext';
 import { LogIn, LogOut, AlertTriangle, User } from 'lucide-react';
 import { getSession } from '@/lib/auth/session';
+import { Pagination } from '@/components/shared/Pagination';
 
 export default function ManagerGateLogsPage() {
   const { selectedPropertyId, loading: ctxLoading } = useManagerPropertyContext();
@@ -43,6 +44,18 @@ export default function ManagerGateLogsPage() {
     loadData();
   };
 
+  // Pagination
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [selectedPropertyId]);
+
+  const sortedLogs = [...logs].sort((a,b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
+  const totalPages = Math.ceil(sortedLogs.length / itemsPerPage);
+  const paginatedData = sortedLogs.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+
   if (ctxLoading) return <div className="p-6 text-[var(--text-secondary)]">Loading...</div>;
   if (!selectedPropertyId) return <div className="p-6 text-center text-[var(--text-secondary)]">Property Required</div>;
 
@@ -54,34 +67,34 @@ export default function ManagerGateLogsPage() {
           <p className="text-sm text-[var(--text-secondary)]">Monitor student entries and exits.</p>
         </div>
 
-        <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded-[var(--radius-lg,12px)] overflow-hidden">
+        <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded-[var(--radius-lg,12px)] overflow-hidden shadow-sm">
           <table className="w-full text-left text-sm">
-            <thead className="bg-[rgba(99,102,241,0.02)] border-b border-[var(--border)] text-[var(--text-secondary)]">
+            <thead className="bg-[var(--bg-card)] border-b border-[var(--border)] text-[var(--text-secondary)] sticky top-0 z-10 shadow-sm shadow-black/5">
               <tr>
-                <th className="p-4 font-medium">Student</th>
-                <th className="p-4 font-medium">Type</th>
-                <th className="p-4 font-medium">Timestamp</th>
-                <th className="p-4 font-medium">Flags</th>
+                <th className="p-4 font-semibold uppercase tracking-wider text-[11px]">Student</th>
+                <th className="p-4 font-semibold uppercase tracking-wider text-[11px]">Type</th>
+                <th className="p-4 font-semibold uppercase tracking-wider text-[11px]">Timestamp</th>
+                <th className="p-4 font-semibold uppercase tracking-wider text-[11px]">Flags</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-[var(--border)]">
-              {logs.map(log => (
-                <tr key={log.id} className="hover:bg-[var(--bg-input)] transition-colors">
+              {paginatedData.map(log => (
+                <tr key={log.id} className="hover:bg-[var(--bg-page)] transition-colors">
                   <td className="p-4 font-medium text-[var(--text-primary)]">{log.studentId}</td>
                   <td className="p-4">
                     {log.type === 'entry' 
-                      ? <span className="text-[var(--primary)] flex items-center gap-1"><LogIn className="w-4 h-4"/> Entry</span> 
-                      : <span className="text-[var(--text-secondary)] flex items-center gap-1"><LogOut className="w-4 h-4"/> Exit</span>}
+                      ? <span className="text-[var(--primary)] flex items-center gap-1 font-medium"><LogIn className="w-4 h-4"/> Entry</span> 
+                      : <span className="text-[var(--text-secondary)] flex items-center gap-1 font-medium"><LogOut className="w-4 h-4"/> Exit</span>}
                   </td>
                   <td className="p-4 text-[var(--text-secondary)]">
                     {new Date(log.timestamp).toLocaleString()}
                   </td>
                   <td className="p-4">
-                    {log.isLate && <span className="text-xs bg-[var(--danger-bg)] text-[var(--danger)] px-2 py-1 rounded flex items-center gap-1 w-max"><AlertTriangle className="w-3 h-3"/> Late Entry</span>}
+                    {log.isLate && <span className="text-xs bg-[var(--danger-bg)] text-[var(--danger)] px-2 py-1 rounded flex items-center gap-1 w-max font-bold"><AlertTriangle className="w-3 h-3"/> Late Entry</span>}
                   </td>
                 </tr>
               ))}
-              {logs.length === 0 && (
+              {paginatedData.length === 0 && (
                 <tr>
                   <td colSpan={4} className="p-8 text-center text-[var(--text-secondary)]">No gate logs found.</td>
                 </tr>
@@ -89,6 +102,9 @@ export default function ManagerGateLogsPage() {
             </tbody>
           </table>
         </div>
+        {totalPages > 1 && (
+          <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={setCurrentPage} />
+        )}
       </div>
 
       <div className="w-full lg:w-80 shrink-0">

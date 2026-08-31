@@ -15,18 +15,21 @@ export interface FoodMenu {
   monthEndSpecial: string;
   updatedAt: string;
   isDeleted?: boolean;
+  createdAt: string;
+  createdBy: string | null;
+  updatedBy: string | null;
 }
 
 export const foodApi = {
   getByProperty: (propertyId: string): FoodMenu | null => {
-    const menus = db.getAll<FoodMenu>(STORAGE_KEYS.FOOD_MENUS || 'spg_food_menus');
+    const menus = db.getAll<FoodMenu>(STORAGE_KEYS.MENUS || 'spg_food_menus');
     return menus.find(m => m.propertyId === propertyId && !m.isDeleted) || null;
   },
   
   save: (propertyId: string, data: Partial<FoodMenu>) => {
     const existing = foodApi.getByProperty(propertyId);
     if (existing) {
-      db.update(STORAGE_KEYS.FOOD_MENUS || 'spg_food_menus', existing.id, {
+      db.update(STORAGE_KEYS.MENUS || 'spg_food_menus', existing.id, {
         ...data,
         updatedAt: new Date().toISOString()
       });
@@ -46,7 +49,7 @@ export const foodApi = {
         updatedAt: new Date().toISOString(),
         isDeleted: false
       };
-      db.insert(STORAGE_KEYS.FOOD_MENUS || 'spg_food_menus', newMenu);
+      db.insert(STORAGE_KEYS.MENUS || 'spg_food_menus', newMenu);
       return newMenu;
     }
   }

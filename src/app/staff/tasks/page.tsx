@@ -5,6 +5,7 @@ import { staffOperationsApi } from '@/app/staff/lib/api/staffOperations';
 import { useStaffContext } from '@/app/staff/components/StaffContext';
 import { getSession } from '@/lib/auth/session';
 import { ListTodo, CheckSquare, Square } from 'lucide-react';
+import { Pagination } from '@/components/shared/Pagination';
 
 export default function StaffTasksPage() {
   const { propertyId } = useStaffContext();
@@ -27,6 +28,11 @@ export default function StaffTasksPage() {
     loadData();
   };
 
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
+  const totalPages = Math.ceil(tasks.length / itemsPerPage);
+  const paginatedTasks = tasks.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+
   if (!propertyId) return <div className="p-6">Loading or Property not assigned...</div>;
 
   return (
@@ -42,7 +48,7 @@ export default function StaffTasksPage() {
           Task List
         </h2>
         <div className="space-y-2">
-          {tasks.map(t => (
+          {paginatedTasks.map(t => (
             <button 
               key={t.id} 
               onClick={() => handleToggle(t.id, t.status)}
@@ -65,6 +71,7 @@ export default function StaffTasksPage() {
             <p className="text-sm text-[var(--text-secondary)] py-4 text-center">No tasks assigned to you right now.</p>
           )}
         </div>
+        {totalPages > 1 && <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={setCurrentPage} />}
       </div>
     </div>
   );

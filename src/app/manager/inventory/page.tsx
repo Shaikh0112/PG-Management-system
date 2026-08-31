@@ -6,6 +6,7 @@ import { useManagerPropertyContext } from '@/app/manager/components/ManagerPrope
 import { Archive, Plus, Minus, AlertTriangle, CheckCircle, Clock, ShoppingCart } from 'lucide-react';
 import { getSession } from '@/lib/auth/session';
 import { stockRequestsApi } from '@/app/staff/lib/api/stockRequests';
+import { Pagination } from '@/components/shared/Pagination';
 
 export default function ManagerInventoryPage() {
   const { selectedPropertyId, loading: ctxLoading } = useManagerPropertyContext();
@@ -57,8 +58,21 @@ export default function ManagerInventoryPage() {
       return;
     }
     stockRequestsApi.markPurchased(id, cost, user.id);
+    stockRequestsApi.markPurchased(id, cost, user.id);
     loadData();
   };
+
+  // Pagination
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [activeTab, selectedPropertyId]);
+
+  const currentList = activeTab === 'live' ? inventory : requests;
+  const totalPages = Math.ceil(currentList.length / itemsPerPage);
+  const paginatedData = currentList.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
   if (ctxLoading) return <div className="p-6 text-[var(--text-secondary)]">Loading...</div>;
   if (!selectedPropertyId) return <div className="p-6 text-center text-[var(--text-secondary)]">Property Required</div>;

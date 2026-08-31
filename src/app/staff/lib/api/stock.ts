@@ -9,6 +9,7 @@ export interface StockItem {
   name: string;
   quantity: number;
   unit: string;
+  category?: string;
   lowStockThreshold?: number;
   expiryDate?: string;
   updatedAt: string;

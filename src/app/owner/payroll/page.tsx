@@ -11,6 +11,7 @@ import { format, subMonths, addMonths } from 'date-fns';
 import { db } from '@/lib/storage/db';
 import { createId } from '@/lib/utils/id';
 import { useOwnerPropertyContext } from '@/app/owner/components/OwnerPropertyContext';
+import { Pagination } from '@/components/shared/Pagination';
 
 export default function PayrollPage() {
   const user = typeof window !== 'undefined' ? getSession() : null;
@@ -190,7 +191,13 @@ export default function PayrollPage() {
       setTimeout(() => { window.location.reload(); }, 800);
     }, 1000);
   };
+  // Pagination
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
 
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [roleFilter, selectedPropertyId, currentDate]);
   if (loading && staffData.length === 0) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
@@ -223,6 +230,10 @@ export default function PayrollPage() {
   const totalPayout = filteredStaffData.reduce((acc, s) => acc + (s.staff.salary || 0), 0);
   const paidPayout = filteredStaffData.filter(s => s.isPaid).reduce((acc, s) => acc + (s.staff.salary || 0), 0);
   const pendingPayout = totalPayout - paidPayout;
+
+
+  const totalPages = Math.ceil(filteredStaffData.length / itemsPerPage);
+  const paginatedData = filteredStaffData.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
   return (
     <div className="pb-20 space-y-8 animate-in fade-in duration-300">
@@ -314,8 +325,8 @@ export default function PayrollPage() {
       <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded-[var(--radius-lg)] overflow-hidden shadow-sm">
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse">
-            <thead>
-              <tr className="bg-[var(--bg-page)] border-b border-[var(--border)]">
+            <thead className="bg-[var(--bg-card)] border-b border-[var(--border)] sticky top-0 z-10 shadow-sm shadow-black/5">
+              <tr>
                 <th className="px-5 py-3 text-[12px] font-bold text-[var(--text-secondary)] uppercase tracking-wider">Staff Details</th>
                 <th className="px-5 py-3 text-[12px] font-bold text-[var(--text-secondary)] uppercase tracking-wider">Role</th>
                 <th className="px-5 py-3 text-[12px] font-bold text-[var(--text-secondary)] uppercase tracking-wider">Salary</th>
@@ -324,14 +335,14 @@ export default function PayrollPage() {
               </tr>
             </thead>
             <tbody className="divide-y divide-[var(--border)]">
-              {filteredStaffData.length === 0 ? (
+              {paginatedData.length === 0 ? (
                 <tr>
                   <td colSpan={5} className="px-5 py-12 text-center text-[var(--text-secondary)] text-sm">
                     No staff members found matching the selected filters.
                   </td>
                 </tr>
               ) : (
-                filteredStaffData.map((item, idx) => (
+                paginatedData.map((item, idx) => (
                   <tr key={item.staff?.id || `staff-${idx}`} className="hover:bg-[var(--bg-page)] transition-colors">
                     <td className="px-5 py-4">
                       <div className="font-semibold text-[14px] text-[var(--text-primary)]">{item.staff.name}</div>
@@ -378,6 +389,9 @@ export default function PayrollPage() {
             </tbody>
           </table>
         </div>
+        {totalPages > 1 && (
+          <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={setCurrentPage} />
+        )}
       </div>
 
       {/* Payment Modal */}

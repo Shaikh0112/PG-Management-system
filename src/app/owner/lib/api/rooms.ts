@@ -1,7 +1,7 @@
 import { db } from '@/lib/storage/db';
 import { STORAGE_KEYS } from '@/lib/storage/keys';
 import { createId } from '@/lib/utils/id';
-import { BaseEntity } from '../types';
+import { BaseEntity } from '@/lib/types';
 import { bedsApi } from '@/app/owner/lib/api/beds';
 
 export type RoomStatus = 'available' | 'full' | 'maintenance';
@@ -32,7 +32,7 @@ export const roomsApi = {
     return db.getById<Room>(STORAGE_KEYS.ROOMS, id) || null;
   },
 
-  create: (data: Omit<Room, keyof BaseEntity | 'id'> & { actorId: string }): Room => {
+  create: (data: Omit<Room, 'id' | 'createdAt' | 'updatedAt' | 'createdBy' | 'updatedBy' | 'isDeleted'> & { actorId: string }): Room => {
     const newRoom: Room = {
       ...data,
       id: createId('room'),

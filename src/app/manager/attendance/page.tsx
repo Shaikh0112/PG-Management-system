@@ -6,6 +6,7 @@ import { useManagerPropertyContext } from '@/app/manager/components/ManagerPrope
 import { Users, CheckCircle, XCircle, Clock, Search, BedDouble, Building } from 'lucide-react';
 import { getSession } from '@/lib/auth/session';
 import { format } from 'date-fns';
+import { Pagination } from '@/components/shared/Pagination';
 
 export default function ManagerAttendancePage() {
   const { selectedPropertyId, loading: ctxLoading } = useManagerPropertyContext();
@@ -35,6 +36,17 @@ export default function ManagerAttendancePage() {
     if (!searchQuery) return true;
     return s.name.toLowerCase().includes(searchQuery.toLowerCase()) || s.roomNumber?.includes(searchQuery);
   });
+
+  // Pagination
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchQuery, selectedPropertyId]);
+
+  const totalPages = Math.ceil(filteredStudents.length / itemsPerPage);
+  const paginatedData = filteredStudents.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
   const getStatusColor = (status: string) => {
     if (status === 'Present') return 'bg-[var(--success-bg)] text-[var(--success)] border-[var(--success)]';
@@ -102,21 +114,21 @@ export default function ManagerAttendancePage() {
 
         <div className="overflow-x-auto">
           <table className="w-full text-left text-sm whitespace-nowrap">
-            <thead className="bg-[rgba(99,102,241,0.02)] border-b border-[var(--border)] text-[var(--text-secondary)]">
+            <thead className="bg-[var(--bg-card)] border-b border-[var(--border)] text-[var(--text-secondary)] sticky top-0 z-10 shadow-sm shadow-black/5">
               <tr>
-                <th className="p-4 font-semibold">Student Name</th>
-                <th className="p-4 font-semibold">Room & Bed</th>
-                <th className="p-4 font-semibold">Today's Status</th>
-                <th className="p-4 font-semibold text-right">Quick Mark</th>
+                <th className="p-4 font-semibold uppercase tracking-wider text-[11px]">Student Name</th>
+                <th className="p-4 font-semibold uppercase tracking-wider text-[11px]">Room & Bed</th>
+                <th className="p-4 font-semibold uppercase tracking-wider text-[11px]">Today's Status</th>
+                <th className="p-4 font-semibold uppercase tracking-wider text-[11px] text-right">Quick Mark</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-[var(--border)]">
-              {filteredStudents.map(s => {
+              {paginatedData.map(s => {
                 const record = attendance.find(a => a.studentId === s.userId || a.studentId === s.id);
                 const currentStatus = record?.status || 'Pending';
 
                 return (
-                  <tr key={s.id} className="hover:bg-[rgba(99,102,241,0.01)] transition-colors group">
+                  <tr key={s.id} className="hover:bg-[var(--bg-page)] transition-colors group">
                     <td className="p-4">
                       <div className="flex items-center gap-3">
                         <div className="w-8 h-8 rounded-full bg-[var(--primary-subtle)] text-[var(--primary)] flex items-center justify-center font-bold text-xs">
@@ -167,7 +179,7 @@ export default function ManagerAttendancePage() {
                   </tr>
                 );
               })}
-              {filteredStudents.length === 0 && (
+              {paginatedData.length === 0 && (
                 <tr>
                   <td colSpan={4} className="p-12 text-center">
                     <div className="flex flex-col items-center justify-center text-[var(--text-secondary)]">
@@ -181,6 +193,9 @@ export default function ManagerAttendancePage() {
             </tbody>
           </table>
         </div>
+        {totalPages > 1 && (
+          <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={setCurrentPage} />
+        )}
       </div>
     </div>
   );

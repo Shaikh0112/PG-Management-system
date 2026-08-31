@@ -1,17 +1,14 @@
 import { db } from '@/lib/storage/db';
 import { STORAGE_KEYS } from '@/lib/storage/keys';
 import { createId } from '@/lib/utils/id';
+import { BaseEntity } from '@/lib/types';
 
-export interface StaffAttendance {
-  id: string;
+export interface StaffAttendance extends BaseEntity {
   propertyId: string;
   staffUserId: string; // the userId of the staff
   date: string; // YYYY-MM-DD
   status: 'present';
   markedAt: string; // ISO timestamp
-  createdAt: string;
-  updatedAt: string;
-  isDeleted?: boolean;
 }
 
 export const attendanceApi = {
@@ -33,6 +30,8 @@ export const attendanceApi = {
       markedAt: new Date().toISOString(),
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
+      createdBy: staffUserId,
+      updatedBy: staffUserId,
       isDeleted: false
     };
 

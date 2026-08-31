@@ -5,7 +5,7 @@ import { createId } from '@/lib/utils/id';
 export const staffOperationsApi = {
   // Cook
   getTodayMenu: (propertyId: string) => {
-    const menus = db.getAll<any>(STORAGE_KEYS.FOOD_MENUS || 'spg_food_menus').filter(m => m.propertyId === propertyId && !m.isDeleted);
+    const menus = db.getAll<any>(STORAGE_KEYS.MENUS || 'spg_food_menus').filter(m => m.propertyId === propertyId && !m.isDeleted);
     if (menus.length === 0) return null;
     const menu = menus[0];
     const days = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];

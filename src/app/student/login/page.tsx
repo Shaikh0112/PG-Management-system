@@ -46,7 +46,7 @@ export default function StudentLogin() {
 
         <div className="mt-6 p-4 bg-[var(--bg-page)] rounded-md border border-[var(--border)] text-xs text-[var(--text-secondary)]">
           <strong>Demo Credentials:</strong><br/>
-          Email: james.b@example.com<br/>
+          Email: student3@gmail.com<br/>
           Password: Student@123
         </div>
       </div>

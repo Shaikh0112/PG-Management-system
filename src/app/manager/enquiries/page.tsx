@@ -7,6 +7,7 @@ import { useManagerPropertyContext } from '@/app/manager/components/ManagerPrope
 import { Plus, Search, Phone, Calendar, IndianRupee, UserPlus, Lock, MessageCircle, AlertTriangle, Mail, Home, Tag, Copy } from 'lucide-react';
 import { Enquiry, EnquiryStatus } from '@/app/manager/lib/api/managerEnquiries';
 import { useRouter } from 'next/navigation';
+import { Pagination } from '@/components/shared/Pagination';
 
 export default function ManagerEnquiriesPage() {
   const router = useRouter();
@@ -124,6 +125,17 @@ export default function ManagerEnquiriesPage() {
   
   const activeEnquiries = filteredEnquiries.filter(e => e.status !== 'lost' && e.status !== 'converted');
   const lostEnquiries = filteredEnquiries.filter(e => e.status === 'lost');
+
+  // Pagination for Lost Enquiries
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 12; // More items per page since it's a grid
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchQuery, selectedPropertyId, activeTab]);
+
+  const totalPages = Math.ceil(lostEnquiries.length / itemsPerPage);
+  const paginatedLostEnquiries = lostEnquiries.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
   const renderCardContactActions = (enq: Enquiry) => (
     <div className="flex items-center gap-2 mt-2 pt-2 border-t border-[var(--border)]">
@@ -282,35 +294,23 @@ export default function ManagerEnquiriesPage() {
         </div>
       ) : (
         /* Lost & Follow-ups View */
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {lostEnquiries.map(enq => (
-            <div key={enq.id} className="bg-[var(--bg-card)] border border-[var(--border)] rounded-2xl p-5 flex flex-col justify-between">
+        <div className="space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {paginatedLostEnquiries.map(enq => (
+            <div key={enq.id} className="bg-[var(--bg-card)] border border-[var(--border)] rounded-2xl p-5 shadow-sm flex flex-col gap-3">
               <div>
-                <div className="flex items-start justify-between mb-2">
-                  <h3 className="font-bold text-lg text-[var(--text-primary)]">{enq.name}</h3>
-                  <span className="text-[10px] uppercase font-bold tracking-wider px-2 py-1 bg-[rgba(239,68,68,0.1)] text-[var(--danger)] rounded-full">Lost</span>
+                <div className="flex items-center justify-between mb-1">
+                  <h3 className="font-bold text-[var(--text-primary)]">{enq.name}</h3>
+                  <span className="text-[10px] font-bold tracking-wider uppercase px-2 py-0.5 rounded-full bg-[var(--danger-bg)] text-[var(--danger)]">Lost</span>
                 </div>
-                
-                {enq.referredByStudentId && (
-                  <div className="mb-2 inline-block px-2 py-0.5 bg-emerald-100 text-emerald-800 text-[10px] font-bold rounded-full border border-emerald-200">
-                    🎁 Referred by Student
-                  </div>
-                )}
-
-                <div className="space-y-1 mb-4">
-                  <p className="text-sm text-[var(--text-secondary)] flex items-center gap-2">
-                    <Phone className="w-3.5 h-3.5" /> {enq.phone}
-                  </p>
-                </div>
-
+                <p className="text-sm text-[var(--text-secondary)]">{enq.phone}</p>
                 {enq.notes && (
-                  <div className="bg-[rgba(245,158,11,0.05)] border border-[rgba(245,158,11,0.2)] p-3 rounded-lg mb-4">
-                    <span className="text-xs font-semibold text-[var(--warning)] block uppercase tracking-wider mb-1">Student Requirements</span>
+                  <div className="mt-2">
                     <span className="text-sm text-[var(--text-secondary)] leading-relaxed">{enq.notes}</span>
                   </div>
                 )}
 
-                <div className="bg-[var(--danger-bg)] p-3 rounded-lg border border-[var(--danger)]/20 mb-4">
+                <div className="bg-[var(--danger-bg)] p-3 rounded-lg border border-[var(--danger)]/20 mb-4 mt-3">
                   <p className="text-xs font-semibold text-[var(--danger)] uppercase tracking-wider mb-1">Reason for Loss</p>
                   <p className="text-sm text-[var(--text-primary)] font-medium">{enq.lossReason || 'Not specified'}</p>
                 </div>
@@ -340,6 +340,8 @@ export default function ManagerEnquiriesPage() {
               <p className="text-sm mt-1">Great job! All your leads are active or converted.</p>
             </div>
           )}
+          </div>
+          {totalPages > 1 && <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={setCurrentPage} />}
         </div>
       )}
 

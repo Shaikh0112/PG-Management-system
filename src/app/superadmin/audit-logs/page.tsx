@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react';
 import { auditApi } from '@/app/superadmin/lib/api/audit';
 import { Search, Filter, Shield, Clock } from 'lucide-react';
+import { Pagination } from '@/components/shared/Pagination';
 
 export default function AuditLogsPage() {
   const [logs, setLogs] = useState<any[]>([]);
@@ -11,10 +12,19 @@ export default function AuditLogsPage() {
   const [search, setSearch] = useState('');
   const [roleFilter, setRoleFilter] = useState('All');
 
+  // Pagination
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
+
   useEffect(() => {
     setLogs(auditApi.getAll().sort((a: any, b: any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()));
     setLoading(false);
   }, []);
+
+  // Reset page when filter or search changes
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [roleFilter, search]);
 
   const filtered = logs.filter(l => {
     if(roleFilter !== 'All' && l.actorId !== 'superadmin' && roleFilter === 'superadmin') return false; // simplistic filter for demo
@@ -24,6 +34,9 @@ export default function AuditLogsPage() {
     }
     return true;
   });
+
+  const totalPages = Math.ceil(filtered.length / itemsPerPage);
+  const paginatedData = filtered.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
   if (loading) return <div className="animate-pulse p-6">Loading audit logs...</div>;
 
@@ -60,9 +73,9 @@ export default function AuditLogsPage() {
 
         <div className="overflow-x-auto p-4 sm:p-6">
           <div className="relative border-l border-[var(--border)] ml-3 space-y-8 pb-8">
-            {filtered.length === 0 && <div className="pl-6 text-[var(--text-secondary)]">No logs found.</div>}
+            {paginatedData.length === 0 && <div className="pl-6 text-[var(--text-secondary)]">No logs found.</div>}
             
-            {filtered.map(log => (
+            {paginatedData.map(log => (
               <div key={log.id} className="relative pl-8">
                 <span className="absolute -left-[17px] top-1 bg-[var(--bg-card)] border-[3px] border-[var(--primary)] w-[32px] h-[32px] rounded-full flex items-center justify-center">
                   <Shield className="w-4 h-4 text-[var(--primary)]" />
@@ -81,6 +94,13 @@ export default function AuditLogsPage() {
             ))}
           </div>
         </div>
+        {totalPages > 1 && (
+          <Pagination 
+            currentPage={currentPage} 
+            totalPages={totalPages} 
+            onPageChange={setCurrentPage} 
+          />
+        )}
       </div>
     </div>
   );

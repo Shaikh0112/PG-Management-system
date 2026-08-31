@@ -8,6 +8,7 @@ import { Wallet, IndianRupee, TrendingDown, TrendingUp, Receipt, FileText, Chevr
 import { Invoice, Payment, Expense } from '@/app/owner/lib/api/finance';
 import { formatINR, formatDateOnly } from '@/lib/utils/formatters';
 import dynamic from 'next/dynamic';
+import { Pagination } from '@/components/shared/Pagination';
 
 const Chart = dynamic(() => import('react-apexcharts'), { ssr: false });
 
@@ -18,6 +19,10 @@ export default function OwnerFinancePage() {
   const [loading, setLoading] = useState(true);
   const [stats, setStats] = useState<any>(null);
   const [activeTab, setActiveTab] = useState<'payments' | 'invoices' | 'expenses'>('payments');
+  
+  // Pagination
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
 
   const loadData = () => {
     if (!user) return;
@@ -31,9 +36,23 @@ export default function OwnerFinancePage() {
     loadData();
   }, [user?.id, selectedPropertyId]);
 
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [activeTab, selectedPropertyId]);
+
   if (loading || !stats) {
     return <div className="p-6 animate-pulse">Loading finance data...</div>;
   }
+
+  const getPaginatedData = (array: any[]) => {
+    const totalPages = Math.ceil(array.length / itemsPerPage);
+    const paginated = array.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+    return { paginated, totalPages };
+  };
+
+  const paymentsData = getPaginatedData(stats.payments);
+  const expensesData = getPaginatedData(stats.expenses);
+  const invoicesData = getPaginatedData(stats.invoices);
 
   const netProfit = stats.revenue - stats.totalExpenses;
   const profitMargin = stats.revenue > 0 ? ((netProfit / stats.revenue) * 100).toFixed(1) : 0;
@@ -226,8 +245,9 @@ export default function OwnerFinancePage() {
 
         <div className="p-0 overflow-x-auto max-h-[500px] overflow-y-auto">
           {activeTab === 'payments' && (
+            <>
             <table className="w-full text-sm text-left">
-              <thead className="bg-[var(--bg-input)] text-[var(--text-secondary)] text-xs uppercase border-b border-[var(--border)] sticky top-0 z-10">
+              <thead className="bg-[var(--bg-card)] border-b border-[var(--border)] text-[var(--text-secondary)] text-xs uppercase sticky top-0 z-10 shadow-sm shadow-black/5">
                 <tr>
                   <th className="px-6 py-3 font-medium">Date</th>
                   <th className="px-6 py-3 font-medium">Source / Student</th>
@@ -237,12 +257,12 @@ export default function OwnerFinancePage() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-[var(--border)]">
-                {stats.payments.length === 0 ? (
+                {paymentsData.paginated.length === 0 ? (
                   <tr>
                     <td colSpan={5} className="text-center py-12 text-[var(--text-secondary)]">No income records found.</td>
                   </tr>
                 ) : (
-                  stats.payments.map((p: Payment) => (
+                  paymentsData.paginated.map((p: Payment) => (
                     <tr key={p.id} className="hover:bg-[var(--bg-page)] transition-colors">
                       <td className="px-6 py-4 text-[var(--text-primary)]">{formatDateOnly(p.date)}</td>
                       <td className="px-6 py-4 text-[var(--text-primary)] font-medium">{p.studentId === 'dummy' ? 'Unknown Student' : p.studentId}</td>
@@ -254,11 +274,16 @@ export default function OwnerFinancePage() {
                 )}
               </tbody>
             </table>
+            {paymentsData.totalPages > 1 && (
+              <Pagination currentPage={currentPage} totalPages={paymentsData.totalPages} onPageChange={setCurrentPage} />
+            )}
+            </>
           )}
 
           {activeTab === 'expenses' && (
+            <>
             <table className="w-full text-sm text-left">
-              <thead className="bg-[var(--bg-input)] text-[var(--text-secondary)] text-xs uppercase border-b border-[var(--border)] sticky top-0 z-10">
+              <thead className="bg-[var(--bg-card)] border-b border-[var(--border)] text-[var(--text-secondary)] text-xs uppercase sticky top-0 z-10 shadow-sm shadow-black/5">
                 <tr>
                   <th className="px-6 py-3 font-medium">Date</th>
                   <th className="px-6 py-3 font-medium">Category</th>
@@ -267,12 +292,12 @@ export default function OwnerFinancePage() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-[var(--border)]">
-                {stats.expenses.length === 0 ? (
+                {expensesData.paginated.length === 0 ? (
                   <tr>
                     <td colSpan={4} className="text-center py-12 text-[var(--text-secondary)]">No expense records found.</td>
                   </tr>
                 ) : (
-                  stats.expenses.map((e: Expense) => (
+                  expensesData.paginated.map((e: Expense) => (
                     <tr key={e.id} className="hover:bg-[var(--bg-page)] transition-colors">
                       <td className="px-6 py-4 text-[var(--text-primary)]">{formatDateOnly(e.date)}</td>
                       <td className="px-6 py-4">
@@ -287,11 +312,16 @@ export default function OwnerFinancePage() {
                 )}
               </tbody>
             </table>
+            {expensesData.totalPages > 1 && (
+              <Pagination currentPage={currentPage} totalPages={expensesData.totalPages} onPageChange={setCurrentPage} />
+            )}
+            </>
           )}
           
           {activeTab === 'invoices' && (
+            <>
             <table className="w-full text-sm text-left">
-              <thead className="bg-[var(--bg-input)] text-[var(--text-secondary)] text-xs uppercase border-b border-[var(--border)] sticky top-0 z-10">
+              <thead className="bg-[var(--bg-card)] border-b border-[var(--border)] text-[var(--text-secondary)] text-xs uppercase sticky top-0 z-10 shadow-sm shadow-black/5">
                 <tr>
                   <th className="px-6 py-3 font-medium">Month</th>
                   <th className="px-6 py-3 font-medium">Due Date</th>
@@ -300,12 +330,12 @@ export default function OwnerFinancePage() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-[var(--border)]">
-                {stats.invoices.length === 0 ? (
+                {invoicesData.paginated.length === 0 ? (
                   <tr>
                     <td colSpan={4} className="text-center py-12 text-[var(--text-secondary)]">No invoices found.</td>
                   </tr>
                 ) : (
-                  stats.invoices.map((i: Invoice) => (
+                  invoicesData.paginated.map((i: Invoice) => (
                     <tr key={i.id} className="hover:bg-[var(--bg-page)] transition-colors">
                       <td className="px-6 py-4 font-medium text-[var(--text-primary)]">{i.month}</td>
                       <td className="px-6 py-4 text-[var(--text-primary)]">{formatDateOnly(i.dueDate)}</td>
@@ -320,6 +350,10 @@ export default function OwnerFinancePage() {
                 )}
               </tbody>
             </table>
+            {invoicesData.totalPages > 1 && (
+              <Pagination currentPage={currentPage} totalPages={invoicesData.totalPages} onPageChange={setCurrentPage} />
+            )}
+            </>
           )}
         </div>
       </div>

@@ -4,10 +4,13 @@ import { useState, useEffect } from 'react';
 import { studentOperationsApi } from '@/app/student/lib/api/studentOperations';
 import { useStudentContext } from '@/app/student/components/StudentContext';
 import { Bell } from 'lucide-react';
+import { Pagination } from '@/components/shared/Pagination';
 
 export default function StudentNoticesPage() {
   const { profile } = useStudentContext();
   const [notices, setNotices] = useState<any[]>([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 5;
 
   useEffect(() => {
     if (profile) {
@@ -17,6 +20,8 @@ export default function StudentNoticesPage() {
 
   if (!profile) return <div className="p-4">Loading...</div>;
 
+  const paginatedNotices = notices.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+
   return (
     <div className="space-y-6">
       <div>
@@ -25,7 +30,7 @@ export default function StudentNoticesPage() {
       </div>
 
       <div className="space-y-4">
-        {notices.map(n => (
+        {paginatedNotices.map(n => (
           <div key={n.id} className="bg-[var(--bg-card)] border border-[var(--border)] rounded-[var(--radius-lg,12px)] p-5 shadow-sm flex gap-4 items-start">
             <div className="w-10 h-10 rounded-full bg-[var(--primary-subtle)] flex items-center justify-center shrink-0">
               <Bell className="w-5 h-5 text-[var(--primary)]" />
@@ -45,6 +50,14 @@ export default function StudentNoticesPage() {
           </div>
         )}
       </div>
+
+      {notices.length > 0 && (
+        <Pagination
+          currentPage={currentPage}
+          totalPages={Math.ceil(notices.length / itemsPerPage)}
+          onPageChange={setCurrentPage}
+        />
+      )}
     </div>
   );
 }

@@ -8,7 +8,8 @@ import { CheckCircle, Utensils, ShoppingCart, Truck, Archive, AlertTriangle } fr
 import { api } from '@/lib/api';
 import { mealsApi, MealType, MealStatusType } from '@/lib/api/meals';
 import { stockRequestsApi } from '@/app/staff/lib/api/stockRequests';
-import { attendanceApi } from '@/lib/api/attendance';
+import { attendanceApi } from '@/app/owner/lib/api/attendance';
+import { Pagination } from '@/components/shared/Pagination';
 
 export default function StaffCookPage() {
   const { propertyId } = useStaffContext();
@@ -27,6 +28,17 @@ export default function StaffCookPage() {
   
   const [formData, setFormData] = useState({ itemName: '', quantityRequested: '', unit: 'kg' });
   const [expiryDates, setExpiryDates] = useState<{ [key: string]: string }>({});
+
+  // Pagination state
+  const [stockPage, setStockPage] = useState(1);
+  const [ordersPage, setOrdersPage] = useState(1);
+  const [requestsPage, setRequestsPage] = useState(1);
+  const [incomingPage, setIncomingPage] = useState(1);
+  const itemsPerPage = 8;
+
+  useEffect(() => {
+    setStockPage(1); setOrdersPage(1); setRequestsPage(1); setIncomingPage(1);
+  }, [activeTab, propertyId]);
 
   const loadData = () => {
     if (propertyId) {
@@ -91,6 +103,16 @@ export default function StaffCookPage() {
   const incomingCount = requests.filter(r => r.status === 'purchased').length;
   const pendingRequests = requests.filter(r => r.status === 'pending');
   const incomingDeliveries = requests.filter(r => r.status === 'purchased');
+
+  // Paginated slices
+  const paginatedOrders = orders.slice((ordersPage - 1) * itemsPerPage, ordersPage * itemsPerPage);
+  const ordersTotalPages = Math.ceil(orders.length / itemsPerPage);
+  const paginatedPendingRequests = pendingRequests.slice((requestsPage - 1) * itemsPerPage, requestsPage * itemsPerPage);
+  const requestsTotalPages = Math.ceil(pendingRequests.length / itemsPerPage);
+  const paginatedIncomingDeliveries = incomingDeliveries.slice((incomingPage - 1) * itemsPerPage, incomingPage * itemsPerPage);
+  const incomingTotalPages = Math.ceil(incomingDeliveries.length / itemsPerPage);
+  const paginatedStock = liveStock.slice((stockPage - 1) * itemsPerPage, stockPage * itemsPerPage);
+  const stockTotalPages = Math.ceil(liveStock.length / itemsPerPage);
 
   return (
     <div className="space-y-6 pb-20">
@@ -199,7 +221,7 @@ export default function StaffCookPage() {
               <Utensils className="w-5 h-5 text-[var(--primary)]" /> Live Meal Queue ({orders.length})
             </h2>
           <div className="space-y-3">
-            {orders.map(o => (
+            {paginatedOrders.map(o => (
               <div key={o.id} className="flex justify-between items-center p-3 bg-[var(--bg-input)] border border-[var(--border)] rounded-xl">
                 <div>
                   <div className="font-bold text-[var(--text-primary)]">{o.studentName} <span className="text-xs text-[var(--text-secondary)] font-normal ml-2">Room {o.roomNumber}</span></div>
@@ -217,6 +239,7 @@ export default function StaffCookPage() {
             {orders.length === 0 && (
               <div className="text-center p-8 text-[var(--text-secondary)]">No active meal orders.</div>
             )}
+            {ordersTotalPages > 1 && <Pagination currentPage={ordersPage} totalPages={ordersTotalPages} onPageChange={setOrdersPage} />}
           </div>
         </div>
         </div>
@@ -255,8 +278,8 @@ export default function StaffCookPage() {
           </div>
 
           <div className="space-y-4">
-            <h3 className="font-bold text-lg text-[var(--text-primary)]">Pending Requests</h3>
-            {pendingRequests.map(req => (
+            <h3 className="font-bold text-lg text-[var(--text-primary)]">Pending Requests ({pendingRequests.length})</h3>
+            {paginatedPendingRequests.map(req => (
               <div key={req.id} className="bg-[var(--bg-card)] border border-[var(--border)] rounded-xl p-4 flex justify-between items-center">
                 <div>
                   <h4 className="font-bold text-[var(--text-primary)]">{req.itemName}</h4>
@@ -270,6 +293,7 @@ export default function StaffCookPage() {
             {pendingRequests.length === 0 && (
               <div className="text-sm text-[var(--text-secondary)] italic">No pending requests.</div>
             )}
+            {requestsTotalPages > 1 && <Pagination currentPage={requestsPage} totalPages={requestsTotalPages} onPageChange={setRequestsPage} />}
           </div>
         </div>
       )}
@@ -281,7 +305,7 @@ export default function StaffCookPage() {
             <p className="text-sm text-[var(--primary)] opacity-80">The manager has purchased these items. Please check the packets, enter their expiry dates, and add them to your live stock.</p>
           </div>
 
-          {incomingDeliveries.map(req => (
+          {paginatedIncomingDeliveries.map(req => (
             <div key={req.id} className="bg-[var(--bg-card)] border border-[var(--border)] rounded-2xl p-5 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
               <div>
                 <h3 className="text-lg font-bold text-[var(--text-primary)]">{req.itemName}</h3>
@@ -315,21 +339,23 @@ export default function StaffCookPage() {
               <p className="text-sm mt-1">Check back later when the manager completes purchases.</p>
             </div>
           )}
+          {incomingTotalPages > 1 && <Pagination currentPage={incomingPage} totalPages={incomingTotalPages} onPageChange={setIncomingPage} />}
         </div>
       )}
 
       {activeTab === 'stock' && (
-        <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded-[var(--radius-lg,12px)] overflow-hidden">
+        <div className="space-y-4">
+        <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded-[var(--radius-lg,12px)] overflow-hidden shadow-sm">
           <table className="w-full text-left text-sm">
-            <thead className="bg-[rgba(99,102,241,0.02)] border-b border-[var(--border)] text-[var(--text-secondary)]">
+            <thead className="bg-[var(--bg-card)] border-b border-[var(--border)] text-[var(--text-secondary)] sticky top-0 z-10 shadow-sm shadow-black/5">
               <tr>
-                <th className="p-4 font-medium">Grocery Item</th>
-                <th className="p-4 font-medium">Available Qty</th>
-                <th className="p-4 font-medium">Expiry Date</th>
+                <th className="p-4 font-semibold uppercase tracking-wider text-[11px]">Grocery Item</th>
+                <th className="p-4 font-semibold uppercase tracking-wider text-[11px]">Available Qty</th>
+                <th className="p-4 font-semibold uppercase tracking-wider text-[11px]">Expiry Date</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-[var(--border)]">
-              {liveStock.map(item => (
+              {paginatedStock.map(item => (
                 <tr key={item.id} className="hover:bg-[var(--bg-input)] transition-colors">
                   <td className="p-4 font-medium text-[var(--text-primary)]">{item.name}</td>
                   <td className="p-4">
@@ -355,6 +381,8 @@ export default function StaffCookPage() {
               )}
             </tbody>
           </table>
+        </div>
+        {stockTotalPages > 1 && <Pagination currentPage={stockPage} totalPages={stockTotalPages} onPageChange={setStockPage} />}
         </div>
       )}
     </div>

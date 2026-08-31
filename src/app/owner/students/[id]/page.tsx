@@ -5,9 +5,10 @@ import { useRouter } from 'next/navigation';
 import { api } from '@/lib/api';
 import { getSession } from '@/lib/auth/session';
 import { useOwnerPropertyContext } from '@/app/owner/components/OwnerPropertyContext';
-import { ArrowLeft, User, Phone, Mail, Building, CreditCard, Activity, CheckCircle, ShieldAlert, LogOut } from 'lucide-react';
+import { ArrowLeft, User, Phone, Mail, Building, CreditCard, Activity, CheckCircle, ShieldAlert, LogOut, Clock } from 'lucide-react';
 import Link from 'next/link';
 import { StudentMember } from '@/app/student/lib/api/students';
+import { studentOperationsApi } from '@/app/student/lib/api/studentOperations';
 
 export default function StudentProfilePage({ params }: { params: Promise<{ id: string }> }) {
   const router = useRouter();
@@ -16,6 +17,7 @@ export default function StudentProfilePage({ params }: { params: Promise<{ id: s
   const { properties } = useOwnerPropertyContext();
 
   const [student, setStudent] = useState<StudentMember | null>(null);
+  const [invoices, setInvoices] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
   const loadData = () => {
@@ -35,6 +37,7 @@ export default function StudentProfilePage({ params }: { params: Promise<{ id: s
     }
 
     setStudent(data);
+    setInvoices(studentOperationsApi.getInvoices(data.user.id));
     setLoading(false);
   };
 
@@ -112,6 +115,14 @@ export default function StudentProfilePage({ params }: { params: Promise<{ id: s
                 <div className="text-sm font-medium">{student.profile.parentName || 'Not provided'}</div>
                 <div className="text-sm text-[var(--text-secondary)]">{student.profile.parentPhone}</div>
               </div>
+              <div className="flex items-center gap-3 text-sm text-[var(--text-primary)] pt-3 border-t border-[var(--border)]">
+                <span className="text-[var(--text-secondary)] font-medium">Stay Duration:</span>
+                <span className="font-bold">
+                  {student.profile.stayStartDate && student.profile.stayEndDate ? 
+                    `${Math.round((new Date(student.profile.stayEndDate).getTime() - new Date(student.profile.stayStartDate).getTime()) / (1000 * 3600 * 24 * 30))} Months` 
+                    : 'Not specified'}
+                </span>
+              </div>
             </div>
           </div>
 
@@ -167,42 +178,45 @@ export default function StudentProfilePage({ params }: { params: Promise<{ id: s
             </div>
           </div>
 
-          <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded-[var(--radius-lg,12px)] overflow-hidden">
-            <div className="p-4 border-b border-[var(--border)] bg-[rgba(99,102,241,0.02)] flex items-center gap-2">
-              <CreditCard className="w-5 h-5 text-[var(--primary)]" />
-              <h2 className="text-base font-semibold text-[var(--text-primary)]">Recent Invoices (Mock)</h2>
-            </div>
-            <div className="p-0">
-              <table className="w-full text-sm text-left">
-                <thead className="bg-[var(--bg-input)] text-[var(--text-secondary)] text-xs uppercase border-b border-[var(--border)]">
-                  <tr>
-                    <th className="px-6 py-3 font-medium">Month</th>
-                    <th className="px-6 py-3 font-medium">Amount</th>
-                    <th className="px-6 py-3 font-medium">Status</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-[var(--border)]">
-                  {/* Mock rows since we don't have real invoice generation pipeline yet */}
-                  <tr>
-                    <td className="px-6 py-4 font-medium text-[var(--text-primary)]">Aug 2026</td>
-                    <td className="px-6 py-4">₹8,500</td>
-                    <td className="px-6 py-4">
-                      {student.profile.duesAmount > 0 
-                        ? <span className="text-[var(--danger)] bg-[var(--danger-bg)] px-2 py-1 rounded text-xs font-semibold border border-[var(--danger)]">Unpaid</span>
-                        : <span className="text-[var(--success)] bg-[var(--success-bg)] px-2 py-1 rounded text-xs font-semibold border border-[var(--success)]">Paid</span>
-                      }
-                    </td>
-                  </tr>
-                  <tr>
-                    <td className="px-6 py-4 font-medium text-[var(--text-primary)]">Jul 2026</td>
-                    <td className="px-6 py-4">₹8,500</td>
-                    <td className="px-6 py-4">
-                      <span className="text-[var(--success)] bg-[var(--success-bg)] px-2 py-1 rounded text-xs font-semibold border border-[var(--success)]">Paid</span>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
+          <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded-[var(--radius-lg,12px)] p-6 overflow-hidden">
+            <h3 className="text-lg font-bold text-[var(--text-primary)] mb-6 flex items-center gap-2">
+              <Clock className="w-5 h-5 text-[var(--primary)]" />
+              Rent Schedule & Payment History
+            </h3>
+            {invoices.length > 0 ? (
+              <div className="relative border-l-2 border-[var(--border)] ml-3 space-y-6">
+                {invoices.filter(i => i.type === 'Rent' || !i.type).sort((a,b) => new Date(b.dueDate).getTime() - new Date(a.dueDate).getTime()).map((invoice: any) => {
+                  const dueTime = new Date(invoice.dueDate).getTime();
+                  const nowTime = new Date().getTime();
+                  const diffDays = (dueTime - nowTime) / (1000 * 3600 * 24);
+                  const isDueSoon = diffDays <= 3;
+                  const showAsDue = invoice.status === 'Pending' && isDueSoon;
+                  const displayStatus = invoice.status === 'Paid' ? 'Paid' : (showAsDue ? 'DUE' : 'PENDING');
+
+                  return (
+                    <div key={invoice.id} className="relative pl-6">
+                      <div className={`absolute w-4 h-4 rounded-full -left-[9px] top-1 ${invoice.status === 'Paid' ? 'bg-[var(--success)]' : (showAsDue ? 'bg-[var(--danger)]' : 'bg-[var(--warning)] border-2 border-[var(--bg-card)]')}`}></div>
+                      <div className={`bg-[var(--bg-input)] p-4 rounded-lg border ${showAsDue ? 'border-[var(--danger)]/50 shadow-sm' : 'border-[var(--border)]'}`}>
+                        <div className="flex justify-between items-start mb-2">
+                          <div>
+                            <h4 className={`font-bold ${showAsDue ? 'text-[var(--danger)]' : 'text-[var(--text-primary)]'}`}>{invoice.title || invoice.description || 'Monthly Rent'}</h4>
+                            <p className={`text-xs ${showAsDue ? 'text-[var(--danger)] font-medium' : 'text-[var(--text-secondary)]'}`}>Due: {new Date(invoice.dueDate).toLocaleDateString()}</p>
+                          </div>
+                          <div className={`text-xs font-bold px-2 py-1 rounded ${invoice.status === 'Paid' ? 'bg-[var(--success-bg)] text-[var(--success)]' : (showAsDue ? 'bg-[var(--danger-bg)] text-[var(--danger)]' : 'bg-[var(--warning-bg)] text-[var(--warning)]')}`}>
+                            {displayStatus}
+                          </div>
+                        </div>
+                        <div className={`font-black ${showAsDue ? 'text-[var(--danger)]' : 'text-[var(--text-primary)]'}`}>₹{invoice.amount.toLocaleString()}</div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            ) : (
+              <div className="text-sm text-[var(--text-secondary)] bg-[var(--bg-input)] p-4 rounded-lg">
+                No invoices found for this student.
+              </div>
+            )}
           </div>
         </div>
       </div>

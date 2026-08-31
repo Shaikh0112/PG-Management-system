@@ -129,8 +129,8 @@ export default function PropertyDetailPage({ params }: { params: Promise<{ id: s
             <div className="mt-6 pt-6 border-t border-[var(--border)]">
               <h3 className="text-sm font-medium text-[var(--text-secondary)] mb-3">Amenities</h3>
               <div className="flex flex-wrap gap-2">
-                {property.amenities.length > 0 ? (
-                  property.amenities.map(am => (
+                {(property.amenities || []).length > 0 ? (
+                  (property.amenities || []).map(am => (
                     <span key={am} className="px-3 py-1 bg-[var(--bg-input)] border border-[var(--border)] rounded-full text-xs font-medium text-[var(--text-primary)]">
                       {am}
                     </span>

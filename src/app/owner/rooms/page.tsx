@@ -8,6 +8,7 @@ import { getSession } from '@/lib/auth/session';
 import { Plus, Search, Filter, BedDouble, AlertCircle, X, CheckCircle2, ChevronRight, Hash, User, Users } from 'lucide-react';
 import Link from 'next/link';
 import { Bed } from '@/app/owner/lib/api/beds';
+import { Pagination } from '@/components/shared/Pagination';
 
 export default function OwnerRoomsPage() {
   const user = typeof window !== 'undefined' ? getSession() : null;
@@ -295,7 +296,7 @@ export default function OwnerRoomsPage() {
         <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded-[var(--radius-lg,12px)] overflow-hidden shadow-sm">
           <div className="overflow-x-auto">
             <table className="w-full text-sm text-left">
-              <thead className="bg-[rgba(99,102,241,0.03)] text-[11px] uppercase tracking-wider text-[var(--text-secondary)] border-b border-[var(--border)]">
+              <thead className="bg-[var(--bg-card)] text-[11px] uppercase tracking-wider text-[var(--text-secondary)] border-b border-[var(--border)] sticky top-0 z-10 shadow-sm shadow-black/5">
                 <tr>
                   <th className="px-6 py-4 font-semibold">Room Identity</th>
                   <th className="px-6 py-4 font-semibold">Configuration</th>

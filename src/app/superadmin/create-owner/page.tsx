@@ -84,7 +84,7 @@ function CreateOwnerForm() {
     setLoading(true);
     
     if(!formData.temporaryPassword) {
-      setError('Temporary password is required.');
+      setErrors({ temporaryPassword: 'Temporary password is required.' });
       setLoading(false);
       return;
     }

@@ -7,6 +7,7 @@ import { useOwnerPropertyContext } from '@/app/owner/components/OwnerPropertyCon
 import { Plus, Search, Filter, ShieldCheck, Wrench, Utensils, Shield, Sparkles, Building2, UserPlus } from 'lucide-react';
 import Link from 'next/link';
 import { TeamMember, StaffRoleType } from '@/app/owner/lib/api/team';
+import { Pagination } from '@/components/shared/Pagination';
 
 const ROLE_ICONS: Record<StaffRoleType, any> = {
   manager: ShieldCheck,
@@ -52,6 +53,17 @@ export default function OwnerTeamPage() {
 
     return matchSearch && matchRole && matchProperty;
   });
+
+  // Pagination
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 9;
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchQuery, roleFilter, selectedPropertyId]);
+
+  const totalPages = Math.ceil(filteredTeam.length / itemsPerPage);
+  const paginatedData = filteredTeam.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
   return (
     <div className="space-y-6 pb-20">
@@ -123,8 +135,9 @@ export default function OwnerTeamPage() {
           </Link>
         </div>
       ) : (
+        <>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredTeam.map(member => {
+          {paginatedData.map(member => {
             const Icon = ROLE_ICONS[member.profile.staffType];
             const colorClass = ROLE_COLORS[member.profile.staffType];
             const propsAssigned = member.user.assignedPropertyIds?.length || 0;
@@ -177,6 +190,12 @@ export default function OwnerTeamPage() {
             );
           })}
         </div>
+        {totalPages > 1 && (
+          <div className="mt-4">
+            <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={setCurrentPage} />
+          </div>
+        )}
+        </>
       )}
     </div>
   );

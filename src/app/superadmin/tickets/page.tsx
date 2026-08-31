@@ -4,6 +4,7 @@ import { ticketsApi, Ticket } from '@/app/superadmin/lib/api/tickets';
 import { ownersApi } from '@/app/owner/lib/api/owners';
 import { Search, Plus, Filter, MessageSquare } from 'lucide-react';
 import { StatusBadge } from '@/config/statusBadgeConfig';
+import { Pagination } from '@/components/shared/Pagination';
 
 export default function TicketsPage() {
   const [tickets, setTickets] = useState<Ticket[]>([]);
@@ -11,6 +12,10 @@ export default function TicketsPage() {
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
   
+  // Pagination
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
+
   // Create Modal
   const [createModal, setCreateModal] = useState(false);
   const [formData, setFormData] = useState({ ownerId: '', title: '', description: '', priority: 'Medium' });
@@ -24,6 +29,11 @@ export default function TicketsPage() {
   useEffect(() => {
     loadData();
   }, []);
+
+  // Reset page when search changes
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [search]);
 
   const handleCreate = (e: React.FormEvent) => {
     e.preventDefault();
@@ -39,6 +49,8 @@ export default function TicketsPage() {
   };
 
   const filtered = tickets.filter(t => t.title.toLowerCase().includes(search.toLowerCase()) || t.description.toLowerCase().includes(search.toLowerCase()));
+  const totalPages = Math.ceil(filtered.length / itemsPerPage);
+  const paginatedData = filtered.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
   const PriorityBadge = ({ p }: { p: string }) => {
     const color = p === 'High' ? 'text-[var(--danger)]' : p === 'Medium' ? 'text-[var(--warning)]' : 'text-[var(--success)]';
@@ -75,7 +87,7 @@ export default function TicketsPage() {
 
         <div className="overflow-x-auto">
           <table className="w-full text-sm text-left">
-            <thead className="bg-[var(--primary-subtle)] text-[var(--text-secondary)] uppercase text-[12px]">
+            <thead className="bg-[var(--bg-card)] border-b border-[var(--border)] text-[var(--text-secondary)] uppercase text-[12px] sticky top-0 z-10 shadow-sm shadow-black/5">
               <tr>
                 <th className="px-6 py-4 font-semibold">Issue</th>
                 <th className="px-6 py-4 font-semibold">Owner</th>
@@ -87,7 +99,7 @@ export default function TicketsPage() {
             <tbody className="divide-y divide-[var(--border)]">
               {filtered.length === 0 ? (
                 <tr><td colSpan={5} className="px-6 py-12 text-center text-[var(--text-secondary)]">No tickets found.</td></tr>
-              ) : filtered.map(t => {
+              ) : paginatedData.map(t => {
                 const owner = owners.find(o => o.id === t.ownerId);
                 return (
                   <tr key={t.id} className="h-12 even:bg-black/5 dark:even:bg-white/[0.02] hover:bg-[var(--primary-subtle)] transition-colors cursor-pointer">
@@ -126,6 +138,13 @@ export default function TicketsPage() {
             </tbody>
           </table>
         </div>
+        {totalPages > 1 && (
+          <Pagination 
+            currentPage={currentPage} 
+            totalPages={totalPages} 
+            onPageChange={setCurrentPage} 
+          />
+        )}
       </div>
 
       {createModal && (

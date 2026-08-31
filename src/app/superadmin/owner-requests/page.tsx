@@ -7,6 +7,7 @@ import { useRouter } from 'next/navigation';
 import { ConfirmDialog } from '@/lib/ui/ConfirmDialog';
 import { useToast } from '@/lib/ui/ToastContext';
 import { StatusBadge } from '@/config/statusBadgeConfig';
+import { Pagination } from '@/components/shared/Pagination';
 
 export default function OwnerRequestsPage() {
   const router = useRouter();
@@ -15,6 +16,10 @@ export default function OwnerRequestsPage() {
   const [search, setSearch] = useState('');
   const [loading, setLoading] = useState(true);
   const { showToast } = useToast();
+  
+  // Pagination
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
   
   // Modals
   const [rejectModalOpen, setRejectModalOpen] = useState(false);
@@ -31,6 +36,11 @@ export default function OwnerRequestsPage() {
   useEffect(() => {
     loadRequests();
   }, []);
+
+  // Reset page when filter or search changes
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [filter, search]);
 
   const handleHold = () => {
     ownerRequestsApi.updateStatus(selectedReqId, 'Hold');
@@ -59,6 +69,9 @@ export default function OwnerRequestsPage() {
     }
     return true;
   });
+
+  const totalPages = Math.ceil(filtered.length / itemsPerPage);
+  const paginatedData = filtered.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
   return (
     <div className="space-y-6">
@@ -96,7 +109,7 @@ export default function OwnerRequestsPage() {
 
         <div className="overflow-x-auto max-h-[60vh]">
           <table className="w-full text-sm text-left">
-            <thead className="bg-[var(--primary-subtle)] text-[var(--text-secondary)] uppercase text-xs sticky top-0 z-10">
+            <thead className="bg-[var(--bg-card)] border-b border-[var(--border)] text-[var(--text-secondary)] uppercase text-xs sticky top-0 z-10 shadow-sm shadow-black/5">
               <tr>
                 <th className="px-6 py-4 font-semibold">Applicant</th>
                 <th className="px-6 py-4 font-semibold">Contact</th>
@@ -117,7 +130,7 @@ export default function OwnerRequestsPage() {
                     <p className="text-[var(--text-secondary)] text-sm">We couldn't find any owner requests matching your criteria.</p>
                   </td>
                 </tr>
-              ) : filtered.map((r) => (
+              ) : paginatedData.map((r) => (
                 <tr key={r.id} className="h-12 even:bg-black/5 dark:even:bg-white/[0.02] hover:bg-[var(--primary-subtle)] transition-colors group">
                   <td className="px-6 py-4">
                     <div className="font-bold text-[var(--text-primary)] truncate max-w-[200px]">{r.name}</div>
@@ -159,6 +172,13 @@ export default function OwnerRequestsPage() {
             </tbody>
           </table>
         </div>
+        {totalPages > 1 && (
+          <Pagination 
+            currentPage={currentPage} 
+            totalPages={totalPages} 
+            onPageChange={setCurrentPage} 
+          />
+        )}
       </div>
 
       {/* Reject Modal */}

@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { formatINR } from '@/lib/utils/formatters';
 import { StatusBadge } from '@/config/statusBadgeConfig';
+import { Pagination } from '@/components/shared/Pagination';
 
 export default function OwnersDirectoryPage() {
   const router = useRouter();
@@ -14,10 +15,19 @@ export default function OwnersDirectoryPage() {
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('All');
 
+  // Pagination
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
+
   useEffect(() => {
     setOwners(ownersApi.listOwners());
     setLoading(false);
   }, []);
+
+  // Reset page when filter or search changes
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [statusFilter, search]);
 
   const filtered = owners.filter(o => {
     if (statusFilter !== 'All' && o.status !== statusFilter) return false;
@@ -27,6 +37,9 @@ export default function OwnersDirectoryPage() {
     }
     return true;
   });
+
+  const totalPages = Math.ceil(filtered.length / itemsPerPage);
+  const paginatedData = filtered.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
   return (
     <div className="space-y-6 pb-20">
@@ -67,7 +80,7 @@ export default function OwnersDirectoryPage() {
 
         <div className="overflow-x-auto max-h-[60vh]">
           <table className="w-full text-sm text-left">
-            <thead className="bg-[var(--primary-subtle)] text-[var(--text-secondary)] uppercase text-[12px] sticky top-0 z-10">
+            <thead className="bg-[var(--bg-card)] border-b border-[var(--border)] text-[var(--text-secondary)] uppercase text-[12px] sticky top-0 z-10 shadow-sm shadow-black/5">
               <tr>
                 <th className="px-6 py-4 font-semibold">Owner Info</th>
                 <th className="px-6 py-4 font-semibold">Plan</th>
@@ -88,7 +101,7 @@ export default function OwnersDirectoryPage() {
                     <p className="text-[var(--text-secondary)] text-sm">No owners match your current filters.</p>
                   </td>
                 </tr>
-              ) : filtered.map((o) => (
+              ) : paginatedData.map((o) => (
                 <tr key={o.id} onClick={() => router.push(`/superadmin/owners/${o.id}`)} className="h-12 even:bg-black/5 dark:even:bg-white/[0.02] hover:bg-[var(--primary-subtle)] transition-colors group cursor-pointer">
                   <td className="px-6 py-4">
                     <div className="font-bold text-[var(--text-primary)] truncate max-w-[200px]">{o.name}</div>
@@ -120,6 +133,13 @@ export default function OwnersDirectoryPage() {
             </tbody>
           </table>
         </div>
+        {totalPages > 1 && (
+          <Pagination 
+            currentPage={currentPage} 
+            totalPages={totalPages} 
+            onPageChange={setCurrentPage} 
+          />
+        )}
       </div>
     </div>
   );

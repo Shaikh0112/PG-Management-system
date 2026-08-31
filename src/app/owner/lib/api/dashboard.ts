@@ -61,12 +61,18 @@ export const dashboardApi = {
     let pendingRent = 0;
     const currentMonth = new Date().toISOString().slice(0,7);
     
-    payments.forEach(p => {
-      if (p.createdAt?.startsWith(currentMonth)) thisMonthCollection += Number(p.amount) || 0;
-    });
-
     invoices.forEach(i => {
-      if (i.month === currentMonth && i.status.toLowerCase() !== 'paid') pendingRent += Number(i.amount) || 0;
+      // Get month from either 'month' field or 'dueDate'
+      const invoiceMonth = i.month || (i.dueDate ? i.dueDate.slice(0,7) : '');
+      const amt = Number(i.amount) || 0;
+      
+      if (invoiceMonth === currentMonth) {
+        if (i.status === 'Paid') {
+          thisMonthCollection += amt;
+        } else {
+          pendingRent += amt;
+        }
+      }
     });
 
     // Expenses calculations

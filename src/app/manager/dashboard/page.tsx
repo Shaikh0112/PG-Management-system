@@ -22,7 +22,7 @@ import {
 } from 'lucide-react';
 import { StockRequest } from '@/app/staff/lib/api/stockRequests';
 import { mealsApi, MealStatus } from '@/lib/api/meals';
-import { attendanceApi } from '@/lib/api/attendance';
+import { attendanceApi } from '@/app/owner/lib/api/attendance';
 import { Utensils, CheckCircle2 } from 'lucide-react';
 
 export default function ManagerDashboard() {
