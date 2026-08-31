@@ -13,10 +13,10 @@ export const managerOperationsApi = {
     const existing = db.getAll<any>(STORAGE_KEYS.VISITORS || 'spg_visitors').filter(v => v.propertyId === propertyId);
     if (existing.length === 0) {
       db.insert<any>(STORAGE_KEYS.VISITORS || 'spg_visitors', {
-        id: createId(), propertyId, tenantName: 'Rahul Sharma', name: 'Suresh', phone: '9988776655', relation: 'Father', status: 'pending', createdAt: new Date().toISOString(), isDeleted: false
+        id: createId(), propertyId, studentName: 'Rahul Sharma', name: 'Suresh', phone: '9988776655', relation: 'Father', status: 'pending', createdAt: new Date().toISOString(), isDeleted: false
       });
       db.insert<any>(STORAGE_KEYS.VISITORS || 'spg_visitors', {
-        id: createId(), propertyId, tenantName: 'Amit Kumar', name: 'Delivery', phone: '9123456789', relation: 'Swiggy', status: 'checked_in', createdAt: new Date().toISOString(), isDeleted: false
+        id: createId(), propertyId, studentName: 'Amit Kumar', name: 'Delivery', phone: '9123456789', relation: 'Swiggy', status: 'checked_in', createdAt: new Date().toISOString(), isDeleted: false
       });
     }
 
@@ -64,7 +64,7 @@ export const managerOperationsApi = {
   listGateLogs: (propertyId: string) => {
     return db.getAll<any>(STORAGE_KEYS.GATE_LOGS).filter(g => g.propertyId === propertyId && !g.isDeleted).sort((a,b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
   },
-  addGateLog: (data: { propertyId: string, tenantId: string, type: 'entry' | 'exit', isLate: boolean, managerId: string }) => {
+  addGateLog: (data: { propertyId: string, studentId: string, type: 'entry' | 'exit', isLate: boolean, managerId: string }) => {
     db.insert(STORAGE_KEYS.GATE_LOGS, {
       id: createId('gat'),
       ...data,

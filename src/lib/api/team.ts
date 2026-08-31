@@ -9,7 +9,7 @@ export type StaffRoleType = 'manager' | 'cook';
 export interface StaffPermissions {
   canEditRent: boolean;
   canAddExpense: boolean;
-  canOnboardTenant: boolean;
+  canOnboardStudent: boolean;
   canBroadcast: boolean;
   canCollectCash: boolean;
 }
@@ -81,7 +81,7 @@ export const teamApi = {
       permissions: data.permissions || {
         canEditRent: false,
         canAddExpense: false,
-        canOnboardTenant: false,
+        canOnboardStudent: false,
         canBroadcast: false,
         canCollectCash: false
       },

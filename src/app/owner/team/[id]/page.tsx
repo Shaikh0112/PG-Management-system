@@ -200,10 +200,10 @@ export default function TeamMemberProfilePage() {
             
             <div className="space-y-3">
               {[
-                { label: 'Edit Rent & Bills', key: 'canEditRent', desc: 'Can modify tenant rent amounts and generate bills.' },
+                { label: 'Edit Rent & Bills', key: 'canEditRent', desc: 'Can modify student rent amounts and generate bills.' },
                 { label: 'Add Expenses', key: 'canAddExpense', desc: 'Can log daily expenses for assigned properties.' },
-                { label: 'Onboard New Tenants', key: 'canOnboardTenant', desc: 'Can admit new tenants and assign beds.' },
-                { label: 'Broadcast Messages', key: 'canBroadcast', desc: 'Can send WhatsApp broadcasts to tenants.' },
+                { label: 'Onboard New Students', key: 'canOnboardStudent', desc: 'Can admit new students and assign beds.' },
+                { label: 'Broadcast Messages', key: 'canBroadcast', desc: 'Can send WhatsApp broadcasts to students.' },
                 { label: 'Collect Cash Payments', key: 'canCollectCash', desc: 'Authorized to collect and log cash payments.' },
               ].map((perm) => {
                 const hasPerm = member.profile.permissions[perm.key as keyof typeof member.profile.permissions];

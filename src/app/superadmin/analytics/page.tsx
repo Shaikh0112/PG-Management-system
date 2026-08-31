@@ -41,7 +41,7 @@ export default function AnalyticsPage() {
         {[
           { label: 'Network MRR', value: `₹${(stats.mrr/100000).toFixed(2)}L`, trend: '+12.5%', isUp: true, icon: CreditCard, color: 'text-[var(--success)]' },
           { label: 'Platform Occupancy', value: `${stats.occupancyPercentage}%`, trend: '+2.1%', isUp: true, icon: Activity, color: 'text-[var(--primary)]' },
-          { label: 'Active Tenants', value: stats.totalTenantsCount.toLocaleString(), trend: '+45', isUp: true, icon: Users, color: 'text-[var(--info)]' },
+          { label: 'Active Students', value: stats.totalStudentsCount.toLocaleString(), trend: '+45', isUp: true, icon: Users, color: 'text-[var(--info)]' },
           { label: 'Churn Rate', value: '1.2%', trend: '-0.3%', isUp: false, icon: TrendingUp, color: 'text-[var(--danger)]' } // simulated trend
         ].map((k, i) => (
           <div key={i} className="bg-[var(--bg-card)] border border-[var(--border)] p-5 rounded-[var(--radius-lg,12px)] shadow-sm">

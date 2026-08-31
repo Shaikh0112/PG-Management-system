@@ -165,7 +165,7 @@ export default function PayrollPage() {
             salary: d.salary,
             joinDate: new Date().toISOString(),
             shift: 'Morning',
-            permissions: { canEditRent: false, canAddExpense: true, canOnboardTenant: d.role === 'manager', canBroadcast: d.role === 'manager', canCollectCash: true }
+            permissions: { canEditRent: false, canAddExpense: true, canOnboardStudent: d.role === 'manager', canBroadcast: d.role === 'manager', canCollectCash: true }
           }, user.id);
           
           if (d.role === 'manager') {

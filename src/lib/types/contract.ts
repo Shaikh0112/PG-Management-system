@@ -3,7 +3,7 @@
  * 
  * This file defines the standard data models for the PG SaaS application.
  * All properties must include an `id`, `createdAt`, `updatedAt` (ISO date strings),
- * and when applicable, `ownerId` and `propertyId` to ensure multi-tenant isolation.
+ * and when applicable, `ownerId` and `propertyId` to ensure multi-student isolation.
  */
 
 export interface BaseEntity {
@@ -16,7 +16,7 @@ export interface User extends BaseEntity {
   name: string;
   email: string;
   phone: string;
-  role: 'superadmin' | 'owner' | 'manager' | 'staff' | 'tenant' | 'parent';
+  role: 'superadmin' | 'owner' | 'manager' | 'staff' | 'student' | 'parent';
   password?: string; 
   ownerId?: string; // If applicable
   status: 'active' | 'inactive' | 'suspended';
@@ -60,7 +60,7 @@ export interface Bed extends BaseEntity {
   status: 'vacant' | 'occupied' | 'maintenance';
 }
 
-export interface TenantProfile extends BaseEntity {
+export interface StudentProfile extends BaseEntity {
   userId: string; // Refers to the User
   propertyId: string;
   ownerId: string;
@@ -80,12 +80,12 @@ export interface TenantProfile extends BaseEntity {
 
 export interface ParentProfile extends BaseEntity {
   userId: string; // Parent's User ID
-  tenantUserId: string; // The child's User ID
+  studentUserId: string; // The child's User ID
   ownerId: string;
 }
 
 export interface Invoice extends BaseEntity {
-  tenantId: string; // Refers to Tenant Profile or User ID
+  studentId: string; // Refers to Student Profile or User ID
   propertyId: string;
   ownerId: string;
   amount: number;
@@ -96,7 +96,7 @@ export interface Invoice extends BaseEntity {
 }
 
 export interface Payment extends BaseEntity {
-  tenantId: string;
+  studentId: string;
   propertyId: string;
   ownerId: string;
   amount: number;
@@ -115,7 +115,7 @@ export interface Expense extends BaseEntity {
 }
 
 export interface Complaint extends BaseEntity {
-  tenantId: string;
+  studentId: string;
   propertyId: string;
   ownerId: string;
   category: string;
@@ -125,7 +125,7 @@ export interface Complaint extends BaseEntity {
 }
 
 export interface GateLog extends BaseEntity {
-  tenantId: string;
+  studentId: string;
   propertyId: string;
   ownerId: string;
   entryType: 'in' | 'out';
@@ -135,7 +135,7 @@ export interface GateLog extends BaseEntity {
 }
 
 export interface Notice extends BaseEntity {
-  tenantId: string;
+  studentId: string;
   propertyId: string;
   ownerId: string;
   moveOutDate: string;
@@ -144,7 +144,7 @@ export interface Notice extends BaseEntity {
 }
 
 export interface MessOrder extends BaseEntity {
-  tenantId: string;
+  studentId: string;
   propertyId: string;
   ownerId: string;
   mealType: 'breakfast' | 'lunch' | 'dinner';

@@ -102,7 +102,7 @@ export default function StaffCookPage() {
             {orders.map(o => (
               <div key={o.id} className="flex justify-between items-center p-3 bg-[var(--bg-input)] border border-[var(--border)] rounded-xl">
                 <div>
-                  <div className="font-bold text-[var(--text-primary)]">{o.tenantName} <span className="text-xs text-[var(--text-secondary)] font-normal ml-2">Room {o.roomNumber}</span></div>
+                  <div className="font-bold text-[var(--text-primary)]">{o.studentName} <span className="text-xs text-[var(--text-secondary)] font-normal ml-2">Room {o.roomNumber}</span></div>
                   <div className="text-sm text-[var(--text-secondary)] mt-1">{o.mealType}</div>
                 </div>
                 {o.status === 'Pending' ? (

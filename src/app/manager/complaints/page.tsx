@@ -44,7 +44,7 @@ export default function ManagerComplaintsPage() {
     <div className="space-y-6 pb-20">
       <div>
         <h1 className="text-[24px] font-bold text-[var(--text-primary)]">Maintenance & Complaints</h1>
-        <p className="text-sm text-[var(--text-secondary)]">Manage tenant issues and track repair costs.</p>
+        <p className="text-sm text-[var(--text-secondary)]">Manage student issues and track repair costs.</p>
       </div>
 
       <div className="flex border-b border-[var(--border)] gap-6">

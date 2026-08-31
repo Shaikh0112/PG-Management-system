@@ -12,7 +12,7 @@ const DEMO_ACCOUNTS = [
   { id: 'owner', label: 'Owner', email: 'peter.m@example.com', password: 'Owner@123', icon: Briefcase },
   { id: 'manager', label: 'Manager', email: 'tom.h@example.org', password: 'Manager@123', icon: Users },
   { id: 'cook', label: 'Cook', email: 'ivan.p@example.net', password: 'Staff@123', icon: Utensils },
-  { id: 'tenant', label: 'Tenant', email: 'james.b@example.com', password: 'Tenant@123', icon: UserCheck }
+  { id: 'student', label: 'Student', email: 'james.b@example.com', password: 'Student@123', icon: UserCheck }
 ];
 
 export default function UnifiedLogin() {

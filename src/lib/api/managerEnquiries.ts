@@ -16,7 +16,7 @@ export interface Enquiry extends BaseEntity {
   lossReason?: string;
   notes?: string;
   assignedManagerId?: string;
-  referredByTenantId?: string;
+  referredByStudentId?: string;
 }
 
 export const managerEnquiriesApi = {
@@ -61,7 +61,7 @@ export const managerEnquiriesApi = {
       status: data.status || 'new',
       notes: data.notes || '',
       assignedManagerId: data.assignedManagerId,
-      referredByTenantId: data.referredByTenantId,
+      referredByStudentId: data.referredByStudentId,
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
       createdBy: data.assignedManagerId || 'system',
@@ -76,7 +76,7 @@ export const managerEnquiriesApi = {
       action: 'ENQUIRY_CREATED',
       actorId: data.assignedManagerId || 'system',
       targetId: newEnquiry.id,
-      details: `Created enquiry for ${newEnquiry.name}${data.referredByTenantId ? ' (Referral)' : ''}`,
+      details: `Created enquiry for ${newEnquiry.name}${data.referredByStudentId ? ' (Referral)' : ''}`,
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
       createdBy: data.assignedManagerId || 'system',
@@ -103,12 +103,12 @@ export const managerEnquiriesApi = {
     db.update<Enquiry>(STORAGE_KEYS.ENQUIRIES, id, updateData);
 
     // If converted/booked and it was a referral, grant reward
-    if ((status === 'booked' || status === 'converted') && enq.referredByTenantId && enq.status !== 'booked' && enq.status !== 'converted') {
-      const allTenants = db.getAll<any>(STORAGE_KEYS.TENANTS);
-      const tenant = allTenants.find((t: any) => t.userId === enq.referredByTenantId);
-      if (tenant) {
-        db.update(STORAGE_KEYS.TENANTS, tenant.id, {
-          pendingReferralRewards: (tenant.pendingReferralRewards || 0) + 1
+    if ((status === 'booked' || status === 'converted') && enq.referredByStudentId && enq.status !== 'booked' && enq.status !== 'converted') {
+      const allStudents = db.getAll<any>(STORAGE_KEYS.STUDENTS);
+      const student = allStudents.find((t: any) => t.userId === enq.referredByStudentId);
+      if (student) {
+        db.update(STORAGE_KEYS.STUDENTS, student.id, {
+          pendingReferralRewards: (student.pendingReferralRewards || 0) + 1
         });
       }
     }

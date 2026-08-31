@@ -6,9 +6,9 @@ export const managerDashboardApi = {
   seedMocksIfEmpty: (propertyId: string) => {
     if (!propertyId) return;
 
-    // Check if tenants exist
-    const tenants = db.getAll<any>(STORAGE_KEYS.TENANTS).filter(t => t.propertyId === propertyId);
-    if (tenants.length === 0) {
+    // Check if students exist
+    const students = db.getAll<any>(STORAGE_KEYS.STUDENTS).filter(t => t.propertyId === propertyId);
+    if (students.length === 0) {
       // Seed Rooms & Beds
       const r1 = createId();
       db.insert(STORAGE_KEYS.ROOMS, { id: r1, propertyId, number: '101', floor: 1, type: '2 Sharing', isDeleted: false });
@@ -18,9 +18,9 @@ export const managerDashboardApi = {
       db.insert(STORAGE_KEYS.BEDS, { id: b1, propertyId, roomId: r1, code: 'A', status: 'occupied', isDeleted: false });
       db.insert(STORAGE_KEYS.BEDS, { id: b2, propertyId, roomId: r1, code: 'B', status: 'available', isDeleted: false });
 
-      // Seed Tenants
+      // Seed Students
       const t1 = createId();
-      db.insert(STORAGE_KEYS.TENANTS, {
+      db.insert(STORAGE_KEYS.STUDENTS, {
         id: t1,
         propertyId,
         roomId: r1,
@@ -40,8 +40,8 @@ export const managerDashboardApi = {
       db.insert(STORAGE_KEYS.COMPLAINTS, {
         id: createId(),
         propertyId,
-        tenantId: t1,
-        tenantName: 'Rahul Sharma',
+        studentId: t1,
+        studentName: 'Rahul Sharma',
         category: 'Maintenance',
         description: 'AC is making a weird noise',
         status: 'pending',
@@ -54,8 +54,8 @@ export const managerDashboardApi = {
       db.insert(STORAGE_KEYS.VISITORS || 'spg_visitors', {
         id: createId(),
         propertyId,
-        tenantId: t1,
-        tenantName: 'Rahul Sharma',
+        studentId: t1,
+        studentName: 'Rahul Sharma',
         name: 'Amit Kumar',
         phone: '9988776655',
         relation: 'Friend',
@@ -84,8 +84,8 @@ export const managerDashboardApi = {
     // Auto-seed so dashboard feels alive
     managerDashboardApi.seedMocksIfEmpty(propertyId);
 
-    const tenants = db.getAll<any>(STORAGE_KEYS.TENANTS).filter(t => t.propertyId === propertyId && !t.isDeleted);
-    const activeTenants = tenants.filter(t => t.status === 'active' || t.status === 'on_notice').length;
+    const students = db.getAll<any>(STORAGE_KEYS.STUDENTS).filter(t => t.propertyId === propertyId && !t.isDeleted);
+    const activeStudents = students.filter(t => t.status === 'active' || t.status === 'on_notice').length;
 
     const beds = db.getAll<any>(STORAGE_KEYS.BEDS).filter(b => b.propertyId === propertyId && !b.isDeleted);
     const vacantBeds = beds.filter(b => b.status === 'available' || b.status === 'vacant').length;
@@ -93,8 +93,8 @@ export const managerDashboardApi = {
     const complaints = db.getAll<any>(STORAGE_KEYS.COMPLAINTS).filter(c => c.propertyId === propertyId && !c.isDeleted);
     const openComplaints = complaints.filter(c => c.status !== 'resolved').length;
 
-    // Simulate overdue rent by checking tenants dues
-    const overdueTenantsCount = tenants.filter(t => t.duesAmount > 0).length;
+    // Simulate overdue rent by checking students dues
+    const overdueStudentsCount = students.filter(t => t.duesAmount > 0).length;
 
     const activeSos = db.getAll<any>(STORAGE_KEYS.SOS || 'spg_sos').filter(s => s.propertyId === propertyId && s.status === 'active' && !s.isDeleted).length;
 
@@ -110,16 +110,16 @@ export const managerDashboardApi = {
     const totalCollectedRent = allInvoices.filter(i => i.status.toLowerCase() === 'paid').reduce((acc, curr) => acc + curr.amount, 0);
     const pendingRentAmount = allInvoices.filter(i => i.status.toLowerCase() !== 'paid').reduce((acc, curr) => acc + curr.amount, 0);
     
-    const paidTenantIds = new Set(allInvoices.filter(i => i.status.toLowerCase() === 'paid').map(i => i.tenantId));
-    const pendingTenantIds = new Set(allInvoices.filter(i => i.status.toLowerCase() !== 'paid').map(i => i.tenantId));
+    const paidStudentIds = new Set(allInvoices.filter(i => i.status.toLowerCase() === 'paid').map(i => i.studentId));
+    const pendingStudentIds = new Set(allInvoices.filter(i => i.status.toLowerCase() !== 'paid').map(i => i.studentId));
     
     return {
-      activeTenants,
+      activeStudents,
       vacantBeds,
       todayCheckins: 1, // Simulated fixed
       openComplaints,
       pendingVisitors: db.getAll<any>(STORAGE_KEYS.VISITORS || 'spg_visitors').filter(v => v.propertyId === propertyId && v.status === 'pending').length || 1, 
-      overdueTenantsCount: pendingTenantIds.size,
+      overdueStudentsCount: pendingStudentIds.size,
       lateEntries: 2, 
       lowInventoryItems: 3, 
       activeSos,
@@ -127,9 +127,9 @@ export const managerDashboardApi = {
         totalExpectedRent,
         totalCollectedRent,
         pendingRentAmount,
-        studentsPaidCount: paidTenantIds.size,
-        studentsPendingCount: pendingTenantIds.size,
-        totalStudents: activeTenants
+        studentsPaidCount: paidStudentIds.size,
+        studentsPendingCount: pendingStudentIds.size,
+        totalStudents: activeStudents
       }
     };
   }

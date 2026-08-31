@@ -11,5 +11,5 @@ export interface User extends BaseEntity {
   ownerId?: string;
   propertyId?: string;
   assignedPropertyIds?: string[];
-  linkedTenantId?: string;
+  linkedStudentId?: string;
 }

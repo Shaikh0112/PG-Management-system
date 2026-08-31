@@ -222,7 +222,7 @@ export default function ManagerEnquiriesPage() {
                           <h4 className="font-semibold text-[var(--text-primary)] truncate pr-2">{enq.name}</h4>
                         </div>
                         
-                        {enq.referredByTenantId && (
+                        {enq.referredByStudentId && (
                           <div className="mb-2 inline-block px-2 py-0.5 bg-emerald-100 text-emerald-800 text-[10px] font-bold rounded-full border border-emerald-200">
                             🎁 Referred by Student
                           </div>
@@ -291,7 +291,7 @@ export default function ManagerEnquiriesPage() {
                   <span className="text-[10px] uppercase font-bold tracking-wider px-2 py-1 bg-[rgba(239,68,68,0.1)] text-[var(--danger)] rounded-full">Lost</span>
                 </div>
                 
-                {enq.referredByTenantId && (
+                {enq.referredByStudentId && (
                   <div className="mb-2 inline-block px-2 py-0.5 bg-emerald-100 text-emerald-800 text-[10px] font-bold rounded-full border border-emerald-200">
                     🎁 Referred by Student
                   </div>

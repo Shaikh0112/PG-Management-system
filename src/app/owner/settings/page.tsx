@@ -94,7 +94,7 @@ export default function OwnerSettingsPage() {
                 value={formData.noticeDays} onChange={e => setFormData(p => ({...p, noticeDays: parseInt(e.target.value)}))}
                 className="w-full bg-[var(--bg-input)] border border-[var(--border)] rounded-[var(--radius-md,8px)] px-3 py-2 text-sm text-[var(--text-primary)] focus:border-[var(--primary)] outline-none"
               />
-              <p className="text-xs text-[var(--text-secondary)] mt-1">Days tenant must serve before leaving.</p>
+              <p className="text-xs text-[var(--text-secondary)] mt-1">Days student must serve before leaving.</p>
             </div>
             <div className="space-y-1">
               <label className="text-sm font-medium text-[var(--text-secondary)]">Night Entry Cutoff Time</label>

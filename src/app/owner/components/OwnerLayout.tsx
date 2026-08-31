@@ -20,7 +20,7 @@ const NAV_ITEMS = [
   { key: 'rooms', href: '/owner/rooms', icon: Bed },
   { key: 'team', href: '/owner/team', icon: Users },
   { key: 'payroll', href: '/owner/payroll', icon: Banknote },
-  { key: 'tenants', href: '/owner/tenants', icon: UserSquare2 },
+  { key: 'students', href: '/owner/students', icon: UserSquare2 },
   { key: 'finance', href: '/owner/finance', icon: Wallet },
   { key: 'maintenance', href: '/owner/maintenance', icon: Wrench, label: 'Maintenance Log' },
   { key: 'food', href: '/owner/food', icon: UtensilsCrossed, label: 'Food Menu' },

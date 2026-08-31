@@ -174,7 +174,7 @@ export default function RoomProfilePage({ params }: { params: Promise<{ id: stri
             <div className="p-5 border-b border-[var(--border)] flex justify-between items-center bg-[rgba(99,102,241,0.02)]">
               <div className="flex items-center gap-3">
                 <BedDouble className="w-5 h-5 text-[var(--primary)]" />
-                <h2 className="text-lg font-semibold text-[var(--text-primary)]">Beds & Tenants</h2>
+                <h2 className="text-lg font-semibold text-[var(--text-primary)]">Beds & Students</h2>
               </div>
               <div className="text-xs font-medium px-3 py-1 bg-[var(--bg-input)] rounded-full text-[var(--text-secondary)] border border-[var(--border)]">
                 <span className="text-[var(--primary)]">{vacantBeds}</span> Vacant / {room.sharing} Total
@@ -200,7 +200,7 @@ export default function RoomProfilePage({ params }: { params: Promise<{ id: stri
                         {bed.status === 'occupied' ? (
                           <>
                             <User className="w-3.5 h-3.5" />
-                            <span>Occupied by Tenant</span> {/* TODO: link to tenant profile when module is built */}
+                            <span>Occupied by Student</span> {/* TODO: link to student profile when module is built */}
                           </>
                         ) : bed.status === 'maintenance' ? (
                           <span className="text-[var(--danger)]">Under Maintenance</span>

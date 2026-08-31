@@ -36,9 +36,9 @@ export default function LandingPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {[
               { role: 'Owner', desc: 'Financials & properties', color: 'bg-indigo-100 text-indigo-800 border-indigo-200 dark:bg-indigo-500/20 dark:text-indigo-400 dark:border-indigo-500/30' },
-              { role: 'Manager', desc: 'Daily operations & tenants', color: 'bg-blue-100 text-blue-800 border-blue-200 dark:bg-blue-500/20 dark:text-blue-400 dark:border-blue-500/30' },
+              { role: 'Manager', desc: 'Daily operations & students', color: 'bg-blue-100 text-blue-800 border-blue-200 dark:bg-blue-500/20 dark:text-blue-400 dark:border-blue-500/30' },
               { role: 'Staff', desc: 'Cooks, guards, cleaners', color: 'bg-orange-100 text-orange-800 border-orange-200 dark:bg-orange-500/20 dark:text-orange-400 dark:border-orange-500/30' },
-              { role: 'Tenant', desc: 'Rent, mess & complaints', color: 'bg-purple-100 text-purple-800 border-purple-200 dark:bg-purple-500/20 dark:text-purple-400 dark:border-purple-500/30' }
+              { role: 'Student', desc: 'Rent, mess & complaints', color: 'bg-purple-100 text-purple-800 border-purple-200 dark:bg-purple-500/20 dark:text-purple-400 dark:border-purple-500/30' }
             ].map((r, idx) => (
               <div key={idx} className="p-6 rounded-2xl border border-[var(--border)] bg-[var(--bg-card)] shadow-sm flex flex-col items-start transition-all hover:shadow-md hover:-translate-y-1">
                 <div className={`px-3 py-1 rounded-full text-xs font-bold border ${r.color} mb-4`}>{r.role}</div>
@@ -52,7 +52,7 @@ export default function LandingPage() {
         <section id="features" className="max-w-7xl mx-auto px-4 py-16">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {[
-              { icon: <CreditCard />, title: 'Pay-per-day Mess', desc: 'Tenants only pay for the meals they eat.' },
+              { icon: <CreditCard />, title: 'Pay-per-day Mess', desc: 'Students only pay for the meals they eat.' },
               { icon: <Bell />, title: 'SOS & Safety', desc: '1-click emergency alerts directly to manager.' },
               { icon: <Bed />, title: 'Vacant Bed Listing', desc: 'Share your availability publicly and get leads.' },
               { icon: <PenTool />, title: 'eSign Agreements', desc: 'Paperless rent agreements generated automatically.' },
@@ -89,7 +89,7 @@ export default function LandingPage() {
               <div className="flex-1">
                 <div className="w-12 h-12 bg-[var(--primary)] rounded-full flex items-center justify-center mx-auto mb-4 text-xl font-bold shadow-lg shadow-indigo-500/50 text-white">3</div>
                 <h3 className="font-bold text-[var(--text-primary)]">Go Live</h3>
-                <p className="text-[var(--text-secondary)] text-sm mt-2">Add PGs, Staff & Tenants</p>
+                <p className="text-[var(--text-secondary)] text-sm mt-2">Add PGs, Staff & Students</p>
               </div>
             </div>
           </div>

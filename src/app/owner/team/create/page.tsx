@@ -31,7 +31,7 @@ export default function CreateTeamMemberPage() {
     permissions: {
       canEditRent: false,
       canAddExpense: false,
-      canOnboardTenant: false,
+      canOnboardStudent: false,
       canBroadcast: false,
       canCollectCash: false
     }
@@ -314,8 +314,8 @@ export default function CreateTeamMemberPage() {
                   { key: 'canEditRent', label: 'Edit Rent Amounts', desc: 'Allow manager to modify monthly rent during check-in.' },
                   { key: 'canCollectCash', label: 'Collect Cash Payments', desc: 'Allow manager to log manual cash/UPI receipts.' },
                   { key: 'canAddExpense', label: 'Add Expenses', desc: 'Allow manager to record property maintenance expenses.' },
-                  { key: 'canOnboardTenant', label: 'Onboard Tenants', desc: 'Allow manager to add new tenants to the system.' },
-                  { key: 'canBroadcast', label: 'Send Broadcasts', desc: 'Allow manager to send announcements to all tenants.' }
+                  { key: 'canOnboardStudent', label: 'Onboard Students', desc: 'Allow manager to add new students to the system.' },
+                  { key: 'canBroadcast', label: 'Send Broadcasts', desc: 'Allow manager to send announcements to all students.' }
                 ].map(perm => (
                   <label key={perm.key} className="flex items-start gap-3 p-3 rounded-lg border border-[var(--border)] bg-[var(--bg-page)] cursor-pointer hover:border-[var(--primary-subtle)] transition-colors">
                     <input 

@@ -19,7 +19,7 @@ const MENU_ITEMS = [
   { key: 'enquiries', icon: MessageSquare, href: '/manager/enquiries' },
   { key: 'checkin', icon: ClipboardCheck, href: '/manager/check-in' },
   { key: 'rooms', icon: BedDouble, href: '/manager/rooms' },
-  { key: 'tenants', icon: Users, href: '/manager/tenants' },
+  { key: 'students', icon: Users, href: '/manager/students' },
   { key: 'complaints', icon: AlertCircle, href: '/manager/complaints' },
   { key: 'food', icon: Utensils, href: '/manager/food', label: 'Food Menu' },
   { key: 'visitors', icon: UserPlus, href: '/manager/visitors' },

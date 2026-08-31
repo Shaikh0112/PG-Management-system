@@ -1,5 +1,5 @@
 export * from './models';
-export type Role = 'superadmin' | 'owner' | 'manager' | 'staff' | 'tenant' | 'parent';
+export type Role = 'superadmin' | 'owner' | 'manager' | 'staff' | 'student' | 'parent';
 
 export interface BaseEntity {
   id: string;

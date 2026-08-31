@@ -22,7 +22,7 @@ export const ticketsApi = {
     if (tickets.length === 0) {
       // Seed dummy tickets
       const dummy = [
-        { id: createId('tkt'), title: 'App not loading on mobile', description: 'Tenants are complaining app is stuck on white screen.', status: 'Open', priority: 'High', ownerId: 'own_1', createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() },
+        { id: createId('tkt'), title: 'App not loading on mobile', description: 'Students are complaining app is stuck on white screen.', status: 'Open', priority: 'High', ownerId: 'own_1', createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() },
         { id: createId('tkt'), title: 'Need custom GST format', description: 'Can you change the invoice format for my state?', status: 'Resolved', priority: 'Low', ownerId: 'own_1', createdAt: new Date(Date.now() - 86400000).toISOString(), updatedAt: new Date().toISOString() }
       ];
       dummy.forEach(d => db.insert('spg_tickets' as any, d as any));

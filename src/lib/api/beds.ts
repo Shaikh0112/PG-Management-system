@@ -10,7 +10,7 @@ export interface Bed extends BaseEntity {
   propertyId: string;
   code: string; // e.g., 'A', 'B', 'C'
   status: BedStatus;
-  tenantId?: string; // Optional reference if occupied
+  studentId?: string; // Optional reference if occupied
 }
 
 export const bedsApi = {

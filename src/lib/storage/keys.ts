@@ -8,7 +8,7 @@ export const STORAGE_KEYS = {
   ROOMS: 'spg_rooms',
   BEDS: 'spg_beds',
   STAFF: 'spg_staff',
-  TENANTS: 'spg_tenants',
+  STUDENTS: 'spg_students',
   PARENTS: 'spg_parents',
   ENQUIRIES: 'spg_enquiries',
   BOOKINGS: 'spg_bookings',

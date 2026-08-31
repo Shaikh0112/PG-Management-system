@@ -21,7 +21,7 @@ export default function ManagerDocumentsPage() {
   return (
     <div className="space-y-6 pb-20">
       <div>
-        <h1 className="text-[24px] font-bold text-[var(--text-primary)]">Tenant Documents</h1>
+        <h1 className="text-[24px] font-bold text-[var(--text-primary)]">Student Documents</h1>
         <p className="text-sm text-[var(--text-secondary)]">Verify uploaded IDs and agreements.</p>
       </div>
 
@@ -29,7 +29,7 @@ export default function ManagerDocumentsPage() {
         <table className="w-full text-left text-sm">
           <thead className="bg-[rgba(99,102,241,0.02)] border-b border-[var(--border)] text-[var(--text-secondary)]">
             <tr>
-              <th className="p-4 font-medium">Tenant ID</th>
+              <th className="p-4 font-medium">Student ID</th>
               <th className="p-4 font-medium">Document Type</th>
               <th className="p-4 font-medium">Status</th>
               <th className="p-4 font-medium text-right">Actions</th>

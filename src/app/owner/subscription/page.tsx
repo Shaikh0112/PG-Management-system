@@ -42,7 +42,7 @@ export default function OwnerSubscriptionPage() {
     // Actual usage logic:
     const propsCount = api.properties.listByOwner(user.id).length;
     const staffCount = api.team.listByOwner(user.id).length;
-    const tenantsCount = api.tenants.listByOwner(user.id).length; 
+    const studentsCount = api.students.listByOwner(user.id).length; 
 
     setAllPlans(plans);
     setData({
@@ -51,7 +51,7 @@ export default function OwnerSubscriptionPage() {
       usage: {
         properties: propsCount,
         staff: staffCount,
-        tenants: tenantsCount
+        students: studentsCount
       }
     });
     setLoading(false);

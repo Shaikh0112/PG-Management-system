@@ -230,7 +230,7 @@ export default function OwnerFinancePage() {
               <thead className="bg-[var(--bg-input)] text-[var(--text-secondary)] text-xs uppercase border-b border-[var(--border)] sticky top-0 z-10">
                 <tr>
                   <th className="px-6 py-3 font-medium">Date</th>
-                  <th className="px-6 py-3 font-medium">Source / Tenant</th>
+                  <th className="px-6 py-3 font-medium">Source / Student</th>
                   <th className="px-6 py-3 font-medium">Method</th>
                   <th className="px-6 py-3 font-medium">Amount</th>
                   <th className="px-6 py-3 font-medium">Ref No</th>
@@ -245,7 +245,7 @@ export default function OwnerFinancePage() {
                   stats.payments.map((p: Payment) => (
                     <tr key={p.id} className="hover:bg-[var(--bg-page)] transition-colors">
                       <td className="px-6 py-4 text-[var(--text-primary)]">{formatDateOnly(p.date)}</td>
-                      <td className="px-6 py-4 text-[var(--text-primary)] font-medium">{p.tenantId === 'dummy' ? 'Unknown Tenant' : p.tenantId}</td>
+                      <td className="px-6 py-4 text-[var(--text-primary)] font-medium">{p.studentId === 'dummy' ? 'Unknown Student' : p.studentId}</td>
                       <td className="px-6 py-4 uppercase text-xs font-bold text-[var(--text-secondary)]">{p.method.replace('_', ' ')}</td>
                       <td className="px-6 py-4 font-bold text-[var(--success)]">+{formatINR(p.amount)}</td>
                       <td className="px-6 py-4 text-xs font-mono">{p.referenceNo || '-'}</td>

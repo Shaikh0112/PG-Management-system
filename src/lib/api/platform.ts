@@ -12,13 +12,13 @@ export const platformApi = {
     const properties = db.getAll(STORAGE_KEYS.PROPERTIES).filter((p: any) => !p.isDeleted);
     const activePropertiesCount = properties.length;
     
-    const tenants = db.getAll(STORAGE_KEYS.USERS).filter((u: any) => u.role === 'tenant' && !u.isDeleted);
-    const totalTenantsCount = tenants.length;
+    const students = db.getAll(STORAGE_KEYS.USERS).filter((u: any) => u.role === 'student' && !u.isDeleted);
+    const totalStudentsCount = students.length;
     
     // Occupancy Network Average
     const rooms = db.getAll(STORAGE_KEYS.ROOMS).filter((r: any) => !r.isDeleted);
     const totalCapacity = rooms.reduce((sum: number, r: any) => sum + (r.capacity || 0), 0);
-    const occupancyPercentage = totalCapacity > 0 ? Math.round((totalTenantsCount / totalCapacity) * 100) : 0;
+    const occupancyPercentage = totalCapacity > 0 ? Math.round((totalStudentsCount / totalCapacity) * 100) : 0;
     
     const subscriptions = db.getAll(STORAGE_KEYS.SUBSCRIPTIONS).filter((s: any) => !s.isDeleted && s.status === 'active');
     const plans = db.getAll(STORAGE_KEYS.PLANS);
@@ -59,7 +59,7 @@ export const platformApi = {
       activeOwnersCount,
       pendingRequestsCount,
       activePropertiesCount,
-      totalTenantsCount,
+      totalStudentsCount,
       mrr,
       occupancyPercentage,
       openTicketsCount,

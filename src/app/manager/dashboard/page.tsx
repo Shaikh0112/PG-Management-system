@@ -74,12 +74,12 @@ export default function ManagerDashboard() {
   const selectedProp = properties.find(p => p.id === selectedPropertyId);
 
   const widgets = [
-    { label: 'Active Tenants', value: stats?.activeTenants || 0, icon: Users, color: 'text-[var(--primary)]', bg: 'bg-[rgba(99,102,241,0.1)]' },
+    { label: 'Active Students', value: stats?.activeStudents || 0, icon: Users, color: 'text-[var(--primary)]', bg: 'bg-[rgba(99,102,241,0.1)]' },
     { label: 'Vacant Beds', value: stats?.vacantBeds || 0, icon: BedDouble, color: 'text-[var(--success)]', bg: 'bg-[rgba(16,185,129,0.1)]' },
     { label: 'Today Check-ins', value: stats?.todayCheckins || 0, icon: ClipboardCheck, color: 'text-purple-500', bg: 'bg-purple-500/10' },
     { label: 'Open Complaints', value: stats?.openComplaints || 0, icon: AlertCircle, color: 'text-[var(--danger)]', bg: 'bg-[var(--danger-bg)]' },
     { label: 'Pending Visitors', value: stats?.pendingVisitors || 0, icon: UserPlus, color: 'text-[var(--warning)]', bg: 'bg-[var(--warning-bg)]' },
-    { label: 'Overdue Rent', value: stats?.overdueTenantsCount || 0, icon: Wallet, color: 'text-[var(--danger)]', bg: 'bg-[var(--danger-bg)]' },
+    { label: 'Overdue Rent', value: stats?.overdueStudentsCount || 0, icon: Wallet, color: 'text-[var(--danger)]', bg: 'bg-[var(--danger-bg)]' },
     { label: 'Late Entries', value: stats?.lateEntries || 0, icon: Clock, color: 'text-[var(--warning)]', bg: 'bg-[var(--warning-bg)]' },
     { label: 'Active SOS', value: stats?.activeSos || 0, icon: AlertCircle, color: 'text-white', bg: 'bg-red-600 animate-pulse' },
   ];
@@ -149,11 +149,11 @@ export default function ManagerDashboard() {
           Quick Actions
         </h2>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <Link href="/manager/tenants" className="bg-[var(--bg-card)] border border-[var(--border)] rounded-[var(--radius-md,8px)] p-4 flex flex-col items-center justify-center gap-3 hover:bg-[rgba(99,102,241,0.05)] hover:border-[var(--primary)] transition-all">
+          <Link href="/manager/students" className="bg-[var(--bg-card)] border border-[var(--border)] rounded-[var(--radius-md,8px)] p-4 flex flex-col items-center justify-center gap-3 hover:bg-[rgba(99,102,241,0.05)] hover:border-[var(--primary)] transition-all">
             <div className="p-3 bg-[rgba(99,102,241,0.1)] rounded-full text-[var(--primary)]">
               <UserPlus className="w-6 h-6" />
             </div>
-            <span className="text-sm font-medium text-[var(--text-primary)]">Add Tenant</span>
+            <span className="text-sm font-medium text-[var(--text-primary)]">Add Student</span>
           </Link>
           <Link href="/manager/finance" className="bg-[var(--bg-card)] border border-[var(--border)] rounded-[var(--radius-md,8px)] p-4 flex flex-col items-center justify-center gap-3 hover:bg-[rgba(16,185,129,0.05)] hover:border-[var(--success)] transition-all">
             <div className="p-3 bg-[rgba(16,185,129,0.1)] rounded-full text-[var(--success)]">

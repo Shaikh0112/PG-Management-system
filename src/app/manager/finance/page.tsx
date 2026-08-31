@@ -9,7 +9,7 @@ import { Invoice } from '@/lib/api/finance';
 
 export default function ManagerFinancePage() {
   const { selectedPropertyId, loading: ctxLoading } = useManagerPropertyContext();
-  const [invoices, setInvoices] = useState<(Invoice & { tenantName?: string; roomBed?: string })[]>([]);
+  const [invoices, setInvoices] = useState<(Invoice & { studentName?: string; roomBed?: string })[]>([]);
   const [stats, setStats] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<'all' | 'paid' | 'pending'>('all');
@@ -23,14 +23,14 @@ export default function ManagerFinancePage() {
     api.finance.seedMonthlyInvoices(selectedPropertyId);
     
     const allInvoices = api.finance.listInvoices(selectedPropertyId);
-    const tenants = api.tenants.listByProperty(selectedPropertyId) || []; // Assume we have listTenants or get from db
+    const students = api.students.listByProperty(selectedPropertyId) || []; // Assume we have listStudents or get from db
     
-    // Map tenant names
+    // Map student names
     const enrichedInvoices = allInvoices.map(inv => {
-      const tenantData = tenants.find(t => t.profile.id === inv.tenantId);
+      const studentData = students.find(t => t.profile.id === inv.studentId);
       return {
         ...inv,
-        tenantName: tenantData?.user?.name || 'Unknown',
+        studentName: studentData?.user?.name || 'Unknown',
         roomBed: 'Unknown'
       };
     }).sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
@@ -51,12 +51,12 @@ export default function ManagerFinancePage() {
     if (!user) return;
     const inv = invoices.find(i => i.id === invId);
     if (!inv) return;
-    api.finance.recordCashPayment({ propertyId: inv.propertyId, tenantId: inv.tenantId, amount: inv.amount, method: 'cash' }, user.id, inv.id);
+    api.finance.recordCashPayment({ propertyId: inv.propertyId, studentId: inv.studentId, amount: inv.amount, method: 'cash' }, user.id, inv.id);
     loadData();
   };
 
-  const handleSendReminder = (tenantName: string) => {
-    alert(`Rent reminder sent to ${tenantName}!`);
+  const handleSendReminder = (studentName: string) => {
+    alert(`Rent reminder sent to ${studentName}!`);
   };
 
   if (ctxLoading || loading) return <div className="p-6 text-[var(--text-secondary)] animate-pulse">Loading Rent Management...</div>;
@@ -141,7 +141,7 @@ export default function ManagerFinancePage() {
                         <UserIcon className="w-4 h-4 text-[var(--text-secondary)]" />
                       </div>
                       <div>
-                        <div className="font-bold text-[var(--text-primary)]">{inv.tenantName}</div>
+                        <div className="font-bold text-[var(--text-primary)]">{inv.studentName}</div>
                         <div className="text-xs text-[var(--text-secondary)]">{inv.roomBed}</div>
                       </div>
                     </div>
@@ -170,7 +170,7 @@ export default function ManagerFinancePage() {
                       {inv.status.toLowerCase() !== 'paid' ? (
                         <>
                           <button 
-                            onClick={() => handleSendReminder(inv.tenantName || 'Student')} 
+                            onClick={() => handleSendReminder(inv.studentName || 'Student')} 
                             className="p-2 text-[var(--warning)] hover:bg-[var(--warning-bg)] rounded-md transition-colors"
                             title="Send Reminder"
                           >

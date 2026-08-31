@@ -62,7 +62,7 @@ export default function ManagerBroadcastsPage() {
              <div>
                <label className="block text-sm text-[var(--text-secondary)] mb-1">Audience</label>
                <select value={formData.audience} onChange={e=>setFormData({...formData, audience: e.target.value})} className="w-full bg-[var(--bg-input)] border border-[var(--border)] px-3 py-2 rounded text-[var(--text-primary)] focus:outline-none focus:border-[var(--primary)]">
-                 <option value="all">All Tenants</option>
+                 <option value="all">All Students</option>
                  <option value="floor">Specific Floor</option>
                  <option value="defaulters">Rent Defaulters</option>
                </select>
@@ -81,7 +81,7 @@ export default function ManagerBroadcastsPage() {
       <div className="flex-1 space-y-6">
         <div>
           <h1 className="text-[24px] font-bold text-[var(--text-primary)]">Broadcast History</h1>
-          <p className="text-sm text-[var(--text-secondary)]">Past announcements sent to tenants.</p>
+          <p className="text-sm text-[var(--text-secondary)]">Past announcements sent to students.</p>
         </div>
 
         <div className="space-y-4">
@@ -96,7 +96,7 @@ export default function ManagerBroadcastsPage() {
                 {b.audience === 'all' && <Users className="w-3.5 h-3.5 text-[var(--primary)]" />}
                 {b.audience === 'floor' && <Building className="w-3.5 h-3.5 text-[var(--success)]" />}
                 {b.audience === 'defaulters' && <AlertTriangle className="w-3.5 h-3.5 text-[var(--danger)]" />}
-                Target: {b.audience === 'floor' ? b.targetFloor : b.audience === 'defaulters' ? 'Defaulters' : 'All Tenants'}
+                Target: {b.audience === 'floor' ? b.targetFloor : b.audience === 'defaulters' ? 'Defaulters' : 'All Students'}
               </div>
             </div>
           ))}

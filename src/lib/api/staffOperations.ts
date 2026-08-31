@@ -36,7 +36,7 @@ export const staffOperationsApi = {
   resolveSos: (sosId: string, staffId: string) => {
     db.update<any>(STORAGE_KEYS.SOS || 'spg_sos', sosId, { status: 'resolved', updatedAt: new Date().toISOString(), updatedBy: staffId });
   },
-  addGateLog: (data: { propertyId: string, tenantId: string, type: 'entry' | 'exit', isLate: boolean, staffId: string }) => {
+  addGateLog: (data: { propertyId: string, studentId: string, type: 'entry' | 'exit', isLate: boolean, staffId: string }) => {
     db.insert(STORAGE_KEYS.GATE_LOGS, {
       id: createId('gat'),
       ...data,

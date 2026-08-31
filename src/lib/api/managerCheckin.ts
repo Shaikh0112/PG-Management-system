@@ -20,9 +20,9 @@ export const managerCheckinApi = {
     });
   },
 
-  getCompatibilityScore: (roomId: string, currentTenantAnswers: any, newTenantAnswers: any) => {
+  getCompatibilityScore: (roomId: string, currentStudentAnswers: any, newStudentAnswers: any) => {
     // Mock simple compatibility score
-    // In real app, we would fetch existing occupying tenant answers in this room
+    // In real app, we would fetch existing occupying student answers in this room
     return Math.floor(Math.random() * 40) + 60; // 60-100 score
   },
 
@@ -55,14 +55,14 @@ export const managerCheckinApi = {
       parentId = pUser.id; // Or profile ID depending on relation mapping, we use user ID for simplicity
     }
 
-    // 2. Create Tenant User
+    // 2. Create Student User
     const tUser: User = {
       id: createId('usr'),
-      role: 'tenant',
+      role: 'student',
       name: data.personal.name,
       email: data.personal.email,
       phone: data.personal.phone,
-      password: data.credentials.password || 'Tenant@123',
+      password: data.credentials.password || 'Student@123',
       status: 'Active',
       mustChangePassword: true,
       createdAt: now, updatedAt: now, createdBy: actorId, updatedBy: actorId, isDeleted: false
@@ -74,7 +74,7 @@ export const managerCheckinApi = {
     const stayEndDate = new Date(stayStartDate);
     stayEndDate.setMonth(stayEndDate.getMonth() + Number(data.deposit.stayDuration || 3));
 
-    // 3. Create Tenant Profile
+    // 3. Create Student Profile
     const tProfile = {
       id: createId('ten'),
       userId: tUser.id,
@@ -96,7 +96,7 @@ export const managerCheckinApi = {
       panNumber: data.documents?.panNumber || '',
       createdAt: now, updatedAt: now, createdBy: actorId, updatedBy: actorId, isDeleted: false
     };
-    db.insert(STORAGE_KEYS.TENANTS, tProfile);
+    db.insert(STORAGE_KEYS.STUDENTS, tProfile);
 
     // Generate Rent Schedule (Invoices)
     let totalDues = 0;
@@ -106,7 +106,7 @@ export const managerCheckinApi = {
       db.insert(STORAGE_KEYS.INVOICES, {
         id: createId('inv'),
         propertyId: data.propertyId,
-        tenantId: tUser.id,
+        studentId: tUser.id,
         amount: parseInt(data.deposit.rentAmount) || 0,
         status: 'Pending',
         type: 'Rent',
@@ -123,14 +123,14 @@ export const managerCheckinApi = {
     }
     
     // Update initial dues
-    db.update(STORAGE_KEYS.TENANTS, tProfile.id, {
+    db.update(STORAGE_KEYS.STUDENTS, tProfile.id, {
       duesAmount: totalDues
     });
 
     // 4. Mark Bed as Occupied
     db.update<any>(STORAGE_KEYS.BEDS, data.room.bedId, {
       status: 'Occupied',
-      tenantId: tUser.id,
+      studentId: tUser.id,
       updatedAt: now,
       updatedBy: actorId
     });
@@ -154,7 +154,7 @@ export const managerCheckinApi = {
     if (data.agreement.accepted) {
       db.insert(STORAGE_KEYS.AGREEMENTS, {
         id: createId('agr'),
-        tenantId: tUser.id,
+        studentId: tUser.id,
         propertyId: data.propertyId,
         depositType: data.deposit.type,
         loanPartner: data.deposit.loanPartner,
@@ -166,7 +166,7 @@ export const managerCheckinApi = {
     // 7. Initialize Mess Wallet
     db.insert(STORAGE_KEYS.WALLETS, {
       id: createId('wal'),
-      tenantId: tUser.id,
+      studentId: tUser.id,
       balance: 0,
       createdAt: now, updatedAt: now, createdBy: actorId, updatedBy: actorId, isDeleted: false
     });
@@ -179,13 +179,13 @@ export const managerCheckinApi = {
     // 9. Audit Log
     db.insert(STORAGE_KEYS.AUDIT_LOGS, {
       id: createId('aud'),
-      action: 'TENANT_CHECKED_IN',
+      action: 'STUDENT_CHECKED_IN',
       actorId: actorId,
       targetId: tUser.id,
       details: `Checked in ${data.personal.name} to bed ${data.room.bedId}`,
       createdAt: now, updatedAt: now, createdBy: actorId, updatedBy: actorId, isDeleted: false
     });
 
-    return { success: true, tenantUserId: tUser.id };
+    return { success: true, studentUserId: tUser.id };
   }
 };

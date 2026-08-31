@@ -6,12 +6,12 @@ import Link from 'next/link';
 import { BarChart } from '@/components/ui/charts/BarChart';
 
 const MOCK_ACQUISITION_DATA = [
-  { month: 'Mar', tenants: 120 },
-  { month: 'Apr', tenants: 180 },
-  { month: 'May', tenants: 250 },
-  { month: 'Jun', tenants: 310 },
-  { month: 'Jul', tenants: 450 },
-  { month: 'Aug', tenants: 600 }
+  { month: 'Mar', students: 120 },
+  { month: 'Apr', students: 180 },
+  { month: 'May', students: 250 },
+  { month: 'Jun', students: 310 },
+  { month: 'Jul', students: 450 },
+  { month: 'Aug', students: 600 }
 ];
 
 export default function SuperAdminDashboard() {
@@ -29,7 +29,7 @@ export default function SuperAdminDashboard() {
     { label: 'TOTAL OWNERS', value: stats.activeOwnersCount, icon: Users, color: 'text-[var(--primary)]', bg: 'bg-[var(--primary-subtle)]', trend: '+12% vs last month', trendUp: true },
     { label: 'PENDING REQUESTS', value: stats.pendingRequestsCount, icon: Clock, color: 'text-[var(--warning)]', bg: 'bg-[var(--warning-bg)]', trend: '-2% vs last month', trendUp: false },
     { label: 'ACTIVE PROPERTIES', value: stats.activePropertiesCount, icon: Building2, color: 'text-[var(--success)]', bg: 'bg-[var(--success-bg)]', trend: '+5% vs last month', trendUp: true },
-    { label: 'TOTAL TENANTS', value: stats.totalTenantsCount, icon: UserCircle, color: 'text-[var(--info)]', bg: 'bg-[var(--info-bg)]', trend: '+18% vs last month', trendUp: true },
+    { label: 'TOTAL STUDENTS', value: stats.totalStudentsCount, icon: UserCircle, color: 'text-[var(--info)]', bg: 'bg-[var(--info-bg)]', trend: '+18% vs last month', trendUp: true },
     { label: 'MRR (DUMMY)', value: `₹${(stats.mrr/1000).toFixed(1)}k`, icon: CreditCard, color: 'text-[var(--success)]', bg: 'bg-[var(--success-bg)]', trend: '+8.4% vs last month', trendUp: true },
     { label: 'NETWORK OCCUPANCY', value: `${stats.occupancyPercentage}%`, icon: Activity, color: 'text-[var(--primary)]', bg: 'bg-[var(--primary-subtle)]', trend: '+2.1% vs last month', trendUp: true },
     { label: 'OPEN TICKETS', value: stats.openTicketsCount, icon: Ticket, color: 'text-[var(--danger)]', bg: 'bg-[var(--danger-bg)]', trend: '-14% vs last month', trendUp: false },
@@ -98,11 +98,11 @@ export default function SuperAdminDashboard() {
           </div>
         </div>
 
-        {/* Tenant Acquisition Chart (Bar) */}
+        {/* Student Acquisition Chart (Bar) */}
         <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded-[var(--radius-lg,12px)] shadow-sm p-4">
-          <h3 className="font-semibold text-[var(--text-primary)] mb-1">Tenant Acquisition</h3>
-          <p className="text-xs text-[var(--text-secondary)] mb-6">New tenants joining the platform.</p>
-          <BarChart data={MOCK_ACQUISITION_DATA} xAxisKey="month" dataKey="tenants" color="var(--primary)" height={280} />
+          <h3 className="font-semibold text-[var(--text-primary)] mb-1">Student Acquisition</h3>
+          <p className="text-xs text-[var(--text-secondary)] mb-6">New students joining the platform.</p>
+          <BarChart data={MOCK_ACQUISITION_DATA} xAxisKey="month" dataKey="students" color="var(--primary)" height={280} />
         </div>
       </div>
     </div>

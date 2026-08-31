@@ -49,7 +49,7 @@ function CheckinWizardContent() {
     compatibility: { sleepSchedule: 'normal', studyHabits: 'quiet' },
     deposit: { type: 'normal', rentAmount: '', loanPartner: '', stayDuration: '3' },
     agreement: { accepted: false },
-    credentials: { password: 'Tenant@123' }
+    credentials: { password: 'Student@123' }
   });
 
   // Pre-fill from enquiry if passed
@@ -143,7 +143,7 @@ function CheckinWizardContent() {
     <div className="max-w-4xl mx-auto space-y-6 pb-20">
       <div className="mb-8">
         <h1 className="text-[24px] font-bold text-[var(--text-primary)]">Check-in Wizard</h1>
-        <p className="text-sm text-[var(--text-secondary)] mt-1">Onboard a new tenant to your property.</p>
+        <p className="text-sm text-[var(--text-secondary)] mt-1">Onboard a new student to your property.</p>
       </div>
 
       {/* Progress Bar */}
@@ -354,7 +354,7 @@ function CheckinWizardContent() {
                 <label className={`flex-1 border rounded-xl p-4 cursor-pointer transition-colors ${formData.deposit.type === 'normal' ? 'border-[var(--primary)] bg-[var(--primary-subtle)]' : 'border-[var(--border)] bg-[var(--bg-input)]'}`}>
                   <input type="radio" name="dep" checked={formData.deposit.type === 'normal'} onChange={() => setFormData({...formData, deposit: {...formData.deposit, type: 'normal', loanPartner: ''}})} className="sr-only" />
                   <div className="font-bold text-[var(--text-primary)] mb-1">Normal Deposit</div>
-                  <div className="text-xs text-[var(--text-secondary)]">Tenant pays upfront deposit.</div>
+                  <div className="text-xs text-[var(--text-secondary)]">Student pays upfront deposit.</div>
                 </label>
                 <label className={`flex-1 border rounded-xl p-4 cursor-pointer transition-colors ${formData.deposit.type === 'zero_deposit' ? 'border-[var(--primary)] bg-[var(--primary-subtle)]' : 'border-[var(--border)] bg-[var(--bg-input)]'}`}>
                   <input type="radio" name="dep" checked={formData.deposit.type === 'zero_deposit'} onChange={() => setFormData({...formData, deposit: {...formData.deposit, type: 'zero_deposit'}})} className="sr-only" />
@@ -389,17 +389,17 @@ function CheckinWizardContent() {
               
               <div className="space-y-4 text-sm leading-relaxed text-gray-800">
                 <p>
-                  This Rental Agreement is made and entered into on <strong>{new Date().toLocaleDateString('en-IN')}</strong>, by and between the Property Management and <strong>{formData.personal.name || '[Tenant Name]'}</strong> (hereinafter referred to as the "Tenant").
+                  This Rental Agreement is made and entered into on <strong>{new Date().toLocaleDateString('en-IN')}</strong>, by and between the Property Management and <strong>{formData.personal.name || '[Student Name]'}</strong> (hereinafter referred to as the "Student").
                 </p>
                 <h3 className="font-bold text-base mt-4">1. Premises</h3>
-                <p>The Tenant agrees to lease the bed assigned in Room {vacantBeds.find(b=>b.id===formData.room.bedId)?.roomNumber || '[Room Number]'} under the standard occupancy terms.</p>
+                <p>The Student agrees to lease the bed assigned in Room {vacantBeds.find(b=>b.id===formData.room.bedId)?.roomNumber || '[Room Number]'} under the standard occupancy terms.</p>
                 
                 <h3 className="font-bold text-base mt-4">2. Rent & Deposit</h3>
                 <p>The agreed monthly rent is ₹{formData.deposit.rentAmount || '0'}. Rent must be paid on or before the agreed rent cycle date every month. {formData.deposit.type === 'zero_deposit' ? `A Zero Deposit model has been opted via ${formData.deposit.loanPartner}.` : 'A standard security deposit is required before move-in.'}</p>
                 
                 <h3 className="font-bold text-base mt-4">3. House Rules & Notice</h3>
                 <ul className="list-disc pl-5 space-y-1">
-                  <li>Tenant must serve the mandatory notice period before vacating.</li>
+                  <li>Student must serve the mandatory notice period before vacating.</li>
                   <li>Visitors are allowed strictly within visiting hours.</li>
                   <li>Any damages to the premises will be deducted from the deposit.</li>
                 </ul>
@@ -417,7 +417,7 @@ function CheckinWizardContent() {
                     ) : (
                       <div className="border-b border-gray-400 h-10 w-48"></div>
                     )}
-                    <div className="mt-2 text-xs uppercase font-bold text-gray-500">Tenant Signature</div>
+                    <div className="mt-2 text-xs uppercase font-bold text-gray-500">Student Signature</div>
                   </div>
                 </div>
               </div>
@@ -425,7 +425,7 @@ function CheckinWizardContent() {
             
             <label className="flex items-center gap-3 cursor-pointer mt-4 p-3 border border-[var(--primary)] rounded-lg bg-[var(--primary-subtle)] transition-colors">
               <input type="checkbox" checked={formData.agreement.accepted} onChange={e => setFormData({...formData, agreement: { accepted: e.target.checked }})} className="w-5 h-5 accent-[var(--primary)] cursor-pointer" />
-              <span className="text-sm font-medium text-[var(--primary)]">I verify the tenant has read and accepts all legal terms and conditions.</span>
+              <span className="text-sm font-medium text-[var(--primary)]">I verify the student has read and accepts all legal terms and conditions.</span>
             </label>
           </div>
         )}
@@ -433,7 +433,7 @@ function CheckinWizardContent() {
         {step === 8 && (
           <div className="space-y-4 animate-in fade-in slide-in-from-right-4">
             <h2 className="text-xl font-bold text-[var(--text-primary)] flex items-center gap-2"><Key className="text-[var(--primary)]" /> Credentials Setup</h2>
-            <p className="text-sm text-[var(--text-secondary)]">Set a temporary password for the Tenant. They will be forced to change it on their first login.</p>
+            <p className="text-sm text-[var(--text-secondary)]">Set a temporary password for the Student. They will be forced to change it on their first login.</p>
             
             <div>
               <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1">Temporary Password</label>
@@ -442,7 +442,7 @@ function CheckinWizardContent() {
 
             <div className="bg-[var(--warning-bg)] border border-[var(--warning)] text-[var(--warning)] p-3 rounded-lg text-sm flex items-start gap-2">
                <Lock className="w-4 h-4 mt-0.5 shrink-0" />
-               <p>System will enforce password reset when {formData.personal.email || 'tenant'} logs in.</p>
+               <p>System will enforce password reset when {formData.personal.email || 'student'} logs in.</p>
             </div>
           </div>
         )}
@@ -455,7 +455,7 @@ function CheckinWizardContent() {
                  <Wallet className="w-8 h-8 text-[var(--primary)]" />
                </div>
                <h3 className="font-bold text-lg text-[var(--text-primary)] mb-2">Wallet Ready</h3>
-               <p className="text-[var(--text-secondary)] text-sm mb-4">A mess wallet will be created for this tenant with ₹0 starting balance.</p>
+               <p className="text-[var(--text-secondary)] text-sm mb-4">A mess wallet will be created for this student with ₹0 starting balance.</p>
                <div className="inline-block px-4 py-2 bg-[var(--bg-card)] border border-[var(--border)] rounded-lg text-[var(--text-primary)] font-mono font-bold text-xl">
                  ₹0.00
                </div>
@@ -474,8 +474,8 @@ function CheckinWizardContent() {
               Parent link created and mess wallet initialized.
             </p>
             <div className="flex gap-4">
-               <button onClick={() => router.push('/manager/tenants')} className="px-6 py-2.5 bg-[var(--bg-input)] border border-[var(--border)] text-[var(--text-primary)] font-medium rounded-lg hover:bg-[var(--primary-subtle)] transition-colors">
-                 Go to Tenants
+               <button onClick={() => router.push('/manager/students')} className="px-6 py-2.5 bg-[var(--bg-input)] border border-[var(--border)] text-[var(--text-primary)] font-medium rounded-lg hover:bg-[var(--primary-subtle)] transition-colors">
+                 Go to Students
                </button>
                <button onClick={() => window.location.reload()} className="px-6 py-2.5 bg-[var(--primary)] text-white font-medium rounded-lg hover:bg-[var(--primary-hover)] transition-colors">
                  New Check-in

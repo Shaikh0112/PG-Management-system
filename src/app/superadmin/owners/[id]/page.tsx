@@ -148,8 +148,8 @@ export default function Owner360Page() {
               <div className="text-[28px] font-bold text-[var(--text-primary)]">{properties.length} <span className="text-lg text-[var(--text-disabled)]">/ {subscription?.maxProperties}</span></div>
             </div>
             <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded-[var(--radius-lg,12px)] p-5 shadow-sm text-center">
-              <div className="text-[11px] font-medium text-[var(--text-secondary)] uppercase tracking-wider mb-2">Total Tenants</div>
-              <div className="text-[28px] font-bold text-[var(--text-primary)]">{data.tenantsCount} <span className="text-lg text-[var(--text-disabled)]">/ {subscription?.maxBeds}</span></div>
+              <div className="text-[11px] font-medium text-[var(--text-secondary)] uppercase tracking-wider mb-2">Total Students</div>
+              <div className="text-[28px] font-bold text-[var(--text-primary)]">{data.studentsCount} <span className="text-lg text-[var(--text-disabled)]">/ {subscription?.maxBeds}</span></div>
             </div>
             <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded-[var(--radius-lg,12px)] p-5 shadow-sm text-center">
               <div className="text-[11px] font-medium text-[var(--text-secondary)] uppercase tracking-wider mb-2">Staff/Managers</div>

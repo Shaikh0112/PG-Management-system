@@ -45,7 +45,7 @@ export default function OwnerDashboard() {
         </div>
         <h2 className="text-2xl font-bold text-[var(--text-primary)] mb-2">Welcome to SmartPG!</h2>
         <p className="text-[var(--text-secondary)] mb-8 max-w-md">
-          You haven't added any properties yet. Create your first PG to start managing tenants, rent, and staff.
+          You haven't added any properties yet. Create your first PG to start managing students, rent, and staff.
         </p>
         <Link 
           href="/owner/properties/create"

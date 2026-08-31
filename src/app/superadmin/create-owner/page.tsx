@@ -25,7 +25,7 @@ function CreateOwnerForm() {
     temporaryPassword: '', mustChangePassword: true,
     planId: 'none', billingCycle: 'monthly',
     maxProperties: 0, maxBeds: 0, maxStaff: 0,
-    features: ['tenant_portal', 'mess_basic']
+    features: ['student_portal', 'mess_basic']
   });
 
   useEffect(() => {

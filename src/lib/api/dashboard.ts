@@ -108,7 +108,7 @@ export const dashboardApi = {
     const staff = db.getAll<any>(STORAGE_KEYS.STAFF).filter(s => !s.isDeleted && s.assignedPropertyIds?.some((id: string) => propIds.includes(id)));
     const enquiries = db.getAll<any>(STORAGE_KEYS.ENQUIRIES).filter(e => !e.isDeleted && propIds.includes(e.propertyId));
     const wallets = db.getAll<any>(STORAGE_KEYS.WALLETS).filter(w => !w.isDeleted); // Mess revenue proxy
-    const tenants = db.getAll<any>(STORAGE_KEYS.USERS).filter(u => !u.isDeleted && u.role === 'tenant' && propIds.includes(u.propertyId));
+    const students = db.getAll<any>(STORAGE_KEYS.USERS).filter(u => !u.isDeleted && u.role === 'student' && propIds.includes(u.propertyId));
 
     const totalRooms = roomIds.length;
     const totalBeds = contextBeds.length;
@@ -140,10 +140,10 @@ export const dashboardApi = {
     const defaulters = invoices
       .filter(i => i.status.toLowerCase() !== 'paid' && i.amount > 0)
       .map(i => {
-        const tenant = tenants.find(t => t.id === i.tenantId);
-        const prop = contextProps.find(p => p.id === tenant?.propertyId);
+        const student = students.find(t => t.id === i.studentId);
+        const prop = contextProps.find(p => p.id === student?.propertyId);
         return {
-          name: tenant?.name || 'Unknown',
+          name: student?.name || 'Unknown',
           room: '101', // Dummy mapped
           amount: i.amount,
           property: prop?.name || 'Unknown'

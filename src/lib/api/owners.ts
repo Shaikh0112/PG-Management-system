@@ -146,7 +146,7 @@ export const ownersApi = {
         { id: 'prop-2', name: 'Elite PG 2', city: owner.city, capacity: 100, occupied: 98, managers: 3 }
       ],
       managersCount: 5,
-      tenantsCount: 140,
+      studentsCount: 140,
       recentPayments: [
         { id: 'pay-1', date: new Date().toISOString(), amount: 4999, status: 'Success', mode: 'UPI' },
         { id: 'pay-2', date: new Date(Date.now() - 30*24*60*60*1000).toISOString(), amount: 4999, status: 'Success', mode: 'Card' }

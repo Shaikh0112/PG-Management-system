@@ -139,7 +139,7 @@ export default function PlatformSettingsPage() {
           </div>
           <div className="p-6 space-y-6">
             <div>
-              <label className="block text-xs font-medium text-[var(--text-secondary)] mb-1">Global Support Phone (visible to tenants)</label>
+              <label className="block text-xs font-medium text-[var(--text-secondary)] mb-1">Global Support Phone (visible to students)</label>
               <input type="text" value={settings.supportPhone} onChange={e=>setSettings({...settings, supportPhone: e.target.value})} className="w-full max-w-sm bg-[var(--bg-input)] border border-[var(--border)] text-[var(--text-primary)] p-2.5 rounded-[var(--radius-md,8px)] text-sm focus:border-[var(--primary)] focus:outline-none" />
             </div>
             <label className="flex items-center gap-3 p-3 border border-[var(--border)] rounded-[var(--radius-md,8px)] hover:bg-[var(--bg-page)] transition-colors cursor-pointer max-w-sm">

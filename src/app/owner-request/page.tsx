@@ -9,7 +9,7 @@ export default function OwnerRequestPage() {
   const [selectedPlan, setSelectedPlan] = useState('basic');
 
   const plans = [
-    { id: 'basic', name: 'Basic', price: '₹999/mo', desc: 'Perfect for single PG owners.', features: ['1 Property', 'Up to 50 Beds', 'Basic Tenant Portal', 'Email Support'] },
+    { id: 'basic', name: 'Basic', price: '₹999/mo', desc: 'Perfect for single PG owners.', features: ['1 Property', 'Up to 50 Beds', 'Basic Student Portal', 'Email Support'] },
     { id: 'pro', name: 'Pro', price: '₹2,499/mo', desc: 'For growing operators.', features: ['Up to 3 Properties', 'Up to 200 Beds', 'Advanced Finance', 'Priority Support'] },
     { id: 'enterprise', name: 'Enterprise', price: 'Custom', desc: 'For large networks.', features: ['Unlimited Properties', 'Unlimited Beds', 'White-labeled App', 'Dedicated Manager'] }
   ];

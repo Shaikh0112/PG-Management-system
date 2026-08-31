@@ -19,9 +19,9 @@ export interface Plan {
 
 const baseFields = { createdAt: new Date().toISOString(), updatedAt: new Date().toISOString(), createdBy: 'system', updatedBy: 'system', isDeleted: false };
 const SEEDED_PLANS: Plan[] = [
-  { id: 'basic', name: 'Basic', price: 999, maxProperties: 1, maxBeds: 50, maxStaff: 2, features: ['tenant_portal', 'mess_basic'], ...baseFields },
-  { id: 'gold', name: 'Gold', price: 2999, maxProperties: 3, maxBeds: 200, maxStaff: 10, features: ['tenant_portal', 'mess_basic', 'whatsapp_alerts'], ...baseFields },
-  { id: 'platinum', name: 'Platinum', price: 5999, maxProperties: 999, maxBeds: 9999, maxStaff: 999, features: ['tenant_portal', 'mess_basic', 'whatsapp_alerts', 'custom_domain'], ...baseFields }
+  { id: 'basic', name: 'Basic', price: 999, maxProperties: 1, maxBeds: 50, maxStaff: 2, features: ['student_portal', 'mess_basic'], ...baseFields },
+  { id: 'gold', name: 'Gold', price: 2999, maxProperties: 3, maxBeds: 200, maxStaff: 10, features: ['student_portal', 'mess_basic', 'whatsapp_alerts'], ...baseFields },
+  { id: 'platinum', name: 'Platinum', price: 5999, maxProperties: 999, maxBeds: 9999, maxStaff: 999, features: ['student_portal', 'mess_basic', 'whatsapp_alerts', 'custom_domain'], ...baseFields }
 ];
 
 export const plansApi = {

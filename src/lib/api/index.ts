@@ -12,7 +12,7 @@ import { dashboardApi } from './dashboard';
 import { roomsApi } from './rooms';
 import { bedsApi } from './beds';
 import { teamApi } from './team';
-import { tenantsApi } from './tenants';
+import { studentsApi } from './students';
 import { financeApi } from './finance';
 import { reportsApi } from './reports';
 import { messApi } from './mess';
@@ -24,7 +24,7 @@ import { managerEnquiriesApi } from './managerEnquiries';
 import { managerCheckinApi } from './managerCheckin';
 import { managerOperationsApi } from './managerOperations';
 import { staffOperationsApi } from './staffOperations';
-import { tenantOperationsApi } from './tenantOperations';
+import { studentOperationsApi } from './studentOperations';
 import { parentOperationsApi } from './parentOperations';
 import { pricingApi } from './pricing';
 import { payrollApi } from './payroll';
@@ -45,7 +45,7 @@ export const api = {
   beds: bedsApi,
   team: teamApi,
   payroll: payrollApi,
-  tenants: tenantsApi,
+  students: studentsApi,
   finance: financeApi,
   reports: reportsApi,
   mess: messApi,
@@ -57,7 +57,7 @@ export const api = {
   managerCheckin: managerCheckinApi,
   managerOperations: managerOperationsApi,
   staffOperations: staffOperationsApi,
-  tenantOperations: tenantOperationsApi,
+  studentOperations: studentOperationsApi,
   parentOperations: parentOperationsApi,
   pricing: pricingApi
 };

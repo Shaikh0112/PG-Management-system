@@ -44,7 +44,7 @@ export default function ManagerVisitorsPage() {
           <div key={v.id} className="bg-[var(--bg-card)] border border-[var(--border)] p-4 rounded-[var(--radius-lg,12px)] flex flex-col sm:flex-row justify-between sm:items-center gap-4">
             <div>
               <h3 className="font-bold text-[var(--text-primary)]">{v.name}</h3>
-              <p className="text-sm text-[var(--text-secondary)]">Visiting: {v.tenantName || 'Tenant'} (Room {v.roomNumber || '-'})</p>
+              <p className="text-sm text-[var(--text-secondary)]">Visiting: {v.studentName || 'Student'} (Room {v.roomNumber || '-'})</p>
               <div className="text-xs text-[var(--text-secondary)] mt-1">Phone: {v.phone} • Relation: {v.relation}</div>
               <div className="mt-2 text-xs font-medium px-2 py-1 bg-[var(--bg-input)] inline-block rounded text-[var(--text-primary)]">
                 Status: {v.status}

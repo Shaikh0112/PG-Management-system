@@ -59,7 +59,7 @@ export default function ManagerComplaintDetail() {
           <div className="flex items-start justify-between mb-6">
             <div>
               <h1 className="text-2xl font-bold text-[var(--text-primary)]">{complaint.title || complaint.category}</h1>
-              <div className="text-sm text-[var(--text-secondary)] mt-1">Tenant ID: {complaint.tenantId} • Room {complaint.roomNumber || '-'}</div>
+              <div className="text-sm text-[var(--text-secondary)] mt-1">Student ID: {complaint.studentId} • Room {complaint.roomNumber || '-'}</div>
             </div>
             <span className={`px-3 py-1 rounded-full text-xs font-bold flex items-center gap-1 ${
               complaint.status === 'Resolved' ? 'bg-[rgba(16,185,129,0.1)] text-[var(--success)]' :

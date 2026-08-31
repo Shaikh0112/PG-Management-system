@@ -7,7 +7,7 @@ const inter = Inter({ subsets: ['latin'], variable: '--font-inter' });
 
 export const metadata: Metadata = {
   title: 'SmartPG — Hostel Operating System',
-  description: 'A complete multi-tenant hostel management SaaS platform.',
+  description: 'A complete multi-student hostel management SaaS platform.',
 };
 
 export default function RootLayout({

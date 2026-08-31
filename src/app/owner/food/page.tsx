@@ -257,7 +257,7 @@ export default function FoodMenuPage() {
                         🎉 Month End Special
                       </h3>
                       <p className="text-sm text-[var(--text-secondary)] mb-4 max-w-xl">
-                        Define a special menu for the last day of the month to treat your tenants. This overrides the regular weekday menu for that specific date.
+                        Define a special menu for the last day of the month to treat your students. This overrides the regular weekday menu for that specific date.
                       </p>
                       <textarea 
                         value={menu.monthEndSpecial}
