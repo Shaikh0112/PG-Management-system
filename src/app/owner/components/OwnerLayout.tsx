@@ -1,70 +1,61 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
-import { getSession, clearSession } from '@/lib/auth/session';
-import { useManagerPropertyContext } from './ManagerPropertyContext';
-import { useManagerI18n, DictKey } from '@/app/manager/i18n';
+import { usePathname, useRouter } from 'next/navigation';
 import { 
-  LayoutDashboard, MessageSquare, ClipboardCheck, BedDouble, 
-  Users, AlertCircle, Utensils, UserPlus, Clock, LogOut, Radio, FileText, Archive, IndianRupee, Receipt,
-  Menu, X, ShieldAlert, Building2
+  LayoutDashboard, Building2, Bed, Users, UserSquare2, 
+  Wallet, UtensilsCrossed, FileBarChart, Settings, CreditCard,
+  LogOut, Bell, Building, Menu, X, ShieldAlert, Banknote, Wrench
 } from 'lucide-react';
-import { ForcePasswordChangeModal } from '../shared/ForcePasswordChangeModal';
-import { ThemeToggle } from '../public/ThemeToggle';
+import { getSession, clearSession } from '@/lib/auth/session';
+import { useOwnerPropertyContext } from './OwnerPropertyContext';
+import { useOwnerI18n, DictKey } from '@/app/owner/i18n';
+import { ForcePasswordChangeModal } from '@/components/shared/ForcePasswordChangeModal';
+import { ThemeToggle } from '@/components/public/ThemeToggle';
 
-const MENU_ITEMS = [
-  { key: 'dashboard', icon: LayoutDashboard, href: '/manager/dashboard' },
-  { key: 'enquiries', icon: MessageSquare, href: '/manager/enquiries' },
-  { key: 'checkin', icon: ClipboardCheck, href: '/manager/check-in' },
-  { key: 'rooms', icon: BedDouble, href: '/manager/rooms' },
-  { key: 'tenants', icon: Users, href: '/manager/tenants' },
-  { key: 'complaints', icon: AlertCircle, href: '/manager/complaints' },
-  { key: 'food', icon: Utensils, href: '/manager/food', label: 'Food Menu' },
-  { key: 'visitors', icon: UserPlus, href: '/manager/visitors' },
-  { key: 'attendance', icon: Clock, href: '/manager/attendance' },
-  { key: 'gate-logs', icon: LogOut, href: '/manager/gate-logs' },
-  { key: 'broadcasts', icon: Radio, href: '/manager/broadcasts' },
-  { key: 'documents', icon: FileText, href: '/manager/documents' },
-  { key: 'inventory', icon: Archive, href: '/manager/inventory' },
-  { key: 'finance', icon: IndianRupee, href: '/manager/finance' },
-  { key: 'expenses', icon: Receipt, href: '/manager/expenses', label: 'Expenses' }
+const NAV_ITEMS = [
+  { key: 'dashboard', href: '/owner/dashboard', icon: LayoutDashboard },
+  { key: 'properties', href: '/owner/properties', icon: Building2 },
+  { key: 'rooms', href: '/owner/rooms', icon: Bed },
+  { key: 'team', href: '/owner/team', icon: Users },
+  { key: 'payroll', href: '/owner/payroll', icon: Banknote },
+  { key: 'tenants', href: '/owner/tenants', icon: UserSquare2 },
+  { key: 'finance', href: '/owner/finance', icon: Wallet },
+  { key: 'maintenance', href: '/owner/maintenance', icon: Wrench, label: 'Maintenance Log' },
+  { key: 'food', href: '/owner/food', icon: UtensilsCrossed, label: 'Food Menu' },
+  { key: 'reports', href: '/owner/reports', icon: FileBarChart },
+  { key: 'settings', href: '/owner/settings', icon: Settings },
+  { key: 'subscription', href: '/owner/subscription', icon: CreditCard },
 ];
 
-export function ManagerLayout({ children }: { children: React.ReactNode }) {
+export function OwnerLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
+  const router = useRouter();
   const user = typeof window !== 'undefined' ? getSession() : null;
-  const { properties, selectedPropertyId, setSelectedPropertyId } = useManagerPropertyContext();
-  const { lang, setLang, t } = useManagerI18n();
-  
+  const { properties, selectedPropertyId, setSelectedPropertyId } = useOwnerPropertyContext();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-
-  useEffect(() => {
-    setIsMobileMenuOpen(false);
-  }, [pathname]);
-
+  const { lang, setLang, t } = useOwnerI18n();
   const [forcePasswordChange, setForcePasswordChange] = useState(user?.mustChangePassword || false);
 
   const handleLogout = (e: React.MouseEvent) => {
     e.preventDefault();
-    if(typeof window !== 'undefined'){ 
-      clearSession(); 
-      window.location.href='/'; 
-    }
+    clearSession();
+    router.push('/');
   };
 
   return (
-    <div className="min-h-screen bg-[var(--bg-page)] flex flex-col md:flex-row text-[var(--text-primary)]">
+    <div className="min-h-screen bg-[var(--bg-page)] flex flex-col md:flex-row">
       <ForcePasswordChangeModal 
         user={user} 
         onSuccess={() => setForcePasswordChange(false)} 
       />
+      
       {/* Mobile Header */}
       <div className="md:hidden flex items-center justify-between bg-[var(--bg-header)] p-4 border-b border-[var(--border)] shrink-0">
         <div className="flex items-center gap-2 font-bold text-[var(--text-primary)]">
-          <ShieldAlert className="text-[var(--primary)] w-6 h-6" />
-          <span>ManagerOps</span>
+          <Building className="text-[var(--primary)] w-6 h-6" />
+          <span>SmartPG Owner</span>
         </div>
         <div className="flex items-center gap-2">
           <ThemeToggle />
@@ -91,25 +82,22 @@ export function ManagerLayout({ children }: { children: React.ReactNode }) {
       `}>
         <div className="flex items-center justify-between p-6 border-b border-[var(--border)] shrink-0">
           <div className="flex items-center gap-2 font-bold text-xl text-[var(--text-primary)]">
-            <ShieldAlert className="text-[var(--primary)] w-7 h-7" />
-            <span>ManagerOps</span>
+            <Building className="text-[var(--primary)] w-7 h-7" />
+            <span>SmartPG Owner</span>
           </div>
           <button className="md:hidden text-[var(--text-secondary)]" onClick={() => setIsMobileMenuOpen(false)}>
             <X className="w-5 h-5" />
           </button>
         </div>
         <nav className="p-4 space-y-1">
-          {MENU_ITEMS.map((item) => {
+          {NAV_ITEMS.map((item) => {
+            const isActive = pathname === item.href || pathname.startsWith(item.href + '/');
             const label = item.label || t(item.key as DictKey);
             return (
-              <Link key={item.key} href={item.href} onClick={() => setIsMobileMenuOpen(false)}
-                className={`flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors text-[13px] font-medium
-                  ${pathname.startsWith(item.href)
-                    ? 'bg-[var(--primary)] text-white' 
-                    : 'text-[var(--text-secondary)] hover:bg-[var(--bg-input)] hover:text-[var(--text-primary)]'
-                  }`}
+              <Link key={item.href} href={item.href} onClick={() => setIsMobileMenuOpen(false)}
+                className={`flex items-center gap-3 px-4 py-3 rounded-[var(--radius-md,8px)] text-sm font-medium transition-colors ${isActive ? 'bg-[var(--primary-subtle)] text-[var(--primary)] border-l-4 border-[var(--primary)]' : 'text-[var(--text-secondary)] hover:bg-[var(--bg-page)] hover:text-[var(--text-primary)]'}`}
               >
-                <item.icon className={`w-4 h-4 ${pathname.startsWith(item.href) ? 'text-white' : 'text-[var(--text-secondary)]'}`} />
+                <item.icon className="w-5 h-5" />
                 {label}
               </Link>
             );
@@ -149,6 +137,7 @@ export function ManagerLayout({ children }: { children: React.ReactNode }) {
                 value={selectedPropertyId}
                 onChange={(e) => setSelectedPropertyId(e.target.value)}
               >
+                <option value="all">All Properties</option>
                 {properties.map(p => (
                   <option key={p.id} value={p.id}>{p.name}</option>
                 ))}
@@ -156,7 +145,7 @@ export function ManagerLayout({ children }: { children: React.ReactNode }) {
             </div>
 
             <div className="text-sm text-[var(--text-secondary)]">
-              Manager: <strong className="text-[var(--text-primary)]">{user?.name}</strong>
+              Owner: <strong className="text-[var(--text-primary)]">{user?.name}</strong>
             </div>
             <button onClick={handleLogout} className="text-sm bg-[var(--bg-page)] border border-[var(--border)] px-4 py-2 rounded-[var(--radius-md,8px)] text-[var(--danger)] font-medium hover:bg-[var(--danger-bg)] hover:text-[var(--danger)] transition-all">
               {t('logout')}

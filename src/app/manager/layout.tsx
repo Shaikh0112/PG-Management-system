@@ -1,7 +1,7 @@
 'use client';
-import { RequireManager } from '@/components/manager/RequireManager';
-import { ManagerPropertyProvider } from '@/components/manager/ManagerPropertyContext';
-import { ManagerLayout as LayoutShell } from '@/components/manager/ManagerLayout';
+import { RequireManager } from '@/app/manager/components/RequireManager';
+import { ManagerPropertyProvider } from '@/app/manager/components/ManagerPropertyContext';
+import { ManagerLayout as LayoutShell } from '@/app/manager/components/ManagerLayout';
 import { ToastProvider } from '@/lib/ui/ToastContext';
 import { ManagerI18nProvider } from './i18n';
 

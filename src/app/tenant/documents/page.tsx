@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { useTenantContext } from '@/components/tenant/TenantContext';
+import { useTenantContext } from '@/app/tenant/components/TenantContext';
 import { FileText, Download, CheckCircle, X, ExternalLink } from 'lucide-react';
 import { getSession } from '@/lib/auth/session';
 

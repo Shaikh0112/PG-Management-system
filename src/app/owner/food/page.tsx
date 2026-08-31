@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useOwnerPropertyContext } from '@/components/owner/OwnerPropertyContext';
+import { useOwnerPropertyContext } from '@/app/owner/components/OwnerPropertyContext';
 import { api } from '@/lib/api';
 import { getSession } from '@/lib/auth/session';
 import { UtensilsCrossed, Calendar, CheckCircle2, Save, Edit3, PlusCircle } from 'lucide-react';

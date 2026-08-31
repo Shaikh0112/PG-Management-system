@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { api } from '@/lib/api';
-import { useManagerPropertyContext } from '@/components/manager/ManagerPropertyContext';
+import { useManagerPropertyContext } from '@/app/manager/components/ManagerPropertyContext';
 import { Radio, Users, Building, AlertTriangle } from 'lucide-react';
 import { getSession } from '@/lib/auth/session';
 

@@ -1,4 +1,4 @@
-import { StaffLayout } from '@/components/staff/StaffLayout';
+import { StaffLayout } from '@/app/staff/components/StaffLayout';
 import { ToastProvider } from '@/lib/ui/ToastContext';
 import { StaffI18nProvider } from './i18n';
 

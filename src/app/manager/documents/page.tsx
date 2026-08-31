@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { api } from '@/lib/api';
-import { useManagerPropertyContext } from '@/components/manager/ManagerPropertyContext';
+import { useManagerPropertyContext } from '@/app/manager/components/ManagerPropertyContext';
 import { FileText, Download } from 'lucide-react';
 
 export default function ManagerDocumentsPage() {

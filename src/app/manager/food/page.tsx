@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { api } from '@/lib/api';
-import { useManagerPropertyContext } from '@/components/manager/ManagerPropertyContext';
+import { useManagerPropertyContext } from '@/app/manager/components/ManagerPropertyContext';
 import { UtensilsCrossed, Calendar } from 'lucide-react';
 import { FoodMenu } from '@/lib/api/food';
 

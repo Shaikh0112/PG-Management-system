@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useTenantContext } from '@/components/tenant/TenantContext';
+import { useTenantContext } from '@/app/tenant/components/TenantContext';
 import { tenantOperationsApi } from '@/lib/api/tenantOperations';
 import Link from 'next/link';
 import { IndianRupee, MapPin, Bell, Utensils, Zap, TriangleAlert } from 'lucide-react';

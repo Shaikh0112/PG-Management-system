@@ -1,4 +1,4 @@
-import { TenantLayout } from '@/components/tenant/TenantLayout';
+import { TenantLayout } from '@/app/tenant/components/TenantLayout';
 import { ToastProvider } from '@/lib/ui/ToastContext';
 import { TenantI18nProvider } from './i18n';
 

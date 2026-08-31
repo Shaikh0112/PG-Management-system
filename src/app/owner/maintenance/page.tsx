@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { api } from '@/lib/api';
-import { useOwnerPropertyContext } from '@/components/owner/OwnerPropertyContext';
+import { useOwnerPropertyContext } from '@/app/owner/components/OwnerPropertyContext';
 import { IndianRupee } from 'lucide-react';
 
 export default function OwnerMaintenancePage() {

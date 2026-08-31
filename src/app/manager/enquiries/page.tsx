@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { api } from '@/lib/api';
 import { getSession } from '@/lib/auth/session';
-import { useManagerPropertyContext } from '@/components/manager/ManagerPropertyContext';
+import { useManagerPropertyContext } from '@/app/manager/components/ManagerPropertyContext';
 import { Plus, Search, Phone, Calendar, IndianRupee, UserPlus, Lock, MessageCircle, AlertTriangle, Mail, Home, Tag, Copy } from 'lucide-react';
 import { Enquiry, EnquiryStatus } from '@/lib/api/managerEnquiries';
 import { useRouter } from 'next/navigation';

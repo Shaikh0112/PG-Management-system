@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { useTenantContext } from '@/components/tenant/TenantContext';
+import { useTenantContext } from '@/app/tenant/components/TenantContext';
 import { getSession } from '@/lib/auth/session';
 import { TriangleAlert, ShieldAlert } from 'lucide-react';
 import { tenantOperationsApi } from '@/lib/api/tenantOperations';

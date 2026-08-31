@@ -5,7 +5,7 @@ import { api } from '@/lib/api';
 import { useParams, useRouter } from 'next/navigation';
 import { ArrowLeft, Clock, CheckCircle, AlertCircle, UserPlus, MessageSquare } from 'lucide-react';
 import { getSession } from '@/lib/auth/session';
-import { useManagerPropertyContext } from '@/components/manager/ManagerPropertyContext';
+import { useManagerPropertyContext } from '@/app/manager/components/ManagerPropertyContext';
 import Link from 'next/link';
 
 export default function ManagerComplaintDetail() {

@@ -3,7 +3,7 @@
 import { useState, useEffect, Suspense } from 'react';
 import { api } from '@/lib/api';
 import { getSession } from '@/lib/auth/session';
-import { useManagerPropertyContext } from '@/components/manager/ManagerPropertyContext';
+import { useManagerPropertyContext } from '@/app/manager/components/ManagerPropertyContext';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { 
   User, FileText, Users, BedDouble, HeartHandshake, 

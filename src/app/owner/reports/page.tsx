@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { api } from '@/lib/api';
 import { getSession } from '@/lib/auth/session';
-import { useOwnerPropertyContext } from '@/components/owner/OwnerPropertyContext';
+import { useOwnerPropertyContext } from '@/app/owner/components/OwnerPropertyContext';
 import { BarChart3, PieChart, Download, Building, Users, AlertCircle } from 'lucide-react';
 
 export default function OwnerReportsPage() {

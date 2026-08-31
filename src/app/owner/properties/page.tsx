@@ -1,6 +1,6 @@
 'use client';
 
-import { useOwnerPropertyContext } from '@/components/owner/OwnerPropertyContext';
+import { useOwnerPropertyContext } from '@/app/owner/components/OwnerPropertyContext';
 import { Building2, Plus, Bed, IndianRupee, MapPin, Users, Activity } from 'lucide-react';
 import Link from 'next/link';
 import { api } from '@/lib/api';

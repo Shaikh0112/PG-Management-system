@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { tenantOperationsApi } from '@/lib/api/tenantOperations';
-import { useTenantContext } from '@/components/tenant/TenantContext';
+import { useTenantContext } from '@/app/tenant/components/TenantContext';
 import { MessageSquareWarning, Plus } from 'lucide-react';
 import Link from 'next/link';
 

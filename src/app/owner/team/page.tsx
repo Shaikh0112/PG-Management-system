@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { api } from '@/lib/api';
 import { getSession } from '@/lib/auth/session';
-import { useOwnerPropertyContext } from '@/components/owner/OwnerPropertyContext';
+import { useOwnerPropertyContext } from '@/app/owner/components/OwnerPropertyContext';
 import { Plus, Search, Filter, ShieldCheck, Wrench, Utensils, Shield, Sparkles, Building2, UserPlus } from 'lucide-react';
 import Link from 'next/link';
 import { TeamMember, StaffRoleType } from '@/lib/api/team';

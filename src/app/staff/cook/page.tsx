@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { staffOperationsApi } from '@/lib/api/staffOperations';
-import { useStaffContext } from '@/components/staff/StaffContext';
+import { useStaffContext } from '@/app/staff/components/StaffContext';
 import { getSession } from '@/lib/auth/session';
 import { CheckCircle, Utensils, ShoppingCart, Truck, Archive, AlertTriangle } from 'lucide-react';
 import { api } from '@/lib/api';

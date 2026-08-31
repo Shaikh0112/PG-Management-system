@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { staffOperationsApi } from '@/lib/api/staffOperations';
-import { useStaffContext } from '@/components/staff/StaffContext';
+import { useStaffContext } from '@/app/staff/components/StaffContext';
 import { getSession } from '@/lib/auth/session';
 import { ListTodo, CheckSquare, Square } from 'lucide-react';
 

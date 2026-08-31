@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { useTenantContext } from '@/components/tenant/TenantContext';
+import { useTenantContext } from '@/app/tenant/components/TenantContext';
 import { getSession } from '@/lib/auth/session';
 import { CalendarClock } from 'lucide-react';
 import { api } from '@/lib/api';

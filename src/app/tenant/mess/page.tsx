@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { tenantOperationsApi } from '@/lib/api/tenantOperations';
-import { useTenantContext } from '@/components/tenant/TenantContext';
+import { useTenantContext } from '@/app/tenant/components/TenantContext';
 import { getSession } from '@/lib/auth/session';
 import { Zap, Utensils, CheckCircle, XCircle } from 'lucide-react';
 

@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useManagerPropertyContext } from '@/components/manager/ManagerPropertyContext';
+import { useManagerPropertyContext } from '@/app/manager/components/ManagerPropertyContext';
 import { api } from '@/lib/api';
 import { Room } from '@/lib/api/rooms';
 import { getSession } from '@/lib/auth/session';

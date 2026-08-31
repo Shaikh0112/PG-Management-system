@@ -10,7 +10,7 @@ import {
 import { format, subMonths, addMonths } from 'date-fns';
 import { db } from '@/lib/storage/db';
 import { createId } from '@/lib/utils/id';
-import { useOwnerPropertyContext } from '@/components/owner/OwnerPropertyContext';
+import { useOwnerPropertyContext } from '@/app/owner/components/OwnerPropertyContext';
 
 export default function PayrollPage() {
   const user = typeof window !== 'undefined' ? getSession() : null;

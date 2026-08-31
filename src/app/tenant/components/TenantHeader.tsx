@@ -4,7 +4,7 @@ import { Bell } from 'lucide-react';
 import { getSession } from '@/lib/auth/session';
 import Link from 'next/link';
 import { useTenantI18n } from '@/app/tenant/i18n';
-import { ThemeToggle } from '../public/ThemeToggle';
+import { ThemeToggle } from '@/components/public/ThemeToggle';
 
 export function TenantHeader() {
   const session = typeof window !== 'undefined' ? getSession() : null;

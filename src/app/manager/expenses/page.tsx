@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { api } from '@/lib/api';
 import { getSession } from '@/lib/auth/session';
-import { useManagerPropertyContext } from '@/components/manager/ManagerPropertyContext';
+import { useManagerPropertyContext } from '@/app/manager/components/ManagerPropertyContext';
 import { IndianRupee, Plus, Receipt, AlertCircle, Loader2 } from 'lucide-react';
 import { formatINR, formatDateOnly } from '@/lib/utils/formatters';
 import { useToast } from '@/lib/ui/ToastContext';

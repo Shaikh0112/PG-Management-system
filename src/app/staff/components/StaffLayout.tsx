@@ -7,8 +7,8 @@ import { LayoutDashboard, Utensils, Shield, Sparkles, Wrench, ListTodo, LogOut, 
 import { getSession, clearSession } from '@/lib/auth/session';
 import { StaffProvider, useStaffContext } from './StaffContext';
 import { useStaffI18n, DictKey } from '@/app/staff/i18n';
-import { ForcePasswordChangeModal } from '../shared/ForcePasswordChangeModal';
-import { ThemeToggle } from '../public/ThemeToggle';
+import { ForcePasswordChangeModal } from '@/components/shared/ForcePasswordChangeModal';
+import { ThemeToggle } from '@/components/public/ThemeToggle';
 
 const NAV_ITEMS = [
   { key: 'dashboard', href: '/staff/dashboard', icon: LayoutDashboard },

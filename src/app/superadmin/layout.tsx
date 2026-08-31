@@ -1,5 +1,5 @@
 'use client';
-import { RequireSuperAdmin } from '@/components/superadmin/RequireSuperAdmin';
+import { RequireSuperAdmin } from '@/app/superadmin/components/RequireSuperAdmin';
 import { ToastProvider } from '@/lib/ui/ToastContext';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';

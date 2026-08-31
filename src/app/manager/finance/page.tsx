@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { api } from '@/lib/api';
-import { useManagerPropertyContext } from '@/components/manager/ManagerPropertyContext';
+import { useManagerPropertyContext } from '@/app/manager/components/ManagerPropertyContext';
 import { IndianRupee, CheckCircle, Receipt, Bell, User as UserIcon, Calendar, PieChart } from 'lucide-react';
 import { getSession } from '@/lib/auth/session';
 import { Invoice } from '@/lib/api/finance';

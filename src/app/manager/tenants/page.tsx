@@ -2,10 +2,10 @@
 
 import { useState, useEffect } from 'react';
 import { api } from '@/lib/api';
-import { useManagerPropertyContext } from '@/components/manager/ManagerPropertyContext';
+import { useManagerPropertyContext } from '@/app/manager/components/ManagerPropertyContext';
 import { Users, Lock, ChevronRight, IndianRupee, Plus } from 'lucide-react';
 import Link from 'next/link';
-import { AddTenantModal } from '@/components/manager/AddTenantModal';
+import { AddTenantModal } from '@/app/manager/components/AddTenantModal';
 
 export default function ManagerTenantsPage() {
   const { selectedPropertyId, loading: ctxLoading } = useManagerPropertyContext();

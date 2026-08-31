@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { tenantOperationsApi } from '@/lib/api/tenantOperations';
-import { useTenantContext } from '@/components/tenant/TenantContext';
+import { useTenantContext } from '@/app/tenant/components/TenantContext';
 import { getSession } from '@/lib/auth/session';
 
 export default function NewComplaintPage() {

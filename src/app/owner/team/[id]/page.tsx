@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { api } from '@/lib/api';
 import { TeamMember } from '@/lib/api/team';
-import { useOwnerPropertyContext } from '@/components/owner/OwnerPropertyContext';
+import { useOwnerPropertyContext } from '@/app/owner/components/OwnerPropertyContext';
 import { 
   ArrowLeft, User, Phone, Mail, IndianRupee, Clock, Calendar, 
   Building2, CheckCircle2, XCircle, ShieldCheck

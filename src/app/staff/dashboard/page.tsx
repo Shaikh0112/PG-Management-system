@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { useStaffContext } from '@/components/staff/StaffContext';
+import { useStaffContext } from '@/app/staff/components/StaffContext';
 import { Utensils, ListTodo, Package, AlertTriangle, Send } from 'lucide-react';
 import Link from 'next/link';
 import { api } from '@/lib/api';

@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { api } from '@/lib/api';
 import { getSession } from '@/lib/auth/session';
-import { useOwnerPropertyContext } from '@/components/owner/OwnerPropertyContext';
+import { useOwnerPropertyContext } from '@/app/owner/components/OwnerPropertyContext';
 import { Wallet, IndianRupee, TrendingDown, TrendingUp, Receipt, FileText, ChevronUp, ChevronDown } from 'lucide-react';
 import { Invoice, Payment, Expense } from '@/lib/api/finance';
 import { formatINR, formatDateOnly } from '@/lib/utils/formatters';

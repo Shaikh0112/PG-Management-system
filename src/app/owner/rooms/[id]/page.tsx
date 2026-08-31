@@ -8,7 +8,7 @@ import { Bed } from '@/lib/api/beds';
 import { getSession } from '@/lib/auth/session';
 import { ArrowLeft, BedDouble, AlertTriangle, User, Hash, Settings, Edit3, Trash2 } from 'lucide-react';
 import Link from 'next/link';
-import { useOwnerPropertyContext } from '@/components/owner/OwnerPropertyContext';
+import { useOwnerPropertyContext } from '@/app/owner/components/OwnerPropertyContext';
 
 export default function RoomProfilePage({ params }: { params: Promise<{ id: string }> }) {
   const router = useRouter();

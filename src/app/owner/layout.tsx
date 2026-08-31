@@ -1,7 +1,7 @@
 import { Metadata } from 'next';
-import { RequireOwner } from '@/components/owner/RequireOwner';
-import { OwnerPropertyProvider } from '@/components/owner/OwnerPropertyContext';
-import { OwnerLayout } from '@/components/owner/OwnerLayout';
+import { RequireOwner } from '@/app/owner/components/RequireOwner';
+import { OwnerPropertyProvider } from '@/app/owner/components/OwnerPropertyContext';
+import { OwnerLayout } from '@/app/owner/components/OwnerLayout';
 import { ToastProvider } from '@/lib/ui/ToastContext';
 import { OwnerI18nProvider } from './i18n';
 
