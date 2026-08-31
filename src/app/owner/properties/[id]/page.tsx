@@ -83,7 +83,7 @@ export default function PropertyDetailPage({ params }: { params: Promise<{ id: s
         </Link>
         <div>
           <h1 className="text-[22px] font-bold text-[var(--text-primary)]">{property.name}</h1>
-          <p className="text-sm text-[var(--text-secondary)]">{property.city} • {property.type.toUpperCase()}</p>
+          <p className="text-sm text-[var(--text-secondary)]">{property.city} {property.type ? `• ${property.type.toUpperCase()}` : ''}</p>
         </div>
       </div>
 
