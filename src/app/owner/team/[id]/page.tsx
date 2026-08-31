@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { api } from '@/lib/api';
-import { TeamMember } from '@/lib/api/team';
+import { TeamMember } from '@/app/owner/lib/api/team';
 import { useOwnerPropertyContext } from '@/app/owner/components/OwnerPropertyContext';
 import { 
   ArrowLeft, User, Phone, Mail, IndianRupee, Clock, Calendar, 

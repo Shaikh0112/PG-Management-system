@@ -2,7 +2,7 @@
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { api } from '@/lib/api';
-import { Property } from '@/lib/api/properties';
+import { Property } from '@/app/owner/lib/api/properties';
 import { getSession } from '@/lib/auth/session';
 
 interface OwnerPropertyContextType {

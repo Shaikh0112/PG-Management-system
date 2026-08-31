@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { useStaffContext } from '@/app/staff/components/StaffContext';
 import { api } from '@/lib/api';
 import { Package, Plus, Search, Edit2, Trash2, Check, X } from 'lucide-react';
-import { StockItem } from '@/lib/api/stock';
+import { StockItem } from '@/app/staff/lib/api/stock';
 
 export default function StockPage() {
   const { propertyId, loading: ctxLoading } = useStaffContext();

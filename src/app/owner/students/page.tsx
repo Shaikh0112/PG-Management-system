@@ -6,7 +6,7 @@ import { getSession } from '@/lib/auth/session';
 import { useOwnerPropertyContext } from '@/app/owner/components/OwnerPropertyContext';
 import { Search, Users, AlertCircle, Building, Filter } from 'lucide-react';
 import Link from 'next/link';
-import { StudentMember } from '@/lib/api/students';
+import { StudentMember } from '@/app/student/lib/api/students';
 import { formatINR } from '@/lib/utils/formatters';
 import { db } from '@/lib/storage/db';
 import { STORAGE_KEYS } from '@/lib/storage/keys';

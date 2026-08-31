@@ -6,7 +6,7 @@ import { getSession } from '@/lib/auth/session';
 import { useOwnerPropertyContext } from '@/app/owner/components/OwnerPropertyContext';
 import { Plus, Search, Filter, ShieldCheck, Wrench, Utensils, Shield, Sparkles, Building2, UserPlus } from 'lucide-react';
 import Link from 'next/link';
-import { TeamMember, StaffRoleType } from '@/lib/api/team';
+import { TeamMember, StaffRoleType } from '@/app/owner/lib/api/team';
 
 const ROLE_ICONS: Record<StaffRoleType, any> = {
   manager: ShieldCheck,

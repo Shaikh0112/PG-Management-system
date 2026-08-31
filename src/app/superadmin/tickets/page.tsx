@@ -1,7 +1,7 @@
 'use client';
 import { useState, useEffect } from 'react';
-import { ticketsApi, Ticket } from '@/lib/api/tickets';
-import { ownersApi } from '@/lib/api/owners';
+import { ticketsApi, Ticket } from '@/app/superadmin/lib/api/tickets';
+import { ownersApi } from '@/app/owner/lib/api/owners';
 import { Search, Plus, Filter, MessageSquare } from 'lucide-react';
 import { StatusBadge } from '@/config/statusBadgeConfig';
 

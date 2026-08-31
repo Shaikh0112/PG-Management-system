@@ -5,7 +5,7 @@ import { api } from '@/lib/api';
 import { getSession } from '@/lib/auth/session';
 import { useManagerPropertyContext } from '@/app/manager/components/ManagerPropertyContext';
 import { Plus, Search, Phone, Calendar, IndianRupee, UserPlus, Lock, MessageCircle, AlertTriangle, Mail, Home, Tag, Copy } from 'lucide-react';
-import { Enquiry, EnquiryStatus } from '@/lib/api/managerEnquiries';
+import { Enquiry, EnquiryStatus } from '@/app/manager/lib/api/managerEnquiries';
 import { useRouter } from 'next/navigation';
 
 export default function ManagerEnquiriesPage() {

@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { api } from '@/lib/api';
-import { StaffRoleType } from '@/lib/api/team';
+import { StaffRoleType } from '@/app/owner/lib/api/team';
 import { getSession } from '@/lib/auth/session';
 import { useOwnerPropertyContext } from '@/app/owner/components/OwnerPropertyContext';
 import { ArrowLeft, UserPlus, CheckCircle2, Copy, AlertCircle } from 'lucide-react';

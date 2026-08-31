@@ -1,6 +1,6 @@
 'use client';
 import { useState, useEffect } from 'react';
-import { ownersApi } from '@/lib/api/owners';
+import { ownersApi } from '@/app/owner/lib/api/owners';
 import { useParams, useRouter } from 'next/navigation';
 import { ArrowLeft, Key, Power, AlertTriangle, Building2, Ticket, Users, FileText, CheckCircle2, XCircle } from 'lucide-react';
 import Link from 'next/link';

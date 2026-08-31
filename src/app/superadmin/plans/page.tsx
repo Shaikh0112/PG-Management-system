@@ -1,6 +1,6 @@
 'use client';
 import { useState, useEffect } from 'react';
-import { plansApi, Plan } from '@/lib/api/plans';
+import { plansApi, Plan } from '@/app/superadmin/lib/api/plans';
 import { Check, Edit, X, Save } from 'lucide-react';
 
 export default function SubscriptionPlansPage() {

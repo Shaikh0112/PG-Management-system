@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useStudentContext } from '@/app/student/components/StudentContext';
 import { getSession } from '@/lib/auth/session';
 import { TriangleAlert, ShieldAlert } from 'lucide-react';
-import { studentOperationsApi } from '@/lib/api/studentOperations';
+import { studentOperationsApi } from '@/app/student/lib/api/studentOperations';
 
 export default function StudentSosPage() {
   const router = useRouter();

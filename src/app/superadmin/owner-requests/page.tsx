@@ -1,6 +1,6 @@
 'use client';
 import { useState, useEffect } from 'react';
-import { ownerRequestsApi, OwnerRequest } from '@/lib/api/ownerRequests';
+import { ownerRequestsApi, OwnerRequest } from '@/app/superadmin/lib/api/ownerRequests';
 import { Search, MoreVertical, CheckCircle, XCircle, PauseCircle, Clock, FileText } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';

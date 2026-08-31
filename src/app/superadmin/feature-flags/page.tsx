@@ -1,6 +1,6 @@
 'use client';
 import { useState, useEffect } from 'react';
-import { ownersApi } from '@/lib/api/owners';
+import { ownersApi } from '@/app/owner/lib/api/owners';
 import { Search, Save, Settings2 } from 'lucide-react';
 
 export default function FeatureFlagsPage() {

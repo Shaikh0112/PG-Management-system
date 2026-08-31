@@ -5,7 +5,7 @@ import { api } from '@/lib/api';
 import { getSession } from '@/lib/auth/session';
 import { useOwnerPropertyContext } from '@/app/owner/components/OwnerPropertyContext';
 import { Wallet, IndianRupee, TrendingDown, TrendingUp, Receipt, FileText, ChevronUp, ChevronDown } from 'lucide-react';
-import { Invoice, Payment, Expense } from '@/lib/api/finance';
+import { Invoice, Payment, Expense } from '@/app/owner/lib/api/finance';
 import { formatINR, formatDateOnly } from '@/lib/utils/formatters';
 import dynamic from 'next/dynamic';
 

@@ -3,11 +3,11 @@
 import { useState, useEffect } from 'react';
 import { useOwnerPropertyContext } from '@/app/owner/components/OwnerPropertyContext';
 import { api } from '@/lib/api';
-import { Room } from '@/lib/api/rooms';
+import { Room } from '@/app/owner/lib/api/rooms';
 import { getSession } from '@/lib/auth/session';
 import { Plus, Search, Filter, BedDouble, AlertCircle, X, CheckCircle2, ChevronRight, Hash, User, Users } from 'lucide-react';
 import Link from 'next/link';
-import { Bed } from '@/lib/api/beds';
+import { Bed } from '@/app/owner/lib/api/beds';
 
 export default function OwnerRoomsPage() {
   const user = typeof window !== 'undefined' ? getSession() : null;

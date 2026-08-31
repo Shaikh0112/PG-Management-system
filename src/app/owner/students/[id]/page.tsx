@@ -7,7 +7,7 @@ import { getSession } from '@/lib/auth/session';
 import { useOwnerPropertyContext } from '@/app/owner/components/OwnerPropertyContext';
 import { ArrowLeft, User, Phone, Mail, Building, CreditCard, Activity, CheckCircle, ShieldAlert, LogOut } from 'lucide-react';
 import Link from 'next/link';
-import { StudentMember } from '@/lib/api/students';
+import { StudentMember } from '@/app/student/lib/api/students';
 
 export default function StudentProfilePage({ params }: { params: Promise<{ id: string }> }) {
   const router = useRouter();

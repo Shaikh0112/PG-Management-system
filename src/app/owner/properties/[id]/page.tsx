@@ -3,7 +3,7 @@
 import { use, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { api } from '@/lib/api';
-import { Property } from '@/lib/api/properties';
+import { Property } from '@/app/owner/lib/api/properties';
 import { getSession } from '@/lib/auth/session';
 import { ArrowLeft, Building2, Trash2, Users, Bed, Settings, AlertTriangle, IndianRupee, Plus, X } from 'lucide-react';
 import Link from 'next/link';

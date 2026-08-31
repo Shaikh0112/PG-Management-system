@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { studentOperationsApi } from '@/lib/api/studentOperations';
+import { studentOperationsApi } from '@/app/student/lib/api/studentOperations';
 import { useStudentContext } from '@/app/student/components/StudentContext';
 import { Bell } from 'lucide-react';
 

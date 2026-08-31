@@ -1,7 +1,7 @@
 'use client';
 
 import { createContext, useContext, useEffect, useState } from 'react';
-import { studentOperationsApi } from '@/lib/api/studentOperations';
+import { studentOperationsApi } from '@/app/student/lib/api/studentOperations';
 import { getSession } from '@/lib/auth/session';
 
 interface StudentContextType {

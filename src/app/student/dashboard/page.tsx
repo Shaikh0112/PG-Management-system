@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useStudentContext } from '@/app/student/components/StudentContext';
-import { studentOperationsApi } from '@/lib/api/studentOperations';
+import { studentOperationsApi } from '@/app/student/lib/api/studentOperations';
 import Link from 'next/link';
 import { IndianRupee, MapPin, Bell, Utensils, Zap, TriangleAlert } from 'lucide-react';
 

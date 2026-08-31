@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useManagerPropertyContext } from '@/app/manager/components/ManagerPropertyContext';
 import { api } from '@/lib/api';
-import { Room } from '@/lib/api/rooms';
+import { Room } from '@/app/owner/lib/api/rooms';
 import { getSession } from '@/lib/auth/session';
 import { Search, Filter, BedDouble, AlertCircle, CheckCircle2, ChevronRight, Hash, User, Users } from 'lucide-react';
 import Link from 'next/link';

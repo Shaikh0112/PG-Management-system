@@ -5,7 +5,7 @@ import { api } from '@/lib/api';
 import { useManagerPropertyContext } from '@/app/manager/components/ManagerPropertyContext';
 import { Archive, Plus, Minus, AlertTriangle, CheckCircle, Clock, ShoppingCart } from 'lucide-react';
 import { getSession } from '@/lib/auth/session';
-import { stockRequestsApi } from '@/lib/api/stockRequests';
+import { stockRequestsApi } from '@/app/staff/lib/api/stockRequests';
 
 export default function ManagerInventoryPage() {
   const { selectedPropertyId, loading: ctxLoading } = useManagerPropertyContext();

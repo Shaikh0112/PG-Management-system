@@ -6,7 +6,7 @@ import Link from 'next/link';
 import { api } from '@/lib/api';
 import { getSession } from '@/lib/auth/session';
 import { useState, useEffect } from 'react';
-import { Property } from '@/lib/api/properties';
+import { Property } from '@/app/owner/lib/api/properties';
 
 export default function PropertiesPage() {
   const user = typeof window !== 'undefined' ? getSession() : null;

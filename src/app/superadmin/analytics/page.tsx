@@ -1,6 +1,6 @@
 'use client';
 import { useState, useEffect } from 'react';
-import { platformApi } from '@/lib/api/platform';
+import { platformApi } from '@/app/superadmin/lib/api/platform';
 import { TrendingUp, Users, Building2, CreditCard, Activity, ArrowUpRight, ArrowDownRight } from 'lucide-react';
 import { AreaChart } from '@/components/ui/charts/AreaChart';
 import { DonutChart } from '@/components/ui/charts/DonutChart';

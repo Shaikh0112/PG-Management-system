@@ -1,7 +1,7 @@
 'use client';
 
 import { createContext, useContext, useEffect, useState } from 'react';
-import { staffOperationsApi } from '@/lib/api/staffOperations';
+import { staffOperationsApi } from '@/app/staff/lib/api/staffOperations';
 import { getSession } from '@/lib/auth/session';
 
 interface StaffContextType {

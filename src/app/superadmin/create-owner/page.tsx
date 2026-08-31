@@ -1,8 +1,8 @@
 'use client';
 import { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { ownerRequestsApi } from '@/lib/api/ownerRequests';
-import { ownersApi } from '@/lib/api/owners';
+import { ownerRequestsApi } from '@/app/superadmin/lib/api/ownerRequests';
+import { ownersApi } from '@/app/owner/lib/api/owners';
 import { AlertCircle, CheckCircle, Shield, Briefcase, User, Package } from 'lucide-react';
 import Link from 'next/link';
 import { useToast } from '@/lib/ui/ToastContext';

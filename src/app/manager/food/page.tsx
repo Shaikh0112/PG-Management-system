@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { api } from '@/lib/api';
 import { useManagerPropertyContext } from '@/app/manager/components/ManagerPropertyContext';
 import { UtensilsCrossed, Calendar } from 'lucide-react';
-import { FoodMenu } from '@/lib/api/food';
+import { FoodMenu } from '@/app/staff/lib/api/food';
 
 export default function ManagerFoodPage() {
   const { selectedPropertyId, loading: ctxLoading } = useManagerPropertyContext();

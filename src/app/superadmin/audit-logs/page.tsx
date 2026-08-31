@@ -1,6 +1,6 @@
 'use client';
 import { useState, useEffect } from 'react';
-import { auditApi } from '@/lib/api/audit';
+import { auditApi } from '@/app/superadmin/lib/api/audit';
 import { Search, Filter, Shield, Clock } from 'lucide-react';
 
 export default function AuditLogsPage() {

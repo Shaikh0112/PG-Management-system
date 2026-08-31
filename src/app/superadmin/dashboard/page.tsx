@@ -1,6 +1,6 @@
 'use client';
 import { useEffect, useState } from 'react';
-import { platformApi } from '@/lib/api/platform';
+import { platformApi } from '@/app/superadmin/lib/api/platform';
 import { Users, FileText, Building2, UserCircle, CreditCard, Activity, Ticket, Clock, ArrowUpRight } from 'lucide-react';
 import Link from 'next/link';
 import { BarChart } from '@/components/ui/charts/BarChart';

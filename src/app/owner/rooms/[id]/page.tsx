@@ -3,8 +3,8 @@
 import { use, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { api } from '@/lib/api';
-import { Room } from '@/lib/api/rooms';
-import { Bed } from '@/lib/api/beds';
+import { Room } from '@/app/owner/lib/api/rooms';
+import { Bed } from '@/app/owner/lib/api/beds';
 import { getSession } from '@/lib/auth/session';
 import { ArrowLeft, BedDouble, AlertTriangle, User, Hash, Settings, Edit3, Trash2 } from 'lucide-react';
 import Link from 'next/link';

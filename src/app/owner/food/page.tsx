@@ -5,7 +5,7 @@ import { useOwnerPropertyContext } from '@/app/owner/components/OwnerPropertyCon
 import { api } from '@/lib/api';
 import { getSession } from '@/lib/auth/session';
 import { UtensilsCrossed, Calendar, CheckCircle2, Save, Edit3, PlusCircle } from 'lucide-react';
-import { FoodMenu } from '@/lib/api/food';
+import { FoodMenu } from '@/app/staff/lib/api/food';
 
 const defaultMenu = {
   monday: '',

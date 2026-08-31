@@ -1,6 +1,6 @@
 'use client';
 import { useState, useEffect } from 'react';
-import { settingsApi, PlatformSettings } from '@/lib/api/settings';
+import { settingsApi, PlatformSettings } from '@/app/superadmin/lib/api/settings';
 import { Settings, Save, ShieldAlert, Clock, Smartphone, Info, Database, Download, Upload, AlertTriangle } from 'lucide-react';
 import { useToast } from '@/lib/ui/ToastContext';
 

@@ -1,6 +1,6 @@
 'use client';
 import { useState, useEffect } from 'react';
-import { ownersApi } from '@/lib/api/owners';
+import { ownersApi } from '@/app/owner/lib/api/owners';
 import { Search, Filter, MoreVertical, Users } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';

@@ -20,7 +20,7 @@ import {
   IndianRupee,
   PieChart
 } from 'lucide-react';
-import { StockRequest } from '@/lib/api/stockRequests';
+import { StockRequest } from '@/app/staff/lib/api/stockRequests';
 
 export default function ManagerDashboard() {
   const user = typeof window !== 'undefined' ? getSession() : null;

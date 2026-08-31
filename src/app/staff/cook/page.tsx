@@ -1,12 +1,12 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { staffOperationsApi } from '@/lib/api/staffOperations';
+import { staffOperationsApi } from '@/app/staff/lib/api/staffOperations';
 import { useStaffContext } from '@/app/staff/components/StaffContext';
 import { getSession } from '@/lib/auth/session';
 import { CheckCircle, Utensils, ShoppingCart, Truck, Archive, AlertTriangle } from 'lucide-react';
 import { api } from '@/lib/api';
-import { stockRequestsApi } from '@/lib/api/stockRequests';
+import { stockRequestsApi } from '@/app/staff/lib/api/stockRequests';
 
 export default function StaffCookPage() {
   const { propertyId } = useStaffContext();

@@ -6,9 +6,9 @@ import { useStaffContext } from '@/app/staff/components/StaffContext';
 import { Utensils, ListTodo, Package, AlertTriangle, Send } from 'lucide-react';
 import Link from 'next/link';
 import { api } from '@/lib/api';
-import { FoodMenu } from '@/lib/api/food';
-import { StockItem } from '@/lib/api/stock';
-import { StockRequest } from '@/lib/api/stockRequests';
+import { FoodMenu } from '@/app/staff/lib/api/food';
+import { StockItem } from '@/app/staff/lib/api/stock';
+import { StockRequest } from '@/app/staff/lib/api/stockRequests';
 import { getSession } from '@/lib/auth/session';
 
 export default function StaffDashboard() {
