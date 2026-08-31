@@ -89,6 +89,7 @@ export default function TenantProfilePage() {
           </div>
         </div>
       </div>
+      </div>
 
       <form onSubmit={handleSubmit} className="bg-[var(--bg-card)] border border-[var(--border)] rounded-2xl p-6 md:p-8 space-y-8 shadow-sm">
         <div>
