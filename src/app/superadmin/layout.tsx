@@ -52,7 +52,7 @@ function SuperAdminLayoutInner({ children, adminName, isMobileMenuOpen, setIsMob
 
 
           <div className="text-sm text-[var(--text-secondary)] max-w-[80px] truncate">
-            Admin: <strong className="text-[var(--text-primary)]">{adminName}</strong>
+            SuperAdmin: <strong className="text-[var(--text-primary)]">{adminName}</strong>
           </div>
           
           <button onClick={handleLogout} className="text-sm bg-[var(--bg-page)] border border-[var(--border)] px-2 sm:px-4 py-2 rounded-[var(--radius-md,8px)] text-[var(--danger)] font-medium hover:bg-[var(--danger-bg)] hover:text-[var(--danger)] transition-all flex items-center gap-1 sm:gap-2">
