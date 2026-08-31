@@ -13,7 +13,6 @@ export function Navbar() {
         <div className="hidden md:flex items-center gap-6 text-sm font-medium text-[var(--text-secondary)]">
           <Link href="/#features" className="hover:text-[var(--text-primary)] transition-colors">Features</Link>
           <Link href="/#how-it-works" className="hover:text-[var(--text-primary)] transition-colors">How it works</Link>
-          <Link href="/pg/sharma-pg-patna" className="hover:text-[var(--text-primary)] transition-colors">Vacant Beds</Link>
         </div>
         <div className="flex items-center gap-4">
           <ThemeToggle />
