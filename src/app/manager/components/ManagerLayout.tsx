@@ -72,6 +72,7 @@ export function ManagerLayout({ children }: { children: React.ReactNode }) {
           </div>
         </div>
         <div className="flex items-center gap-2">
+          <ThemeToggle />
           <div className="text-xs font-medium text-[var(--text-secondary)] max-w-[80px] truncate">
             {user?.name || 'Manager'}
           </div>

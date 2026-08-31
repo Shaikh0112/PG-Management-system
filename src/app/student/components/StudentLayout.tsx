@@ -7,6 +7,7 @@ import { Home, IndianRupee, Utensils, MessageSquareWarning, FileText, Bell, LogO
 import { getSession, clearSession } from '@/lib/auth/session';
 import { StudentProvider, useStudentContext } from './StudentContext';
 import { useStudentI18n, DictKey } from '@/app/student/i18n';
+import { ThemeToggle } from '@/components/public/ThemeToggle';
 
 const NAV_ITEMS = [
   { key: 'dashboard', href: '/student/dashboard', icon: Home },
@@ -53,6 +54,7 @@ function StudentLayoutInner({ children }: { children: React.ReactNode }) {
           </div>
         </div>
         <div className="flex items-center gap-2">
+          <ThemeToggle />
           <div className="text-xs font-medium text-[var(--text-secondary)] max-w-[80px] truncate">
             {user?.name || 'Student'}
           </div>
