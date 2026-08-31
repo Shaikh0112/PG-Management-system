@@ -4,7 +4,7 @@ import { ToastProvider } from '@/lib/ui/ToastContext';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useState, useEffect } from 'react';
-import { LayoutDashboard, FileText, UserPlus, Users, Package, BarChart3, ToggleLeft, Ticket, History, Settings, Menu, X, ShieldAlert } from 'lucide-react';
+import { LayoutDashboard, FileText, UserPlus, Users, Package, BarChart3, ToggleLeft, Ticket, History, Settings, Menu, X, ShieldAlert, LogOut } from 'lucide-react';
 import { getSession, clearSession } from '@/lib/auth/session';
 import { SuperadminI18nProvider, useSuperadminI18n, DictKey } from './i18n';
 import { useTheme } from 'next-themes';
@@ -55,8 +55,9 @@ function SuperAdminLayoutInner({ children, adminName, isMobileMenuOpen, setIsMob
             Admin: <strong className="text-[var(--text-primary)]">{adminName}</strong>
           </div>
           
-          <button onClick={handleLogout} className="text-sm bg-[var(--bg-page)] border border-[var(--border)] px-4 py-2 rounded-[var(--radius-md,8px)] text-[var(--danger)] font-medium hover:bg-[var(--danger-bg)] hover:text-[var(--danger)] transition-all">
-            {t('logout')}
+          <button onClick={handleLogout} className="text-sm bg-[var(--bg-page)] border border-[var(--border)] px-2 sm:px-4 py-2 rounded-[var(--radius-md,8px)] text-[var(--danger)] font-medium hover:bg-[var(--danger-bg)] hover:text-[var(--danger)] transition-all flex items-center gap-1 sm:gap-2">
+            <LogOut className="w-4 h-4" />
+            <span className="hidden sm:inline">{t('logout')}</span>
           </button>
         </div>
       </header>
