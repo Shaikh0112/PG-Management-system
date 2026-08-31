@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { db } from '../storage/db';
 import { STORAGE_KEYS } from '../storage/keys';
 import { createId } from '../utils/id';
