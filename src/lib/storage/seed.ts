@@ -7,7 +7,7 @@ export function runSeed() {
   if (typeof window === 'undefined') return;
   
   const isSeeded = localStorage.getItem(STORAGE_KEYS.IS_SEEDED);
-  if (isSeeded === 'v4') {
+  if (isSeeded === 'v5') {
     return;
   }
 
@@ -86,6 +86,12 @@ export function runSeed() {
     { id: createId('mnu'), ...base(), propertyId: 'prop_patna', date: new Date().toISOString().split('T')[0], items: 'Dal, Roti, Rice, Paneer Masala' }
   ] as any);
 
+  db.replaceAll(STORAGE_KEYS.MEAL_STATUS, [
+    { id: createId('msl'), ...base(), propertyId: 'prop_patna', date: new Date().toISOString().split('T')[0], mealType: 'Breakfast', status: 'announced' },
+    { id: createId('msl'), ...base(), propertyId: 'prop_patna', date: new Date().toISOString().split('T')[0], mealType: 'Lunch', status: 'ready' },
+    { id: createId('msl'), ...base(), propertyId: 'prop_patna', date: new Date().toISOString().split('T')[0], mealType: 'Dinner', status: 'pending' }
+  ] as any);
+
   db.replaceAll(STORAGE_KEYS.WALLETS, [
     { id: createId('wal'), ...base(), studentId, balance: 1000, propertyId: 'prop_patna' }
   ] as any);
@@ -145,6 +151,6 @@ export function runSeed() {
     { id: createId('log'), ...base(), actorId: superadminId, actorRole: 'superadmin', action: 'OWNER_CREATED', entity: 'owner', entityId: ownerProfileId, details: 'Created owner Owner 3' }
   ] as any);
 
-  localStorage.setItem(STORAGE_KEYS.IS_SEEDED, 'v4');
+  localStorage.setItem(STORAGE_KEYS.IS_SEEDED, 'v5');
   console.log('✅ LocalStorage Seeded with Demo Accounts');
 }

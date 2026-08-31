@@ -17,6 +17,7 @@ export const STORAGE_KEYS = {
   PAYMENTS: 'spg_payments',
   COMPLAINTS: 'spg_complaints',
   MENUS: 'spg_menus',
+  MEAL_STATUS: 'spg_meal_status',
   MEAL_ORDERS: 'spg_meal_orders',
   WALLETS: 'spg_wallets',
   WALLET_TXNS: 'spg_wallet_txns',

@@ -21,6 +21,8 @@ import {
   PieChart
 } from 'lucide-react';
 import { StockRequest } from '@/app/staff/lib/api/stockRequests';
+import { mealsApi, MealStatus } from '@/lib/api/meals';
+import { Utensils } from 'lucide-react';
 
 export default function ManagerDashboard() {
   const user = typeof window !== 'undefined' ? getSession() : null;
@@ -29,18 +31,26 @@ export default function ManagerDashboard() {
   const [stats, setStats] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [kitchenRequests, setKitchenRequests] = useState<StockRequest[]>([]);
+  const [readyMeals, setReadyMeals] = useState<MealStatus[]>([]);
 
   const loadData = () => {
     if (!selectedPropertyId) return;
     setLoading(true);
     setStats(api.managerDashboard.getStats(selectedPropertyId));
     setKitchenRequests(api.stockRequests.getByProperty(selectedPropertyId).filter(r => ['pending'].includes(r.status)));
+    setReadyMeals(mealsApi.getAllTodayStatuses(selectedPropertyId).filter(m => m.status === 'ready'));
     setLoading(false);
   };
 
   useEffect(() => {
     if (!ctxLoading) loadData();
   }, [selectedPropertyId, ctxLoading]);
+
+  const handleAnnounceMeal = (mealType: 'Breakfast'|'Lunch'|'Dinner') => {
+    if (!user || !selectedPropertyId) return;
+    mealsApi.announceMeal(selectedPropertyId, mealType, user.id);
+    loadData();
+  };
 
   if (ctxLoading || loading) {
     return <div className="p-6 animate-pulse text-slate-400">Loading operational dashboard...</div>;
@@ -75,7 +85,7 @@ export default function ManagerDashboard() {
 
   const widgets = [
     { label: 'Active Students', value: stats?.activeStudents || 0, icon: Users, color: 'text-[var(--primary)]', bg: 'bg-[rgba(99,102,241,0.1)]' },
-    { label: 'Vacant Beds', value: stats?.vacantBeds || 0, icon: BedDouble, color: 'text-[var(--success)]', bg: 'bg-[rgba(16,185,129,0.1)]' },
+    { label: 'Vacant Beds', value: stats?.vacantBeds || 0, icon: BedDouble, color: 'text-[var(--success)]', bg: 'bg-[rgba(10,185,129,0.1)]' },
     { label: 'Today Check-ins', value: stats?.todayCheckins || 0, icon: ClipboardCheck, color: 'text-purple-500', bg: 'bg-purple-500/10' },
     { label: 'Open Complaints', value: stats?.openComplaints || 0, icon: AlertCircle, color: 'text-[var(--danger)]', bg: 'bg-[var(--danger-bg)]' },
     { label: 'Pending Visitors', value: stats?.pendingVisitors || 0, icon: UserPlus, color: 'text-[var(--warning)]', bg: 'bg-[var(--warning-bg)]' },
@@ -109,6 +119,33 @@ export default function ManagerDashboard() {
           );
         })}
       </div>
+
+      {/* Meal Announcements */}
+      {readyMeals.length > 0 && (
+        <div className="mb-6 bg-[rgba(99,102,241,0.05)] border border-[var(--primary)] border-opacity-30 rounded-[var(--radius-lg,12px)] p-6">
+          <h2 className="text-lg font-semibold text-[var(--primary)] mb-4 flex items-center gap-2">
+            <Utensils className="w-5 h-5" />
+            Meals Ready for Announcement
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {readyMeals.map(meal => (
+              <div key={meal.id} className="bg-[var(--bg-card)] border border-[var(--primary)] border-opacity-20 rounded-xl p-4 flex flex-col items-center text-center">
+                <div className="w-12 h-12 bg-[var(--primary-bg)] rounded-full flex items-center justify-center text-[var(--primary)] mb-3">
+                  <Utensils className="w-6 h-6" />
+                </div>
+                <h3 className="font-bold text-[var(--text-primary)] text-lg mb-1">{meal.mealType} is Ready!</h3>
+                <p className="text-sm text-[var(--text-secondary)] mb-4">The cook has prepared the meal.</p>
+                <button 
+                  onClick={() => handleAnnounceMeal(meal.mealType)}
+                  className="w-full bg-[var(--primary)] hover:bg-[var(--primary-hover)] text-white py-2 rounded-lg text-sm font-bold transition-colors shadow-sm"
+                >
+                  Announce to Students
+                </button>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* Kitchen Alerts */}
       {kitchenRequests.length > 0 && (

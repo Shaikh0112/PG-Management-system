@@ -6,6 +6,7 @@ import { useStaffContext } from '@/app/staff/components/StaffContext';
 import { getSession } from '@/lib/auth/session';
 import { CheckCircle, Utensils, ShoppingCart, Truck, Archive, AlertTriangle } from 'lucide-react';
 import { api } from '@/lib/api';
+import { mealsApi, MealType, MealStatusType } from '@/lib/api/meals';
 import { stockRequestsApi } from '@/app/staff/lib/api/stockRequests';
 
 export default function StaffCookPage() {
@@ -15,6 +16,10 @@ export default function StaffCookPage() {
   const [orders, setOrders] = useState<any[]>([]);
   const [requests, setRequests] = useState<any[]>([]);
   const [liveStock, setLiveStock] = useState<any[]>([]);
+  const [mealStatuses, setMealStatuses] = useState<Record<MealType, MealStatusType>>({
+    Breakfast: 'pending', Lunch: 'pending', Dinner: 'pending'
+  });
+  const [todayMenu, setTodayMenu] = useState<any>(null);
   
   const [activeTab, setActiveTab] = useState<'orders' | 'request' | 'incoming' | 'stock'>('orders');
   
@@ -26,12 +31,20 @@ export default function StaffCookPage() {
       setOrders(staffOperationsApi.getLiveOrders(propertyId));
       setRequests(stockRequestsApi.getByProperty(propertyId));
       setLiveStock(api.stock.getByProperty(propertyId).filter(s => s.category?.toLowerCase() === 'groceries'));
+      setMealStatuses(mealsApi.getTodayMealStatus(propertyId));
+      setTodayMenu(staffOperationsApi.getTodayMenu(propertyId));
     }
   };
 
   useEffect(() => {
     loadData();
   }, [propertyId]);
+
+  const handleMarkMealReady = (mealType: MealType) => {
+    if (!session || !propertyId) return;
+    mealsApi.markMealReady(propertyId, mealType, session.id);
+    loadData();
+  };
 
   const handleMarkServed = (orderId: string) => {
     if (!session) return;
@@ -94,10 +107,50 @@ export default function StaffCookPage() {
       </div>
 
       {activeTab === 'orders' && (
-        <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded-[var(--radius-lg,12px)] p-6">
-          <h2 className="font-bold text-lg text-[var(--text-primary)] mb-4 flex items-center gap-2">
-            <Utensils className="w-5 h-5 text-[var(--primary)]" /> Live Meal Queue ({orders.length})
-          </h2>
+        <div className="space-y-6">
+          <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded-[var(--radius-lg,12px)] p-6">
+            <h2 className="font-bold text-lg text-[var(--text-primary)] mb-4 flex items-center gap-2">
+              <Utensils className="w-5 h-5 text-[var(--primary)]" /> Today's Menu & Status
+            </h2>
+            {todayMenu ? (
+              <div className="mb-6 p-4 bg-[var(--primary-bg)] border border-[var(--primary)] border-opacity-20 rounded-xl">
+                <h3 className="font-bold text-[var(--primary)] mb-2">Today's Items</h3>
+                <p className="text-sm text-[var(--text-primary)] font-medium">{todayMenu.items}</p>
+              </div>
+            ) : (
+              <div className="mb-6 p-4 bg-[var(--bg-input)] rounded-xl border border-[var(--border)] text-sm text-[var(--text-secondary)] italic">
+                No menu set for today.
+              </div>
+            )}
+            
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              {(['Breakfast', 'Lunch', 'Dinner'] as MealType[]).map(meal => (
+                <div key={meal} className="border border-[var(--border)] p-4 rounded-xl flex flex-col items-center text-center gap-3">
+                  <h3 className="font-bold text-[var(--text-primary)]">{meal}</h3>
+                  {mealStatuses[meal] === 'pending' && (
+                    <button onClick={() => handleMarkMealReady(meal)} className="bg-[var(--primary)] hover:bg-[var(--primary-hover)] text-white w-full py-2 rounded-lg text-sm font-bold transition-colors">
+                      Mark Ready
+                    </button>
+                  )}
+                  {mealStatuses[meal] === 'ready' && (
+                    <span className="w-full py-2 bg-[var(--warning-bg)] text-[var(--warning)] rounded-lg text-sm font-bold border border-[var(--warning)] border-opacity-20">
+                      Waiting for Manager
+                    </span>
+                  )}
+                  {mealStatuses[meal] === 'announced' && (
+                    <span className="w-full py-2 bg-[var(--success-bg)] text-[var(--success)] rounded-lg text-sm font-bold flex items-center justify-center gap-2">
+                      <CheckCircle className="w-4 h-4" /> Announced
+                    </span>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded-[var(--radius-lg,12px)] p-6">
+            <h2 className="font-bold text-lg text-[var(--text-primary)] mb-4 flex items-center gap-2">
+              <Utensils className="w-5 h-5 text-[var(--primary)]" /> Live Meal Queue ({orders.length})
+            </h2>
           <div className="space-y-3">
             {orders.map(o => (
               <div key={o.id} className="flex justify-between items-center p-3 bg-[var(--bg-input)] border border-[var(--border)] rounded-xl">
@@ -118,6 +171,7 @@ export default function StaffCookPage() {
               <div className="text-center p-8 text-[var(--text-secondary)]">No active meal orders.</div>
             )}
           </div>
+        </div>
         </div>
       )}
 
