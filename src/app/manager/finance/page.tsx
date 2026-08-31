@@ -14,6 +14,7 @@ export default function ManagerFinancePage() {
   const [stats, setStats] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<'all' | 'paid' | 'pending'>('all');
+  const [currentPage, setCurrentPage] = useState(1);
   const user = typeof window !== 'undefined' ? getSession() : null;
 
   const loadData = () => {
@@ -60,6 +61,12 @@ export default function ManagerFinancePage() {
     alert(`Rent reminder sent to ${studentName}!`);
   };
 
+  const itemsPerPage = 10;
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [filter, selectedPropertyId]);
+
   if (ctxLoading || loading) return <div className="p-6 text-[var(--text-secondary)] animate-pulse">Loading Rent Management...</div>;
   if (!selectedPropertyId) return <div className="p-6 text-center text-[var(--text-secondary)]">Property Required</div>;
 
@@ -68,14 +75,6 @@ export default function ManagerFinancePage() {
     if (filter === 'paid') return inv.status.toLowerCase() === 'paid';
     return inv.status.toLowerCase() !== 'paid'; // pending or overdue
   });
-
-  // Pagination
-  const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 10;
-
-  useEffect(() => {
-    setCurrentPage(1);
-  }, [filter, selectedPropertyId]);
 
   const totalPages = Math.ceil(filteredInvoices.length / itemsPerPage);
   const paginatedData = filteredInvoices.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
