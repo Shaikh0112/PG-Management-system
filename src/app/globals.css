@@ -1,0 +1,96 @@
+@import "tailwindcss";
+
+:root {
+  /* LIGHT MODE */
+  --primary: #4F46E5;
+  --primary-hover: #4338CA;
+  --primary-subtle: #EEF2FF;
+  
+  --bg-page: #F8FAFC;
+  --bg-card: #FFFFFF;
+  --bg-sidebar: #F1F5F9;
+  --bg-header: #FFFFFF;
+  --bg-input: #FFFFFF;
+  
+  --border: #E2E8F0;
+  --border-focus: #4F46E5;
+  
+  --text-primary: #0F172A;
+  --text-secondary: #64748B;
+  --text-disabled: #94A3B8;
+  
+  --skeleton-base: #E2E8F0;
+  --skeleton-highlight: #F1F5F9;
+  
+  /* Status */
+  --success: #064E3B;
+  --success-bg: #34D399;
+  --warning: #451A03;
+  --warning-bg: #FBBF24;
+  --danger: #450A0A;
+  --danger-bg: #F87171;
+  --info: #1E3A5F;
+  --info-bg: #60A5FA;
+}
+
+.dark {
+  /* DARK MODE (Default per style.md) */
+  --primary: #6366F1;
+  --primary-hover: #4F46E5;
+  --primary-subtle: rgba(99, 102, 241, 0.15);
+  
+  --bg-page: #0F0F1A;
+  --bg-card: #1A1A2E;
+  --bg-sidebar: #12121F;
+  --bg-header: #16162A;
+  --bg-input: #1E1E32;
+  
+  --border: #2A2A3E;
+  --border-focus: #6366F1;
+  
+  --text-primary: #F0F0FF;
+  --text-secondary: #94A3B8;
+  --text-disabled: #44445A;
+  
+  --skeleton-base: #2A2A3E;
+  --skeleton-highlight: #3F3F5A;
+
+  /* Status */
+  --success: #34D399;
+  --success-bg: #064E3B;
+  --warning: #FBBF24;
+  --warning-bg: #451A03;
+  --danger: #F87171;
+  --danger-bg: #450A0A;
+  --info: #60A5FA;
+  --info-bg: #1E3A5F;
+}
+
+body {
+  background-color: var(--bg-page);
+  color: var(--text-primary);
+}
+
+/* Premium Scrollbars (Rule 12) */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: var(--radius-full, 999px);
+}
+
+/* Universal Focus Outline (Rule 13) */
+*:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--bg-page), 0 0 0 4px var(--primary);
+}
+
+/* Base interactive transitions */
+button, a, input, select, textarea, .card, tr {
+  transition: all 200ms ease-in-out;
+}
