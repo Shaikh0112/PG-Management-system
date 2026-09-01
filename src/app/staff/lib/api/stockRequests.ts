@@ -72,8 +72,8 @@ export const stockRequestsApi = {
     };
     db.update(STORAGE_KEYS.KITCHEN_REQUESTS || 'spg_stock_requests', id, updated);
 
-    // Add to Batches
-    const { stockBatchesApi } = require('./stock');
+    // Add to Batches and Live Stock
+    const { stockBatchesApi, stockApi } = require('./stock');
     
     stockBatchesApi.addBatch({
       propertyId: existing.propertyId,
@@ -83,6 +83,25 @@ export const stockRequestsApi = {
       category: 'Groceries',
       expiryDate
     });
+
+    // Update Live Stock
+    const liveStock = stockApi.getByProperty(existing.propertyId);
+    const existingItem = liveStock.find((item: any) => item.name.toLowerCase() === existing.itemName.toLowerCase());
+    
+    if (existingItem) {
+      stockApi.update(existingItem.id, {
+        quantity: existingItem.quantity + Number(actualQuantity)
+      });
+    } else {
+      stockApi.add({
+        propertyId: existing.propertyId,
+        name: existing.itemName,
+        quantity: Number(actualQuantity),
+        unit: unit,
+        category: 'Groceries',
+        expiryDate
+      });
+    }
 
     return updated;
   }

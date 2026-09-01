@@ -22,6 +22,10 @@ export default function ManagerInventoryPage() {
 
   const loadData = () => {
     if (!ctxLoading && selectedPropertyId) {
+      if (!stockRequestsApi || !stockBatchesApi || !api.managerOperations) {
+        console.warn('Next.js HMR issue: APIs are undefined. Please refresh the page.', { stockRequestsApi, stockBatchesApi });
+        return;
+      }
       setInventory(api.managerOperations.listInventory(selectedPropertyId));
       setRequests(stockRequestsApi.getByProperty(selectedPropertyId).filter(r => r.status !== 'verified'));
       setBatches(stockBatchesApi.getByProperty(selectedPropertyId));
