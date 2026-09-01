@@ -38,13 +38,13 @@ export const studentOperationsApi = {
         createdAt: new Date().toISOString(), updatedAt: new Date().toISOString(), createdBy: 'system', updatedBy: 'system'
       });
       db.insert(STORAGE_KEYS.INVOICES, {
-        id: createId('inv'), studentId, amount: 8500, status: 'Paid', type: 'Rent',
+        id: createId('inv'), studentId, amount: 8500, status: 'Pending', type: 'Rent',
         dueDate: new Date(new Date().getFullYear(), new Date().getMonth(), 5).toISOString(),
         description: 'Rent for Current Month', isDeleted: false,
         createdAt: new Date(Date.now() - 864000000).toISOString(), updatedAt: new Date(Date.now() - 400000000).toISOString(), createdBy: 'system', updatedBy: 'system'
       });
       db.insert(STORAGE_KEYS.INVOICES, {
-        id: createId('inv'), studentId, amount: 8500, status: 'Paid', type: 'Rent',
+        id: createId('inv'), studentId, amount: 8500, status: 'Pending', type: 'Rent',
         dueDate: new Date(new Date().getFullYear(), new Date().getMonth() - 1, 5).toISOString(),
         description: 'Rent for Last Month', isDeleted: false,
         createdAt: new Date(Date.now() - 3000000000).toISOString(), updatedAt: new Date(Date.now() - 2500000000).toISOString(), createdBy: 'system', updatedBy: 'system'
