@@ -63,7 +63,7 @@ export default function StaffDashboard() {
   const handleResolveRequest = (req: StockRequest) => {
     // Usually they should update the stock amount first, but let's navigate to stock page or just resolve it
     if (req.status === 'purchased') {
-      api.stockRequests.verifyReceipt(req.id, req.quantityRequested, req.unit);
+      api.stockRequests.verifyReceipt(req.id, req.purchasedQuantity || req.quantityRequested, req.unit);
     }
     router.push('/staff/stock');
   };

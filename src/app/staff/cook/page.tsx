@@ -309,7 +309,8 @@ export default function StaffCookPage() {
             <div key={req.id} className="bg-[var(--bg-card)] border border-[var(--border)] rounded-2xl p-5 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
               <div>
                 <h3 className="text-lg font-bold text-[var(--text-primary)]">{req.itemName}</h3>
-                <p className="text-sm font-medium text-[var(--text-secondary)]">Purchased: <span className="text-[var(--text-primary)]">{req.quantityRequested} {req.unit}</span></p>
+                <p className="text-sm font-medium text-[var(--text-secondary)]">Purchased: <span className="text-[var(--text-primary)]">{req.purchasedQuantity || req.quantityRequested} {req.unit}</span></p>
+                {req.purchaseDate && <p className="text-xs text-[var(--text-secondary)]">Date: {new Date(req.purchaseDate).toLocaleDateString()}</p>}
               </div>
 
               <div className="flex items-center gap-3 bg-[var(--bg-input)] p-2 rounded-xl border border-[var(--border)]">
@@ -323,7 +324,7 @@ export default function StaffCookPage() {
                   />
                 </div>
                 <button 
-                  onClick={() => handleVerifyReceipt(req.id, req.quantityRequested, req.unit)}
+                  onClick={() => handleVerifyReceipt(req.id, req.purchasedQuantity || req.quantityRequested, req.unit)}
                   className="bg-[var(--success)] text-white px-4 py-2 mt-4 rounded-lg text-sm font-bold hover:bg-green-600 transition-colors flex items-center gap-2 whitespace-nowrap"
                 >
                   <CheckCircle className="w-4 h-4" /> Verify & Add

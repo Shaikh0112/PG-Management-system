@@ -14,6 +14,8 @@ export interface StockRequest {
   status: StockRequestStatus;
   requestedBy: string; // user ID of the cook
   price?: number; // Added by manager
+  purchasedQuantity?: number; // Added by manager
+  purchaseDate?: string; // Added by manager
   createdAt: string;
   updatedAt: string;
 }
@@ -37,7 +39,7 @@ export const stockRequestsApi = {
     return newRequest;
   },
 
-  markPurchased: (id: string, price: number, managerId: string) => {
+  markPurchased: (id: string, price: number, managerId: string, purchasedQuantity?: number, purchaseDate?: string) => {
     const existing = db.getById<StockRequest>(STORAGE_KEYS.KITCHEN_REQUESTS || 'spg_stock_requests', id);
     if (!existing) throw new Error('Stock request not found');
     
@@ -45,17 +47,20 @@ export const stockRequestsApi = {
       ...existing,
       status: 'purchased' as StockRequestStatus,
       price,
+      purchasedQuantity: purchasedQuantity || existing.quantityRequested,
+      purchaseDate: purchaseDate || new Date().toISOString(),
       updatedAt: new Date().toISOString()
     };
     db.update(STORAGE_KEYS.KITCHEN_REQUESTS || 'spg_stock_requests', id, updated);
 
     // Automatically create an Expense when marked purchased
     const { financeApi } = require('@/app/owner/lib/api/finance');
+    const finalQty = purchasedQuantity || existing.quantityRequested;
     financeApi.createExpense({
       propertyId: existing.propertyId,
       category: 'groceries',
       amount: price,
-      description: `Purchased Grocery: ${existing.itemName} (${existing.quantityRequested}${existing.unit})`
+      description: `Purchased Grocery: ${existing.itemName} (${finalQty}${existing.unit})`
     }, managerId);
 
     return updated;

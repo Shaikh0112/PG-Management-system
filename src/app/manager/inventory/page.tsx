@@ -19,6 +19,8 @@ export default function ManagerInventoryPage() {
 
   const [formData, setFormData] = useState({ name: '', quantity: '', threshold: '', category: 'Groceries' });
   const [purchaseCost, setPurchaseCost] = useState<{ [key: string]: string }>({});
+  const [purchasedQty, setPurchasedQty] = useState<{ [key: string]: string }>({});
+  const [purchaseDate, setPurchaseDate] = useState<{ [key: string]: string }>({});
 
   const loadData = () => {
     if (!ctxLoading && selectedPropertyId) {
@@ -57,15 +59,18 @@ export default function ManagerInventoryPage() {
     loadData();
   };
 
-  const handleMarkPurchased = (id: string) => {
+  const handleMarkPurchased = (id: string, defaultQty: number) => {
     if (!user || !selectedPropertyId) return;
     const cost = parseInt(purchaseCost[id]);
     if (!cost || isNaN(cost) || cost <= 0) {
       alert('Please enter a valid cost.');
       return;
     }
-    stockRequestsApi.markPurchased(id, cost, user.id);
-    stockRequestsApi.markPurchased(id, cost, user.id);
+    
+    const qty = purchasedQty[id] ? parseFloat(purchasedQty[id]) : defaultQty;
+    const date = purchaseDate[id] || new Date().toISOString().split('T')[0];
+    
+    stockRequestsApi.markPurchased(id, cost, user.id, qty, date);
     loadData();
   };
 
@@ -151,20 +156,47 @@ export default function ManagerInventoryPage() {
               </div>
 
               {req.status === 'pending' ? (
-                <div className="flex items-center gap-3 bg-[var(--bg-input)] p-2 rounded-xl border border-[var(--border)]">
-                  <div className="flex items-center bg-[var(--bg-card)] px-3 rounded-lg border border-[var(--border)] focus-within:border-[var(--primary)] transition-colors">
-                    <span className="text-[var(--text-secondary)] font-medium">₹</span>
-                    <input 
-                      type="number"
-                      placeholder="Total Cost"
-                      value={purchaseCost[req.id] || ''}
-                      onChange={e => setPurchaseCost({...purchaseCost, [req.id]: e.target.value})}
-                      className="bg-transparent border-none outline-none w-24 p-2 text-sm text-[var(--text-primary)] font-bold"
-                    />
+                <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 bg-[var(--bg-input)] p-3 rounded-xl border border-[var(--border)]">
+                  <div className="flex flex-wrap gap-3">
+                    <div className="flex flex-col">
+                      <label className="text-[10px] uppercase font-bold text-[var(--text-secondary)] mb-1 ml-1">Purchased Qty</label>
+                      <div className="flex items-center bg-[var(--bg-card)] px-3 rounded-lg border border-[var(--border)] focus-within:border-[var(--primary)] transition-colors">
+                        <input 
+                          type="number"
+                          placeholder={req.quantityRequested.toString()}
+                          value={purchasedQty[req.id] || ''}
+                          onChange={e => setPurchasedQty({...purchasedQty, [req.id]: e.target.value})}
+                          className="bg-transparent border-none outline-none w-16 p-2 text-sm text-[var(--text-primary)] font-bold"
+                        />
+                        <span className="text-[var(--text-secondary)] text-sm font-medium pr-1">{req.unit}</span>
+                      </div>
+                    </div>
+                    <div className="flex flex-col">
+                      <label className="text-[10px] uppercase font-bold text-[var(--text-secondary)] mb-1 ml-1">Purchase Date</label>
+                      <input 
+                        type="date"
+                        value={purchaseDate[req.id] || ''}
+                        onChange={e => setPurchaseDate({...purchaseDate, [req.id]: e.target.value})}
+                        className="bg-[var(--bg-card)] border border-[var(--border)] rounded-lg px-3 py-2 h-[38px] text-sm text-[var(--text-primary)] focus:border-[var(--primary)] outline-none transition-colors"
+                      />
+                    </div>
+                    <div className="flex flex-col">
+                      <label className="text-[10px] uppercase font-bold text-[var(--text-secondary)] mb-1 ml-1">Total Cost</label>
+                      <div className="flex items-center bg-[var(--bg-card)] px-3 rounded-lg border border-[var(--border)] focus-within:border-[var(--primary)] transition-colors h-[38px]">
+                        <span className="text-[var(--text-secondary)] font-medium">₹</span>
+                        <input 
+                          type="number"
+                          placeholder="Cost"
+                          value={purchaseCost[req.id] || ''}
+                          onChange={e => setPurchaseCost({...purchaseCost, [req.id]: e.target.value})}
+                          className="bg-transparent border-none outline-none w-20 p-2 text-sm text-[var(--text-primary)] font-bold"
+                        />
+                      </div>
+                    </div>
                   </div>
                   <button 
-                    onClick={() => handleMarkPurchased(req.id)}
-                    className="bg-[var(--primary)] text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-[var(--primary-hover)] transition-colors flex items-center gap-2 whitespace-nowrap"
+                    onClick={() => handleMarkPurchased(req.id, req.quantityRequested)}
+                    className="bg-[var(--primary)] text-white px-5 py-2 mt-auto sm:mt-5 rounded-lg text-sm font-bold hover:bg-[var(--primary-hover)] transition-colors flex items-center justify-center gap-2 whitespace-nowrap w-full sm:w-auto h-[38px]"
                   >
                     <CheckCircle className="w-4 h-4" /> Fulfill
                   </button>
