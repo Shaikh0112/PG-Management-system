@@ -375,6 +375,8 @@ export default function StockPage() {
           </>
         );
       })()}
+      </>
+      )}
 
       {activeTab === 'pantry' && (
         <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded-[var(--radius-lg,12px)] overflow-hidden shadow-sm">
