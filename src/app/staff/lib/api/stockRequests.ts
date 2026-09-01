@@ -61,7 +61,7 @@ export const stockRequestsApi = {
     return updated;
   },
 
-  verifyReceipt: (id: string, expiryDate?: string) => {
+  verifyReceipt: (id: string, actualQuantity: number, unit: string, expiryDate?: string) => {
     const existing = db.getById<StockRequest>(STORAGE_KEYS.KITCHEN_REQUESTS || 'spg_stock_requests', id);
     if (!existing) throw new Error('Stock request not found');
     
@@ -72,28 +72,17 @@ export const stockRequestsApi = {
     };
     db.update(STORAGE_KEYS.KITCHEN_REQUESTS || 'spg_stock_requests', id, updated);
 
-    // Add to Live Stock
-    const { stockApi } = require('./stock');
+    // Add to Batches
+    const { stockBatchesApi } = require('./stock');
     
-    // Check if item already exists in stock
-    const existingStock = stockApi.getByProperty(existing.propertyId).find((s: any) => s.name.toLowerCase() === existing.itemName.toLowerCase());
-    
-    if (existingStock) {
-      stockApi.update(existingStock.id, { 
-        quantity: existingStock.quantity + existing.quantityRequested,
-        expiryDate: expiryDate || existingStock.expiryDate
-      });
-    } else {
-      stockApi.add({
-        propertyId: existing.propertyId,
-        name: existing.itemName,
-        quantity: existing.quantityRequested,
-        unit: existing.unit,
-        category: 'Groceries',
-        threshold: 2,
-        expiryDate
-      });
-    }
+    stockBatchesApi.addBatch({
+      propertyId: existing.propertyId,
+      itemName: existing.itemName,
+      quantity: actualQuantity,
+      unit: unit,
+      category: 'Groceries',
+      expiryDate
+    });
 
     return updated;
   }

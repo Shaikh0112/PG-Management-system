@@ -31,6 +31,8 @@ export const STORAGE_KEYS = {
   BROADCASTS: 'spg_broadcasts',
   DOCUMENTS: 'spg_documents',
   INVENTORY: 'spg_inventory',
+  KITCHEN_REQUESTS: 'spg_stock_requests',
+  STOCK_BATCHES: 'spg_stock_batches',
   SOS: 'spg_sos',
   NOTICES: 'spg_notices',
   AGREEMENTS: 'spg_agreements',

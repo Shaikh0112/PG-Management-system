@@ -91,9 +91,9 @@ export default function StaffCookPage() {
     loadData();
   };
 
-  const handleVerifyReceipt = (id: string) => {
+  const handleVerifyReceipt = (id: string, quantity: number, unit: string) => {
     const expiry = expiryDates[id];
-    stockRequestsApi.verifyReceipt(id, expiry);
+    stockRequestsApi.verifyReceipt(id, quantity, unit, expiry);
     alert('Item verified and added to live stock!');
     loadData();
   };
@@ -323,7 +323,7 @@ export default function StaffCookPage() {
                   />
                 </div>
                 <button 
-                  onClick={() => handleVerifyReceipt(req.id)}
+                  onClick={() => handleVerifyReceipt(req.id, req.quantityRequested, req.unit)}
                   className="bg-[var(--success)] text-white px-4 py-2 mt-4 rounded-lg text-sm font-bold hover:bg-green-600 transition-colors flex items-center gap-2 whitespace-nowrap"
                 >
                   <CheckCircle className="w-4 h-4" /> Verify & Add

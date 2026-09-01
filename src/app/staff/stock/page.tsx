@@ -4,13 +4,15 @@ import { useState, useEffect } from 'react';
 import { useStaffContext } from '@/app/staff/components/StaffContext';
 import { api } from '@/lib/api';
 import { Package, Plus, Search, Edit2, Trash2, Check, X } from 'lucide-react';
-import { StockItem } from '@/app/staff/lib/api/stock';
+import { StockItem, stockBatchesApi, StockBatch } from '@/app/staff/lib/api/stock';
 import { Pagination } from '@/components/shared/Pagination';
 
 export default function StockPage() {
   const { propertyId, loading: ctxLoading } = useStaffContext();
   const [items, setItems] = useState<StockItem[]>([]);
+  const [batches, setBatches] = useState<StockBatch[]>([]);
   const [loading, setLoading] = useState(true);
+  const [activeTab, setActiveTab] = useState<'live' | 'pantry'>('live');
   
   // Form State
   const [showAddForm, setShowAddForm] = useState(false);
@@ -37,7 +39,9 @@ export default function StockPage() {
     if (propertyId) {
       setLoading(true);
       const data = api.stock.getByProperty(propertyId);
+      const batchesData = stockBatchesApi.getByProperty(propertyId);
       setItems(data);
+      setBatches(batchesData);
       setLoading(false);
     }
   };
@@ -94,10 +98,39 @@ export default function StockPage() {
           <h1 className="text-[22px] font-bold text-[var(--text-primary)]">Kitchen Stock</h1>
           <p className="text-sm text-[var(--text-secondary)]">Manage your daily and monthly kitchen inventory.</p>
         </div>
-        <div className="flex items-center gap-3">
-          <div className="relative">
-            <Search className="w-4 h-4 text-[var(--text-secondary)] absolute left-3 top-1/2 -translate-y-1/2" />
-            <input
+      </div>
+
+      {/* Tabs */}
+      <div className="flex border-b border-[var(--border)] mb-6">
+        <button
+          onClick={() => setActiveTab('live')}
+          className={`px-6 py-3 font-semibold text-sm border-b-2 transition-colors ${
+            activeTab === 'live' 
+              ? 'border-[var(--primary)] text-[var(--primary)]' 
+              : 'border-transparent text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
+          }`}
+        >
+          Overview (Live Stock)
+        </button>
+        <button
+          onClick={() => setActiveTab('pantry')}
+          className={`px-6 py-3 font-semibold text-sm border-b-2 transition-colors ${
+            activeTab === 'pantry' 
+              ? 'border-[var(--primary)] text-[var(--primary)]' 
+              : 'border-transparent text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
+          }`}
+        >
+          Pantry (Boxes & Batches)
+        </button>
+      </div>
+
+      {activeTab === 'live' && (
+        <>
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
+            <div className="flex items-center gap-3">
+              <div className="relative">
+                <Search className="w-4 h-4 text-[var(--text-secondary)] absolute left-3 top-1/2 -translate-y-1/2" />
+                <input
               type="text"
               placeholder="Search items..."
               value={searchQuery}
@@ -342,6 +375,91 @@ export default function StockPage() {
           </>
         );
       })()}
+
+      {activeTab === 'pantry' && (
+        <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded-[var(--radius-lg,12px)] overflow-hidden shadow-sm">
+          <div className="p-6 border-b border-[var(--border)] bg-[rgba(99,102,241,0.02)] flex justify-between items-center">
+            <h2 className="text-base font-semibold text-[var(--text-primary)]">Pantry Batches</h2>
+            <p className="text-sm text-[var(--text-secondary)]">Items received from the manager.</p>
+          </div>
+          <div className="p-6 space-y-4">
+            {batches.length === 0 ? (
+              <div className="text-center py-12 text-[var(--text-secondary)]">
+                <Package className="w-10 h-10 mx-auto opacity-30 mb-3" />
+                <p>No batches found in the pantry.</p>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {batches.map(batch => (
+                  <div key={batch.id} className="border border-[var(--border)] rounded-xl p-4 bg-[var(--bg-card)] shadow-sm hover:shadow-md transition-shadow relative overflow-hidden">
+                    <div className="flex justify-between items-start mb-2">
+                      <h3 className="font-bold text-lg text-[var(--text-primary)]">{batch.itemName}</h3>
+                      <span className={`text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-full ${
+                        batch.status === 'unopened' ? 'bg-[var(--primary-subtle)] text-[var(--primary)]' : 
+                        batch.status === 'opened' ? 'bg-[var(--warning-bg)] text-[var(--warning)] border border-[var(--warning)]/20' : 
+                        'bg-[var(--bg-input)] text-[var(--text-secondary)]'
+                      }`}>
+                        {batch.status}
+                      </span>
+                    </div>
+                    <div className="text-sm text-[var(--text-secondary)] mb-4">
+                      {batch.quantity} {batch.unit} &bull; {batch.category || 'Groceries'}
+                    </div>
+                    
+                    <div className="space-y-1.5 text-xs">
+                      {batch.receivedAt && (
+                        <div className="flex justify-between">
+                          <span className="text-[var(--text-secondary)]">Received:</span>
+                          <span className="font-medium">{new Date(batch.receivedAt).toLocaleDateString()}</span>
+                        </div>
+                      )}
+                      {batch.openedAt && (
+                        <div className="flex justify-between">
+                          <span className="text-[var(--text-secondary)]">Opened:</span>
+                          <span className="font-medium text-[var(--warning)]">{new Date(batch.openedAt).toLocaleDateString()}</span>
+                        </div>
+                      )}
+                      {batch.expiryDate && (
+                        <div className="flex justify-between">
+                          <span className="text-[var(--text-secondary)]">Expires:</span>
+                          <span className="font-medium text-[var(--danger)]">{new Date(batch.expiryDate).toLocaleDateString()}</span>
+                        </div>
+                      )}
+                    </div>
+
+                    <div className="mt-5 pt-3 border-t border-[var(--border)] flex gap-2">
+                      {batch.status === 'unopened' && (
+                        <button 
+                          onClick={() => {
+                            stockBatchesApi.openBatch(batch.id);
+                            loadStock();
+                          }}
+                          className="flex-1 bg-[var(--primary-subtle)] text-[var(--primary)] font-bold text-xs py-2 rounded-lg hover:bg-[var(--primary)] hover:text-white transition-colors"
+                        >
+                          Open Box
+                        </button>
+                      )}
+                      {batch.status === 'opened' && (
+                        <button 
+                          onClick={() => {
+                            if (confirm('Mark this batch as empty?')) {
+                              stockBatchesApi.emptyBatch(batch.id);
+                              loadStock();
+                            }
+                          }}
+                          className="flex-1 bg-[rgba(239,68,68,0.1)] text-[var(--danger)] font-bold text-xs py-2 rounded-lg hover:bg-[var(--danger)] hover:text-white transition-colors"
+                        >
+                          Mark Empty
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
