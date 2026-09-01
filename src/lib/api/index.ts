@@ -19,6 +19,7 @@ import { messApi } from '@/app/student/lib/api/mess';
 import { foodApi } from '@/app/staff/lib/api/food';
 import { stockApi } from '@/app/staff/lib/api/stock';
 import { stockRequestsApi } from '@/app/staff/lib/api/stockRequests';
+import { usageLogsApi } from '@/app/staff/lib/api/usageLogs';
 import { managerDashboardApi } from '@/app/manager/lib/api/managerDashboard';
 import { managerEnquiriesApi } from '@/app/manager/lib/api/managerEnquiries';
 import { managerCheckinApi } from '@/app/manager/lib/api/managerCheckin';
@@ -52,6 +53,7 @@ export const api = {
   food: foodApi,
   stock: stockApi,
   stockRequests: stockRequestsApi,
+  usageLogs: usageLogsApi,
   managerDashboard: managerDashboardApi,
   managerEnquiries: managerEnquiriesApi,
   managerCheckin: managerCheckinApi,

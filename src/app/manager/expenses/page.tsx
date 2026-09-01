@@ -16,6 +16,7 @@ export default function ManagerExpensesPage() {
 
   const [loading, setLoading] = useState(true);
   const [expenses, setExpenses] = useState<any[]>([]);
+  const [studentCount, setStudentCount] = useState(0);
   
   // Modal state
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -33,6 +34,11 @@ export default function ManagerExpensesPage() {
     // Fetch stats which includes expenses
     const stats = api.finance.getStats(user.id, selectedPropertyId);
     setExpenses(stats.expenses);
+    
+    // Fetch active students to calculate per-student costs
+    const students = api.managerOperations.listStudents(selectedPropertyId);
+    setStudentCount(students.length);
+    
     setLoading(false);
   };
 
@@ -113,6 +119,18 @@ export default function ManagerExpensesPage() {
     other: 'Other'
   };
 
+  // Analytics Calculations
+  const currentMonth = new Date().getMonth();
+  const currentYear = new Date().getFullYear();
+  
+  const currentMonthExpenses = expenses.filter(e => {
+    const d = new Date(e.date);
+    return d.getMonth() === currentMonth && d.getFullYear() === currentYear;
+  });
+
+  const groceryExpenses = currentMonthExpenses.filter(e => e.category === 'kitchen_stock' || e.category === 'groceries').reduce((acc, e) => acc + e.amount, 0);
+  const costPerStudent = studentCount > 0 ? (groceryExpenses / studentCount) : 0;
+
   return (
     <div className="space-y-6 pb-20">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
@@ -126,6 +144,25 @@ export default function ManagerExpensesPage() {
         >
           <Plus className="w-5 h-5" /> Log Expense
         </button>
+      </div>
+
+      {/* Grocery Budget Analytics */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded-[var(--radius-lg,12px)] p-5 shadow-sm">
+          <p className="text-xs uppercase font-bold text-[var(--text-secondary)] mb-1">Total Grocery Exp. (This Month)</p>
+          <div className="flex items-baseline gap-2">
+            <h2 className="text-2xl font-black text-[var(--text-primary)]">{formatINR(groceryExpenses)}</h2>
+          </div>
+          <p className="text-xs text-[var(--text-secondary)] mt-2">Sum of all 'groceries' expenses.</p>
+        </div>
+        <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded-[var(--radius-lg,12px)] p-5 shadow-sm">
+          <p className="text-xs uppercase font-bold text-[var(--text-secondary)] mb-1">Grocery Cost Per Student</p>
+          <div className="flex items-baseline gap-2">
+            <h2 className="text-2xl font-black text-[var(--text-primary)]">{formatINR(costPerStudent)}</h2>
+            <span className="text-sm font-medium text-[var(--text-secondary)]">/ student</span>
+          </div>
+          <p className="text-xs text-[var(--text-secondary)] mt-2">Based on {studentCount} active students.</p>
+        </div>
       </div>
 
       <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded-[var(--radius-lg,12px)] overflow-hidden shadow-sm">

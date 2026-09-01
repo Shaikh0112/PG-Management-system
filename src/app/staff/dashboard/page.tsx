@@ -24,6 +24,11 @@ export default function StaffDashboard() {
   const [requests, setRequests] = useState<StockRequest[]>([]);
   const [selectedStockName, setSelectedStockName] = useState('');
   const [usageQty, setUsageQty] = useState('');
+  const [usageMeal, setUsageMeal] = useState<'Breakfast' | 'Lunch' | 'Dinner' | 'Other'>('Breakfast');
+
+  // Custom Request State
+  const [customReqName, setCustomReqName] = useState('');
+  const [customReqQty, setCustomReqQty] = useState('');
 
   const loadData = () => {
     if (staffRole === 'cook' && propertyId) {
@@ -51,6 +56,25 @@ export default function StaffDashboard() {
       requestedBy: user.id
     });
     loadData();
+  };
+
+  const handleCustomRequest = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!user || !propertyId || !customReqName || !customReqQty) return;
+    
+    const item = stockItems.find(i => `${i.name} (Avail: ${i.quantity} ${i.unit})` === customReqName || i.name === customReqName);
+    
+    api.stockRequests.create({
+      propertyId,
+      itemName: item ? item.name : customReqName, // Use existing item name or new name
+      quantityRequested: parseFloat(customReqQty),
+      unit: item ? item.unit : 'kg', // Default to kg if new item
+      requestedBy: user.id
+    });
+    setCustomReqName('');
+    setCustomReqQty('');
+    loadData();
+    alert('Request sent to manager!');
   };
 
   const handleMarkPresent = () => {
@@ -81,8 +105,21 @@ export default function StaffDashboard() {
     const used = parseFloat(usageQty);
     if (used > 0 && item.quantity >= used) {
       api.stock.update(item.id, { quantity: item.quantity - used });
+      
+      // Log usage record
+      api.usageLogs.create({
+        propertyId: propertyId!,
+        itemName: item.name,
+        quantity: used,
+        unit: item.unit,
+        mealType: usageMeal,
+        loggedBy: user!.id,
+        date: new Date().toISOString().split('T')[0]
+      });
+
       setSelectedStockName('');
       setUsageQty('');
+      setUsageMeal('Breakfast');
       loadData(); // Reload stock
     } else {
       alert('Invalid quantity or not enough stock available!');
@@ -335,7 +372,7 @@ export default function StaffDashboard() {
                   </datalist>
                 </div>
                 <div>
-                  <label className="text-xs font-bold text-[var(--text-secondary)] mb-1 block">Quantity Used Today</label>
+                  <label className="text-xs font-bold text-[var(--text-secondary)] mb-1 block">Quantity Used</label>
                   <input 
                     type="number"
                     step="0.01"
@@ -347,6 +384,19 @@ export default function StaffDashboard() {
                     required
                   />
                 </div>
+                <div>
+                  <label className="text-xs font-bold text-[var(--text-secondary)] mb-1 block">Meal Type</label>
+                  <select 
+                    value={usageMeal}
+                    onChange={(e: any) => setUsageMeal(e.target.value)}
+                    className="w-full bg-[var(--bg-input)] border border-[var(--border)] rounded px-3 py-2 text-sm focus:border-[var(--primary)] outline-none"
+                  >
+                    <option value="Breakfast">Breakfast</option>
+                    <option value="Lunch">Lunch</option>
+                    <option value="Dinner">Dinner</option>
+                    <option value="Other">Other</option>
+                  </select>
+                </div>
               </div>
               <button 
                 type="submit"
@@ -355,6 +405,60 @@ export default function StaffDashboard() {
               >
                 <Send className="w-4 h-4" />
                 Update Stock
+              </button>
+            </form>
+          </div>
+        )}
+        
+        {/* Custom Stock Request Widget */}
+        {staffRole === 'cook' && (
+          <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded-[var(--radius-lg,12px)] p-6 shadow-sm flex flex-col">
+            <div className="flex items-center gap-3 mb-5 pb-3 border-b border-[var(--border)]">
+              <div className="w-8 h-8 rounded-full bg-[rgba(239,68,68,0.1)] text-[var(--danger)] flex items-center justify-center">
+                <AlertTriangle className="w-4 h-4" />
+              </div>
+              <h2 className="text-lg font-bold text-[var(--text-primary)]">Request Stock Manually</h2>
+            </div>
+            
+            <form onSubmit={handleCustomRequest} className="flex-1 flex flex-col">
+              <div className="space-y-4 flex-1">
+                <div>
+                  <label className="text-xs font-bold text-[var(--text-secondary)] mb-1 block">Item Name</label>
+                  <input 
+                    list="stock-items-list-2"
+                    value={customReqName}
+                    onChange={e => setCustomReqName(e.target.value)}
+                    placeholder="Type new or select existing..."
+                    className="w-full bg-[var(--bg-input)] border border-[var(--border)] rounded px-3 py-2 text-sm focus:border-[var(--primary)] outline-none"
+                    required
+                  />
+                  <datalist id="stock-items-list-2">
+                    {stockItems.map(i => (
+                      <option key={i.id} value={i.name} />
+                    ))}
+                  </datalist>
+                </div>
+                <div>
+                  <label className="text-xs font-bold text-[var(--text-secondary)] mb-1 block">Quantity Needed</label>
+                  <input 
+                    type="number"
+                    step="0.01"
+                    min="0"
+                    value={customReqQty}
+                    onChange={e => setCustomReqQty(e.target.value)}
+                    placeholder="e.g. 10"
+                    className="w-full bg-[var(--bg-input)] border border-[var(--border)] rounded px-3 py-2 text-sm focus:border-[var(--primary)] outline-none"
+                    required
+                  />
+                </div>
+              </div>
+              <button 
+                type="submit"
+                disabled={!customReqName || !customReqQty}
+                className="w-full mt-6 bg-[var(--danger)] text-white px-4 py-2.5 rounded-[var(--radius-md,8px)] font-bold text-sm flex items-center justify-center gap-2 hover:bg-[var(--danger-hover)] disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+              >
+                <Send className="w-4 h-4" />
+                Submit Request
               </button>
             </form>
           </div>
