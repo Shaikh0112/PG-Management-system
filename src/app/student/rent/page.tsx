@@ -66,7 +66,7 @@ export default function StudentRentPage() {
             <IndianRupee className="w-24 h-24 text-[var(--danger)]" />
           </div>
           <div className="text-[var(--danger)] font-bold text-sm uppercase tracking-wider mb-2">Total Pending</div>
-          <div className="text-4xl font-black text-[var(--danger)]">{formatINR(pending.reduce((a,b) => a + b.amount, 0))}</div>
+          <div className="text-4xl font-black text-[var(--danger)]">{formatINR(pending.reduce((a,b) => a + (b.amount + (b.electricityBillAmount || 0)), 0))}</div>
           <div className="text-sm font-medium text-[var(--text-secondary)] mt-2">Across {pending.length} invoices</div>
         </div>
         <div className="bg-gradient-to-br from-[var(--success-bg)] to-[var(--bg-card)] border border-[var(--success)]/30 rounded-2xl p-6 shadow-sm relative overflow-hidden">
@@ -74,7 +74,7 @@ export default function StudentRentPage() {
             <CheckCircle className="w-24 h-24 text-[var(--success)]" />
           </div>
           <div className="text-[var(--success)] font-bold text-sm uppercase tracking-wider mb-2">Total Paid</div>
-          <div className="text-4xl font-black text-[var(--success)]">{formatINR(history.reduce((a,b) => a + b.amount, 0))}</div>
+          <div className="text-4xl font-black text-[var(--success)]">{formatINR(history.reduce((a,b) => a + (b.amount + (b.electricityBillAmount || 0)), 0))}</div>
           <div className="text-sm font-medium text-[var(--text-secondary)] mt-2">Across {history.length} invoices</div>
         </div>
       </div>
@@ -108,8 +108,18 @@ export default function StudentRentPage() {
                       <p className={`text-xs ${showAsDue ? 'text-[var(--danger)] font-medium' : 'text-[var(--text-secondary)]'}`}>Due: {new Date(invoice.dueDate).toLocaleDateString()} | Updated: {new Date(invoice.updatedAt).toLocaleDateString()}</p>
                     </div>
                     
-                    <div className="flex items-center gap-4">
-                      <div className={`font-black text-xl ${showAsDue ? 'text-[var(--danger)]' : 'text-[var(--text-primary)]'}`}>₹{invoice.amount.toLocaleString()}</div>
+                    <div className="flex flex-col gap-1 md:items-end">
+                      <div className={`font-black text-xl ${showAsDue ? 'text-[var(--danger)]' : 'text-[var(--text-primary)]'}`}>
+                        ₹{(invoice.amount + (invoice.electricityBillAmount || 0)).toLocaleString()}
+                      </div>
+                      {invoice.electricityBillAmount !== undefined && (
+                        <div className="text-xs text-[var(--text-secondary)] font-medium">
+                          Rent: ₹{invoice.amount.toLocaleString()} + EB: ₹{invoice.electricityBillAmount.toLocaleString()}
+                        </div>
+                      )}
+                    </div>
+                    
+                    <div className="flex items-center gap-4 mt-4 md:mt-0">
                       {invoice.status === 'Pending' && (
                         <button onClick={() => setShowPayModal(invoice)} className="px-4 py-2 bg-[var(--primary)] text-white rounded font-bold shadow-md shadow-[var(--primary-subtle)] hover:bg-[var(--primary-hover)] hover:-translate-y-0.5 transition-all text-sm whitespace-nowrap">
                           Pay Now &rarr;
@@ -119,6 +129,16 @@ export default function StudentRentPage() {
                         <button onClick={() => window.print()} className="px-3 py-2 bg-[var(--bg-card)] text-[var(--primary)] border border-[var(--border)] rounded font-medium hover:bg-[var(--bg-page)] transition-colors text-sm flex items-center gap-1 opacity-0 group-hover:opacity-100">
                           <Download className="w-4 h-4"/> Receipt
                         </button>
+                      )}
+                      {invoice.electricityBillImage && (
+                        <a
+                          href={invoice.electricityBillImage}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="px-3 py-2 bg-[var(--bg-input)] text-[var(--text-secondary)] border border-[var(--border)] rounded font-medium hover:text-[var(--text-primary)] transition-colors text-sm flex items-center gap-1"
+                        >
+                          View Bill
+                        </a>
                       )}
                     </div>
                   </div>
@@ -142,7 +162,7 @@ export default function StudentRentPage() {
             <div className="p-6 space-y-4">
               <div className="p-4 bg-[var(--bg-input)] rounded flex justify-between items-center">
                 <span className="text-[var(--text-secondary)]">Amount to Pay</span>
-                <span className="font-bold text-2xl text-[var(--text-primary)]">{formatINR(showPayModal.amount)}</span>
+                <span className="font-bold text-2xl text-[var(--text-primary)]">{formatINR(showPayModal.amount + (showPayModal.electricityBillAmount || 0))}</span>
               </div>
               <div className="p-4 border border-[var(--success)]/20 bg-[var(--success-bg)] rounded text-sm text-[var(--success)] flex gap-2">
                 <CheckCircle className="w-5 h-5 shrink-0" />

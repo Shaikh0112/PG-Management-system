@@ -7,8 +7,9 @@ import { getSession } from '@/lib/auth/session';
 import { useOwnerPropertyContext } from '@/app/owner/components/OwnerPropertyContext';
 import { ArrowLeft, User, Phone, Mail, Building, CreditCard, Activity, CheckCircle, ShieldAlert, LogOut, Clock } from 'lucide-react';
 import Link from 'next/link';
-import { StudentMember } from '@/app/student/lib/api/students';
 import { studentOperationsApi } from '@/app/student/lib/api/studentOperations';
+import { BillUploadModal } from '@/components/shared/BillUploadModal';
+import { financeApi } from '@/app/owner/lib/api/finance';
 
 export default function StudentProfilePage({ params }: { params: Promise<{ id: string }> }) {
   const router = useRouter();
@@ -19,6 +20,10 @@ export default function StudentProfilePage({ params }: { params: Promise<{ id: s
   const [student, setStudent] = useState<StudentMember | null>(null);
   const [invoices, setInvoices] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+
+  // Bill upload state
+  const [isBillModalOpen, setIsBillModalOpen] = useState(false);
+  const [selectedInvoiceForBill, setSelectedInvoiceForBill] = useState<any>(null);
 
   const loadData = () => {
     if (!user || !id) return;
@@ -61,12 +66,28 @@ export default function StudentProfilePage({ params }: { params: Promise<{ id: s
     }
   };
 
+  const handleSaveElectricityBill = (amount: number, imageUrl: string) => {
+    if (selectedInvoiceForBill && user) {
+      financeApi.updateElectricityBill(selectedInvoiceForBill.id, amount, imageUrl, user.id);
+      loadData(); // Reload invoices
+    }
+  };
+
   if (loading || !student) return <div className="p-6 animate-pulse">Loading profile...</div>;
 
   const propertyName = properties.find(p => p.id === student.profile.propertyId)?.name || 'Unknown Property';
 
   return (
     <div className="max-w-5xl mx-auto space-y-6 pb-20">
+      <BillUploadModal
+        isOpen={isBillModalOpen}
+        onClose={() => {
+          setIsBillModalOpen(false);
+          setSelectedInvoiceForBill(null);
+        }}
+        onSubmit={handleSaveElectricityBill}
+        invoiceTitle={selectedInvoiceForBill?.month || 'Invoice'}
+      />
       <div className="flex items-center gap-4 mb-2">
         <Link href="/owner/students" className="p-2 hover:bg-[var(--bg-card)] rounded-full transition-colors text-[var(--text-secondary)] hover:text-[var(--text-primary)]">
           <ArrowLeft className="w-5 h-5" />
@@ -206,9 +227,51 @@ export default function StudentProfilePage({ params }: { params: Promise<{ id: s
                             {displayStatus}
                           </div>
                         </div>
-                        <div className={`font-black ${showAsDue ? 'text-[var(--danger)]' : 'text-[var(--text-primary)]'}`}>₹{invoice.amount.toLocaleString()}</div>
+                      
+                      <div className="flex flex-col gap-1 mt-2">
+                        <div className="flex justify-between items-center">
+                          <span className="text-sm text-[var(--text-secondary)] font-medium">Rent</span>
+                          <span className={`font-black ${showAsDue ? 'text-[var(--danger)]' : 'text-[var(--text-primary)]'}`}>₹{invoice.amount.toLocaleString()}</span>
+                        </div>
+                        {invoice.electricityBillAmount !== undefined ? (
+                          <div className="flex justify-between items-center text-sm">
+                            <span className="text-[var(--text-secondary)] font-medium">Electricity Bill</span>
+                            <span className="font-bold text-[var(--text-primary)]">₹{invoice.electricityBillAmount.toLocaleString()}</span>
+                          </div>
+                        ) : null}
+                        {invoice.electricityBillAmount !== undefined && (
+                          <div className="flex justify-between items-center mt-2 border-t border-[var(--border)] pt-2">
+                            <span className="text-sm font-bold text-[var(--text-primary)]">Total</span>
+                            <span className={`font-black ${showAsDue ? 'text-[var(--danger)]' : 'text-[var(--text-primary)]'}`}>₹{(invoice.amount + invoice.electricityBillAmount).toLocaleString()}</span>
+                          </div>
+                        )}
+                      </div>
+
+                      <div className="mt-4 flex gap-2">
+                        {!invoice.electricityBillAmount && (
+                          <button
+                            onClick={() => {
+                              setSelectedInvoiceForBill(invoice);
+                              setIsBillModalOpen(true);
+                            }}
+                            className="text-xs font-bold text-[var(--primary)] bg-[var(--primary-subtle)] hover:bg-[var(--primary)] hover:text-white transition-colors px-3 py-1.5 rounded"
+                          >
+                            Add Electricity Bill
+                          </button>
+                        )}
+                        {invoice.electricityBillImage && (
+                          <a
+                            href={invoice.electricityBillImage}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-xs font-bold text-[var(--text-secondary)] bg-[var(--bg-page)] border border-[var(--border)] hover:text-[var(--text-primary)] transition-colors px-3 py-1.5 rounded inline-flex items-center gap-1"
+                          >
+                            View Bill Receipt
+                          </a>
+                        )}
                       </div>
                     </div>
+                  </div>
                   );
                 })}
               </div>

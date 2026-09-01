@@ -7,6 +7,8 @@ import { getSession } from '@/lib/auth/session';
 import { studentOperationsApi } from '@/app/student/lib/api/studentOperations';
 import { ArrowLeft, User, MapPin, Calendar, IndianRupee, LogOut, Utensils, Clock } from 'lucide-react';
 import Link from 'next/link';
+import { BillUploadModal } from '@/components/shared/BillUploadModal';
+import { financeApi } from '@/app/owner/lib/api/finance';
 
 export default function ManagerStudentDetail() {
   const { id } = useParams() as { id: string };
@@ -14,8 +16,12 @@ export default function ManagerStudentDetail() {
   const user = typeof window !== 'undefined' ? getSession() : null;
   const [student, setStudent] = useState<any>(null);
   const [invoices, setInvoices] = useState<any[]>([]);
+  
+  // Bill upload state
+  const [isBillModalOpen, setIsBillModalOpen] = useState(false);
+  const [selectedInvoiceForBill, setSelectedInvoiceForBill] = useState<any>(null);
 
-  useEffect(() => {
+  const loadData = () => {
     if (id) {
       const t = api.students.getById ? api.students.getById(id) : api.students.listByProperty('all').find((t: any) => t.profile.id === id || t.user.id === id);
       setStudent(t);
@@ -23,6 +29,10 @@ export default function ManagerStudentDetail() {
         setInvoices(studentOperationsApi.getInvoices(t.user.id));
       }
     }
+  };
+
+  useEffect(() => {
+    loadData();
   }, [id]);
 
   const handleCheckout = () => {
@@ -32,10 +42,26 @@ export default function ManagerStudentDetail() {
     }
   };
 
+  const handleSaveElectricityBill = (amount: number, imageUrl: string) => {
+    if (selectedInvoiceForBill && user) {
+      financeApi.updateElectricityBill(selectedInvoiceForBill.id, amount, imageUrl, user.id);
+      loadData(); // Reload invoices
+    }
+  };
+
   if (!student) return <div className="p-6 text-[var(--text-secondary)]">Loading...</div>;
 
   return (
     <div className="space-y-6 pb-20 max-w-4xl mx-auto">
+      <BillUploadModal
+        isOpen={isBillModalOpen}
+        onClose={() => {
+          setIsBillModalOpen(false);
+          setSelectedInvoiceForBill(null);
+        }}
+        onSubmit={handleSaveElectricityBill}
+        invoiceTitle={selectedInvoiceForBill?.month || 'Invoice'}
+      />
       <Link href="/manager/students" className="inline-flex items-center gap-2 text-[var(--text-secondary)] hover:text-[var(--primary)] text-sm font-medium transition-colors">
         <ArrowLeft className="w-4 h-4" /> Back to Students
       </Link>
@@ -141,7 +167,49 @@ export default function ManagerStudentDetail() {
                           {displayStatus}
                         </div>
                       </div>
-                      <div className={`font-black ${showAsDue ? 'text-[var(--danger)]' : 'text-[var(--text-primary)]'}`}>₹{invoice.amount}</div>
+                      
+                      <div className="flex flex-col gap-1 mt-2">
+                        <div className="flex justify-between items-center">
+                          <span className="text-sm text-[var(--text-secondary)] font-medium">Rent</span>
+                          <span className={`font-black ${showAsDue ? 'text-[var(--danger)]' : 'text-[var(--text-primary)]'}`}>₹{invoice.amount}</span>
+                        </div>
+                        {invoice.electricityBillAmount !== undefined ? (
+                          <div className="flex justify-between items-center text-sm">
+                            <span className="text-[var(--text-secondary)] font-medium">Electricity Bill</span>
+                            <span className="font-bold text-[var(--text-primary)]">₹{invoice.electricityBillAmount}</span>
+                          </div>
+                        ) : null}
+                        {invoice.electricityBillAmount !== undefined && (
+                          <div className="flex justify-between items-center mt-2 border-t border-[var(--border)] pt-2">
+                            <span className="text-sm font-bold text-[var(--text-primary)]">Total</span>
+                            <span className={`font-black ${showAsDue ? 'text-[var(--danger)]' : 'text-[var(--text-primary)]'}`}>₹{invoice.amount + invoice.electricityBillAmount}</span>
+                          </div>
+                        )}
+                      </div>
+
+                      <div className="mt-4 flex gap-2">
+                        {!invoice.electricityBillAmount && (
+                          <button
+                            onClick={() => {
+                              setSelectedInvoiceForBill(invoice);
+                              setIsBillModalOpen(true);
+                            }}
+                            className="text-xs font-bold text-[var(--primary)] bg-[var(--primary-subtle)] hover:bg-[var(--primary)] hover:text-white transition-colors px-3 py-1.5 rounded"
+                          >
+                            Add Electricity Bill
+                          </button>
+                        )}
+                        {invoice.electricityBillImage && (
+                          <a
+                            href={invoice.electricityBillImage}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-xs font-bold text-[var(--text-secondary)] bg-[var(--bg-page)] border border-[var(--border)] hover:text-[var(--text-primary)] transition-colors px-3 py-1.5 rounded inline-flex items-center gap-1"
+                          >
+                            View Bill Receipt
+                          </a>
+                        )}
+                      </div>
                     </div>
                   </div>
                 )})}

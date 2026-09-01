@@ -11,6 +11,8 @@ export interface Invoice extends BaseEntity {
   dueDate: string;
   month: string;
   notes?: string;
+  electricityBillAmount?: number;
+  electricityBillImage?: string;
 }
 
 export interface Payment extends BaseEntity {
@@ -88,6 +90,15 @@ export const financeApi = {
         });
       }
     }
+  },
+
+  updateElectricityBill: (invoiceId: string, amount: number, imageUrl: string, actorId: string) => {
+    db.update<Invoice>(STORAGE_KEYS.INVOICES, invoiceId, {
+      electricityBillAmount: amount,
+      electricityBillImage: imageUrl,
+      updatedAt: new Date().toISOString(),
+      updatedBy: actorId
+    });
   },
 
   createExpense: (data: Partial<Expense>, actorId: string) => {
