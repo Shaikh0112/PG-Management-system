@@ -22,7 +22,7 @@ export default function StaffDashboard() {
   // Stock State
   const [stockItems, setStockItems] = useState<StockItem[]>([]);
   const [requests, setRequests] = useState<StockRequest[]>([]);
-  const [selectedStock, setSelectedStock] = useState('');
+  const [selectedStockName, setSelectedStockName] = useState('');
   const [usageQty, setUsageQty] = useState('');
 
   const loadData = () => {
@@ -70,15 +70,18 @@ export default function StaffDashboard() {
 
   const handleLogUsage = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!selectedStock || !usageQty) return;
+    if (!selectedStockName || !usageQty) return;
     
-    const item = stockItems.find(i => i.id === selectedStock);
-    if (!item) return;
+    const item = stockItems.find(i => `${i.name} (Avail: ${i.quantity} ${i.unit})` === selectedStockName || i.name === selectedStockName);
+    if (!item) {
+      alert('Please select a valid item from the list.');
+      return;
+    }
 
     const used = parseFloat(usageQty);
     if (used > 0 && item.quantity >= used) {
       api.stock.update(item.id, { quantity: item.quantity - used });
-      setSelectedStock('');
+      setSelectedStockName('');
       setUsageQty('');
       loadData(); // Reload stock
     } else {
@@ -316,18 +319,20 @@ export default function StaffDashboard() {
             <form onSubmit={handleLogUsage} className="flex-1 flex flex-col">
               <div className="space-y-4 flex-1">
                 <div>
-                  <label className="text-xs font-bold text-[var(--text-secondary)] mb-1 block">Select Item</label>
-                  <select 
-                    value={selectedStock}
-                    onChange={e => setSelectedStock(e.target.value)}
+                  <label className="text-xs font-bold text-[var(--text-secondary)] mb-1 block">Search & Select Item</label>
+                  <input 
+                    list="stock-items-list"
+                    value={selectedStockName}
+                    onChange={e => setSelectedStockName(e.target.value)}
+                    placeholder="Type to search items..."
                     className="w-full bg-[var(--bg-input)] border border-[var(--border)] rounded px-3 py-2 text-sm focus:border-[var(--primary)] outline-none"
                     required
-                  >
-                    <option value="">-- Choose item --</option>
+                  />
+                  <datalist id="stock-items-list">
                     {stockItems.map(i => (
-                      <option key={i.id} value={i.id}>{i.name} (Avail: {i.quantity} {i.unit})</option>
+                      <option key={i.id} value={`${i.name} (Avail: ${i.quantity} ${i.unit})`} />
                     ))}
-                  </select>
+                  </datalist>
                 </div>
                 <div>
                   <label className="text-xs font-bold text-[var(--text-secondary)] mb-1 block">Quantity Used Today</label>
@@ -345,7 +350,7 @@ export default function StaffDashboard() {
               </div>
               <button 
                 type="submit"
-                disabled={!selectedStock || !usageQty}
+                disabled={!selectedStockName || !usageQty}
                 className="w-full mt-6 bg-[var(--primary)] text-white px-4 py-2.5 rounded-[var(--radius-md,8px)] font-bold text-sm flex items-center justify-center gap-2 hover:bg-[var(--primary-hover)] disabled:opacity-50 disabled:cursor-not-allowed transition-all"
               >
                 <Send className="w-4 h-4" />
