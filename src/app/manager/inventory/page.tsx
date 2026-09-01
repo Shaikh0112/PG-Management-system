@@ -14,7 +14,7 @@ export default function ManagerInventoryPage() {
   const [inventory, setInventory] = useState<any[]>([]);
   const [requests, setRequests] = useState<any[]>([]);
   const [batches, setBatches] = useState<StockBatch[]>([]);
-  const [activeTab, setActiveTab] = useState<'live' | 'requests' | 'batches'>('requests');
+  const [activeTab, setActiveTab] = useState<'live' | 'requests' | 'batches' | 'alerts'>('requests');
   const user = typeof window !== 'undefined' ? getSession() : null;
 
   const [formData, setFormData] = useState({ name: '', quantity: '', threshold: '', category: 'Groceries' });
@@ -82,6 +82,18 @@ export default function ManagerInventoryPage() {
     setCurrentPage(1);
   }, [activeTab, selectedPropertyId]);
 
+  const lowStockAlerts = inventory.filter(i => i.lowStockThreshold !== undefined && i.quantity <= i.lowStockThreshold);
+  const expiryAlerts = inventory.filter(i => {
+    if (!i.expiryDate) return false;
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const expiry = new Date(i.expiryDate);
+    const diffDays = Math.ceil((expiry.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
+    return diffDays <= 3;
+  });
+
+  const alertCount = lowStockAlerts.length + expiryAlerts.length;
+
   const currentList = activeTab === 'live' ? inventory : requests;
   const totalPages = Math.ceil(currentList.length / itemsPerPage);
   const paginatedData = currentList.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
@@ -135,6 +147,20 @@ export default function ManagerInventoryPage() {
         >
           <Clock className="w-4 h-4" />
           Usage Logs (Batches)
+        </button>
+        <button
+          onClick={() => setActiveTab('alerts')}
+          className={`flex items-center gap-2 px-6 py-3 font-semibold text-sm border-b-2 transition-colors ${
+            activeTab === 'alerts' 
+              ? 'border-[var(--danger)] text-[var(--danger)]' 
+              : 'border-transparent text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
+          }`}
+        >
+          <AlertTriangle className="w-4 h-4" />
+          Alerts
+          {alertCount > 0 && (
+            <span className="bg-[var(--danger)] text-white text-[10px] px-2 py-0.5 rounded-full ml-1">{alertCount}</span>
+          )}
         </button>
       </div>
 
@@ -366,6 +392,106 @@ export default function ManagerInventoryPage() {
               </tbody>
             </table>
           </div>
+        </div>
+      )}
+
+      {activeTab === 'alerts' && (
+        <div className="space-y-6">
+          {alertCount === 0 && (
+            <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded-[var(--radius-lg,12px)] p-10 text-center">
+              <div className="w-16 h-16 bg-[rgba(34,197,94,0.1)] text-[var(--success)] rounded-full flex items-center justify-center mx-auto mb-4">
+                <CheckCircle className="w-8 h-8" />
+              </div>
+              <h2 className="text-lg font-bold text-[var(--text-primary)] mb-2">No Alerts</h2>
+              <p className="text-[var(--text-secondary)]">All stock levels and expiry dates are optimal.</p>
+            </div>
+          )}
+
+          {/* Expiry Alerts */}
+          {expiryAlerts.length > 0 && (
+            <div className="bg-[var(--bg-card)] border border-[rgba(239,68,68,0.3)] rounded-[var(--radius-lg,12px)] p-5 shadow-sm">
+              <h3 className="font-bold text-[var(--danger)] mb-4 flex items-center gap-2">
+                <AlertTriangle className="w-5 h-5" /> Expiry Alerts
+              </h3>
+              <div className="space-y-3">
+                {expiryAlerts.map(i => {
+                  const diffDays = Math.ceil((new Date(i.expiryDate!).getTime() - new Date().setHours(0,0,0,0)) / (1000 * 60 * 60 * 24));
+                  const statusText = diffDays < 0 ? 'is EXPIRED!' : `expires in ${diffDays} days!`;
+                  
+                  return (
+                    <div key={`exp-${i.id}`} className="bg-[rgba(239,68,68,0.05)] border border-[rgba(239,68,68,0.2)] text-[var(--danger)] text-sm rounded-lg p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                      <div>
+                        <strong className="text-base">{i.name}</strong> {statusText}
+                        <p className="text-xs text-[var(--text-secondary)] mt-1">Found in Live Inventory.</p>
+                      </div>
+                      <button 
+                        onClick={() => {
+                          api.managerOperations.addInventoryItem({
+                            propertyId: selectedPropertyId!,
+                            name: i.name,
+                            quantity: 0,
+                            threshold: i.lowStockThreshold || 0,
+                            category: i.category,
+                            managerId: user!.id
+                          });
+                          alert('Added to Kitchen Requests for restocking!');
+                          loadData();
+                        }} 
+                        className="bg-[var(--danger)] text-white px-4 py-2 rounded-md text-xs font-bold hover:bg-[var(--danger-hover)] w-full sm:w-auto text-center"
+                      >
+                        Order Replacement
+                      </button>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+
+          {/* Low Stock Alerts */}
+          {lowStockAlerts.length > 0 && (
+            <div className="bg-[var(--bg-card)] border border-[rgba(239,68,68,0.3)] rounded-[var(--radius-lg,12px)] p-5 shadow-sm">
+              <h3 className="font-bold text-[var(--danger)] mb-4 flex items-center gap-2">
+                <AlertTriangle className="w-5 h-5" /> Low Stock Alerts
+              </h3>
+              <div className="space-y-3">
+                {lowStockAlerts.map(i => {
+                  const activeReq = requests.find(r => r.itemName === i.name);
+                  return (
+                    <div key={i.id} className="bg-[rgba(239,68,68,0.05)] border border-[rgba(239,68,68,0.2)] text-[var(--danger)] text-sm rounded-lg p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                      <div>
+                        <strong className="text-base">{i.name}</strong> is running low.
+                        <p className="text-xs text-[var(--text-secondary)] mt-1">Current: {i.quantity} {i.unit} (Threshold: {i.lowStockThreshold} {i.unit})</p>
+                      </div>
+                      {!activeReq ? (
+                        <button 
+                          onClick={() => {
+                             api.managerOperations.addInventoryItem({
+                                propertyId: selectedPropertyId!,
+                                name: i.name,
+                                quantity: 0,
+                                threshold: i.lowStockThreshold || 0,
+                                category: i.category,
+                                managerId: user!.id
+                              });
+                              alert('Added to Kitchen Requests!');
+                              loadData();
+                          }} 
+                          className="bg-[var(--danger)] text-white px-4 py-2 rounded-md text-xs font-bold hover:bg-[var(--danger-hover)] w-full sm:w-auto text-center"
+                        >
+                          Create Purchase Request
+                        </button>
+                      ) : (
+                        <span className="text-xs font-bold px-3 py-1.5 rounded-full bg-[rgba(239,68,68,0.1)] uppercase w-fit">
+                          Already Requested
+                        </span>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          )}
         </div>
       )}
     </div>

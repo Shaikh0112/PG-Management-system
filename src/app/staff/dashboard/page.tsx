@@ -131,6 +131,7 @@ export default function StaffDashboard() {
   const roles = [
     { role: 'cook', title: 'Food & Menu', icon: Utensils, href: '/staff/cook', desc: 'View the full weekly food schedule.', highlight: staffRole === 'cook' },
     { role: 'cook', title: 'Kitchen Stock', icon: Package, href: '/staff/stock', desc: 'Manage kitchen inventory.', highlight: staffRole === 'cook' },
+    { role: 'cook', title: 'Alerts & Refills', icon: AlertTriangle, href: '/staff/alerts', desc: 'View low stock and expiry alerts.', highlight: staffRole === 'cook' },
   ];
 
   // Helper to get today's day key and data
@@ -200,99 +201,7 @@ export default function StaffDashboard() {
         </div>
       </div>
 
-      {/* Expiry Alerts */}
-      {staffRole === 'cook' && expiryAlerts.length > 0 && (
-        <div className="bg-[rgba(239,68,68,0.05)] border border-[rgba(239,68,68,0.3)] rounded-[var(--radius-md,8px)] p-4 flex items-start gap-3">
-          <AlertTriangle className="w-5 h-5 text-[var(--danger)] shrink-0 mt-0.5" />
-          <div className="space-y-2 w-full">
-            <h3 className="font-bold text-[var(--danger)]">Expiry Alert!</h3>
-            <div className="flex flex-col gap-2">
-              {expiryAlerts.map(i => {
-                const activeReq = requests.find(r => r.itemName === i.name);
-                const diffDays = Math.ceil((new Date(i.expiryDate!).getTime() - new Date().setHours(0,0,0,0)) / (1000 * 60 * 60 * 24));
-                const statusText = diffDays < 0 ? 'is EXPIRED!' : `expires in ${diffDays} days!`;
-                
-                return (
-                  <div key={`exp-${i.id}`} className="bg-white dark:bg-black/20 border border-[rgba(239,68,68,0.2)] text-[var(--danger)] text-sm rounded-lg p-3 flex items-center justify-between">
-                    <div>
-                      <strong>{i.name}</strong> {statusText}
-                    </div>
-                    {!activeReq ? (
-                      <button onClick={() => handleNotifyManager(i)} className="bg-[var(--danger)] text-white px-3 py-1.5 rounded text-xs font-bold hover:bg-[var(--danger-hover)]">
-                        Request Fresh Stock
-                      </button>
-                    ) : (
-                      <span className="text-xs font-bold px-2 py-1 rounded bg-[rgba(239,68,68,0.1)] uppercase">
-                        {activeReq.status}
-                      </span>
-                    )}
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-        </div>
-      )}
 
-      {/* Low Stock Alerts */}
-      {staffRole === 'cook' && lowStockAlerts.length > 0 && (
-        <div className="bg-[rgba(239,68,68,0.05)] border border-[rgba(239,68,68,0.3)] rounded-[var(--radius-md,8px)] p-4 flex items-start gap-3">
-          <AlertTriangle className="w-5 h-5 text-[var(--danger)] shrink-0 mt-0.5" />
-          <div className="space-y-2 w-full">
-            <h3 className="font-bold text-[var(--danger)]">Low Stock Alert!</h3>
-            <div className="flex flex-col gap-2">
-              {lowStockAlerts.map(i => {
-                const activeReq = requests.find(r => r.itemName === i.name);
-                return (
-                  <div key={i.id} className="bg-white dark:bg-black/20 border border-[rgba(239,68,68,0.2)] text-[var(--danger)] text-sm rounded-lg p-3 flex items-center justify-between">
-                    <div>
-                      <strong>{i.name}</strong> is low ({i.quantity} {i.unit} left).
-                    </div>
-                    {!activeReq ? (
-                      <button onClick={() => handleNotifyManager(i)} className="bg-[var(--danger)] text-white px-3 py-1.5 rounded text-xs font-bold hover:bg-[var(--danger-hover)]">
-                        Notify Manager
-                      </button>
-                    ) : (
-                      <span className="text-xs font-bold px-2 py-1 rounded bg-[rgba(239,68,68,0.1)] uppercase">
-                        {activeReq.status}
-                      </span>
-                    )}
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Active Stock Requests Tracker */}
-      {staffRole === 'cook' && requests.length > 0 && (
-        <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded-[var(--radius-lg,12px)] p-5 shadow-sm">
-          <h3 className="font-bold text-[var(--text-primary)] mb-3 flex items-center gap-2">
-            <Package className="w-5 h-5 text-[var(--primary)]" /> Stock Refill Status
-          </h3>
-          <div className="space-y-2">
-            {requests.map(req => (
-              <div key={req.id} className="flex items-center justify-between p-3 border border-[var(--border)] rounded-[var(--radius-md,8px)] bg-[var(--bg-page)]">
-                <div>
-                  <div className="flex items-center gap-2 mb-1">
-                    <p className="font-bold text-[var(--text-primary)] text-sm">{req.itemName}</p>
-                    <span className="text-[10px] bg-[rgba(99,102,241,0.1)] text-[var(--primary)] px-2 py-0.5 rounded-full font-bold uppercase">
-                      Stock Request
-                    </span>
-                  </div>
-                  <p className="text-xs text-[var(--text-secondary)]">Status: <span className="uppercase font-bold">{req.status}</span></p>
-                </div>
-                {req.status === 'purchased' && (
-                  <button onClick={() => handleResolveRequest(req)} className="bg-[var(--success)] text-white px-4 py-2 rounded text-xs font-bold hover:bg-[var(--success-hover)]">
-                    Update Stock
-                  </button>
-                )}
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2 space-y-6">
