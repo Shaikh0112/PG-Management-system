@@ -30,7 +30,8 @@ export default function StudentRentPage() {
 
   const handlePay = () => {
     if (!session || !profile || !showPayModal) return;
-    studentOperationsApi.payInvoice(showPayModal.id, profile.id, showPayModal.amount, session.id);
+    const totalAmount = showPayModal.amount + (showPayModal.electricityBillAmount || 0);
+    studentOperationsApi.payInvoice(showPayModal.id, profile.id, totalAmount, session.id);
     showToast('Payment successful! (Mock) +10 PG Score', 'success');
     setShowPayModal(null);
     loadData();
@@ -171,7 +172,7 @@ export default function StudentRentPage() {
             </div>
             <div className="p-6 border-t border-[var(--border)] flex gap-3">
               <button onClick={() => setShowPayModal(null)} className="flex-1 px-4 py-2 bg-[var(--bg-input)] text-[var(--text-primary)] rounded font-medium">Cancel</button>
-              <button onClick={handlePay} className="flex-1 px-4 py-2 bg-[var(--primary)] text-white rounded font-bold shadow-lg shadow-[var(--primary-subtle)]">Pay {formatINR(showPayModal.amount)}</button>
+              <button onClick={handlePay} className="flex-1 px-4 py-2 bg-[var(--primary)] text-white rounded font-bold shadow-lg shadow-[var(--primary-subtle)]">Pay {formatINR(showPayModal.amount + (showPayModal.electricityBillAmount || 0))}</button>
             </div>
           </div>
         </div>

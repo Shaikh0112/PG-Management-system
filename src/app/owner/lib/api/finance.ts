@@ -99,6 +99,17 @@ export const financeApi = {
       updatedAt: new Date().toISOString(),
       updatedBy: actorId
     });
+
+    const invoice = db.getById<Invoice>(STORAGE_KEYS.INVOICES, invoiceId);
+    if (invoice && invoice.studentId) {
+      const student = db.getById<any>(STORAGE_KEYS.STUDENTS, invoice.studentId);
+      if (student) {
+        db.update<any>(STORAGE_KEYS.STUDENTS, student.id, {
+          duesAmount: (student.duesAmount || 0) + amount,
+          updatedAt: new Date().toISOString()
+        });
+      }
+    }
   },
 
   createExpense: (data: Partial<Expense>, actorId: string) => {
